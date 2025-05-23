@@ -1,0 +1,202 @@
+version: '3.8'
+
+
+services:
+  # ----------------------------------------------------------------------------------------------------
+  # Wazuh Stack (Manager, Indexer, Dashboard)
+  # Pulled from Wazuh's official Docker Compose templates for simplicity
+  # ----------------------------------------------------------------------------------------------------
+  wazuh-manager:
+    image: wazuh/wazuh-manager:4.8.0
+    container_name: wazuh-manager
+    hostname: wazuh-manager
+    ports:
+      - "1514:1514/udp" # Agent enrollment (UDP)
+      - "1515:1515/tcp" # Agent enrollment (TCP - optional)
+      - "55000:55000/tcp" # Agent enrollment API
+    environment:
+      - CLUSTER_NAME=wazuh
+      - NODE_TYPE=manager
+      - WAZUH_DEBUG=0
+      - API_USERNAME=wazuh
+      - API_PASSWORD=wazuh # In production, use secrets management
+    volumes:
+      - ./wazuh/wazuh-manager/config:/var/ossec/etc:ro # Optional: for custom manager config
+      - wazuh_manager_data:/var/ossec/data
+    networks:
+      - wazuh-net
+
+
+  wazuh-indexer:
+    image: wazuh/wazuh-indexer:4.8.0
+    container_name: wazuh-indexer
+    hostname: wazuh-indexer
+    environment:
+      - CLUSTER_NAME=wazuh
+      - NODE_TYPE=master
+      - DISCOVERY_SEEDS=wazuh-indexer
+      - CLUSTER_INITIAL_MASTER_NODES=wazuh-indexer
+      - ELASTIC_PASSWORD=wazuh # Password for internal communication
+      - WAZUH_INDEXER_DEBUG=0
+    volumes:
+      - wazuh_indexer_data:/usr/share/wazuh-indexer/data
+    networks:
+      - wazuh-net
+
+
+  wazuh-dashboard:
+    image: wazuh/wazuh-dashboard:4.8.0
+    container_name: wazuh-dashboard
+    hostname: wazuh-dashboard
+    ports:
+      - "5601:5601"
+    environment:
+      - CLUSTER_NAME=wazuh
+      - API_URL=https://wazuh-manager
+      - INDEXER_URL=https://wazuh-indexer
+      - WAZUH_PASSWORD=wazuh # Dashboard access password
+      - WAZUH_DEBUG=0
+    networks:
+      - wazuh-net
+    depends_on:
+      - wazuh-manager
+      - wazuh-indexer
+
+
+  # ----------------------------------------------------------------------------------------------------
+  # ELK Stack (for supplementary logging and analysis, especially from Coraza/AI)
+  # Note: Wazuh Manager already has an internal Elasticsearch/Kibana-like component,
+  # but a separate ELK stack is useful for independent analysis or non-Wazuh logs.
+  # We'll configure Wazuh to forward to Logstash for integration.
+  # ----------------------------------------------------------------------------------------------------
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.0
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false # IMPORTANT: Disable for simple lab setup
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m # Adjust as needed
+    volumes:
+      - ./elk/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200" # Expose for Logstash and Kibana
+    networks:
+      - app-net
+      - wazuh-net # Allow Wazuh Manager to send alerts to Logstash
+
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.13.0
+    container_name: logstash
+    environment:
+      - LS_JAVA_OPTS=-Xms512m -Xmx512m
+    volumes:
+      - ./elk/logstash/pipeline:/usr/share/logstash/pipeline/
+    ports:
+      - "5001:5000/tcp" # For Wazuh alerts (JSON)
+      - "5044:5044/tcp" # For Filebeat
+    depends_on:
+      - elasticsearch
+    networks:
+      - app-net
+      - wazuh-net
+
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.13.0
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=["http://elasticsearch:9200"]
+      - SERVER_HOST=0.0.0.0
+    volumes:
+      - ./elk/kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
+    ports:
+      - "5602:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - app-net
+
+
+  # ----------------------------------------------------------------------------------------------------
+  # Custom Lab Services
+  # ----------------------------------------------------------------------------------------------------
+  coraza-proxy:
+    build:
+      context: ./coraza-proxy
+      dockerfile: Dockerfile
+    container_name: coraza-proxy
+    hostname: coraza-proxy
+    ports:
+      - "8080:8080" # Exposed to host for attacker to access
+    environment:
+      - AI_MICROSERVICE_URL=http://ai-microservice:5000/classify
+      - TARGET_APP_URL=http://juice-shop:3000
+    volumes:
+      - ./coraza-proxy/wazuh_agent_config/ossec.conf:/var/ossec/etc/ossec.conf # Mount agent config
+      - coraza_logs:/var/log/coraza # Persistent logs for inspection/Filebeat
+    networks:
+      - app-net
+      - wazuh-net # For Wazuh agent to communicate with manager
+    depends_on:
+      - ai-microservice
+      - juice-shop
+      - wazuh-manager # Ensure manager is up for agent enrollment
+
+
+  ai-microservice:
+    build:
+      context: ./ai-microservice
+      dockerfile: Dockerfile
+    container_name: ai-microservice
+    hostname: ai-microservice
+    ports:
+      - "5000:5000" # For Coraza Proxy to access
+    volumes:
+      - ./ai-microservice/wazuh_agent_config/ossec.conf:/var/ossec/etc/ossec.conf # Mount agent config
+      # --- IMPORTANT: Mount your trained model here ---
+      # This line maps your local trained model directory to /app/model inside the container
+      - ./my_trained_model_for_waf:/app/model:ro # Host path : Container path : read-only
+    networks:
+      - app-net
+      - wazuh-net # For Wazuh agent to communicate with manager
+    depends_on:
+      - wazuh-manager # Ensure manager is up for agent enrollment
+
+
+  juice-shop:
+    image: bkimminich/juice-shop:v16.0.0
+    container_name: juice-shop
+    hostname: juice-shop
+    # Juice Shop listens on 3000 by default
+    networks:
+      - app-net # Not directly exposed to host, accessed via Coraza Proxy
+
+
+  kali:
+    image: kalilinux/kali-rolling:latest
+    container_name: kali
+    hostname: kali
+    tty: true # Keep container running
+    cap_add:
+      - NET_ADMIN # Needed for some network tools if you want to use them
+    networks:
+      - app-net
+    depends_on:
+      - coraza-proxy # Ensure proxy is up before attacker starts
+    entrypoint: /bin/bash # Default to bash for interactive use
+
+
+networks:
+  app-net: # For app components (Coraza, AI, Juice Shop, ELK, Kali)
+    driver: bridge
+  wazuh-net: # For Wazuh components (Manager, Indexer, Dashboard, Agents)
+    driver: bridge
+
+
+volumes:
+  wazuh_manager_data:
+  wazuh_indexer_data:
+  elasticsearch_data:
+  coraza_logs: # Volume for Coraza logs to be persistent and accessible by Filebeat if needed

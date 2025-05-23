@@ -1,0 +1,56 @@
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python/
+env/
+venv/
+.venv/
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+.mypy_cache/
+
+
+# Conda
+.conda/
+.condarc
+# If you put your conda envs inside the project root, ignore them
+# ai_waf_env/
+
+
+# Docker
+*.log
+*.tmp
+*.swp
+.dockerignore # This file itself can be ignored if it's not critical
+docker-compose.override.yml # If you use overrides for local dev
+
+
+# IDE specific
+.vscode/ # VS Code settings, if you want to ignore user-specific ones
+.idea/ # IntelliJ/PyCharm
+
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+
+# Deep Learning / Model specific
+# Ignore the actual trained model files if they are large and you store them separately
+# or if you rebuild them frequently.
+# If your 'predictive_model' directory contains large binaries, ignore it:
+predictive_model/
+
+
+# Logs
+*.log
+logs/
+/var/log/ # (This is for container logs, but good to list if you had local logs)
+
+
+# Environment variables
+.env
