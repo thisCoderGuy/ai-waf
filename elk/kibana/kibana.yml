@@ -1,5 +1,0 @@
-server.host: "0.0.0.0"
-server.publicBaseUrl: "http://localhost:5601" # If accessing locally
-elasticsearch.hosts: ["http://elasticsearch:9200"]
-xpack.monitoring.ui.container.elasticsearch.enabled: true
-xpack.monitoring.ui.container.logstash.enabled: true

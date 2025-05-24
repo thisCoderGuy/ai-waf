@@ -157,7 +157,7 @@ services:
       - ./ai-microservice/wazuh_agent_config/ossec.conf:/var/ossec/etc/ossec.conf # Mount agent config
       # --- IMPORTANT: Mount your trained model here ---
       # This line maps your local trained model directory to /app/model inside the container
-      - ./my_trained_model_for_waf:/app/model:ro # Host path : Container path : read-only
+      - ./predictive_model:/app/model:ro # Host path : Container path : read-only
     networks:
       - app-net
       - wazuh-net # For Wazuh agent to communicate with manager
@@ -198,5 +198,4 @@ networks:
 volumes:
   wazuh_manager_data:
   wazuh_indexer_data:
-  elasticsearch_data:
   coraza_logs: # Volume for Coraza logs to be persistent and accessible by Filebeat if needed

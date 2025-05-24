@@ -31,11 +31,9 @@ RUN apt-get update && \
         net-tools \
         procps \
         lsb-release \
-        apt-transport-https  \
+        apt-transport-https \
         ca-certificates && \
     rm -rf /var/lib/apt/lists/*
-
-
 
 
 # Add Wazuh GPG key and repository
