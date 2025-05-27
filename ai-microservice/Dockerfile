@@ -25,14 +25,15 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 
-# Add Wazuh GPG key and repository
-RUN curl -sS https://packages.wazuh.com/key/GPG-KEY-WAZUH | gpg --dearmor > /usr/share/keyrings/wazuh-archive-keyring.gpg && \
-    echo "deb [signed-by=/usr/share/keyrings/wazuh-archive-keyring.gpg] https://packages.wazuh.com/4.x/apt/ stable main" | tee /etc/apt/sources.list.d/wazuh.list
 
-
-# Install Wazuh agent
-RUN apt-get update && \
-    apt-get install -y wazuh-agent
+RUN curl -sSL -o /tmp/wazuh-agent.deb https://packages.wazuh.com/4.x/apt/pool/main/w/wazuh-agent/wazuh-agent_4.8.0-1_amd64.deb && \
+    # Install the downloaded .deb package
+    dpkg -i /tmp/wazuh-agent.deb && \
+    # Resolve any missing dependencies that dpkg might have left (usually handled by apt-get -f install)
+    apt-get update && \
+    apt-get install -fy && \
+    # Clean up the downloaded .deb file
+    rm /tmp/wazuh-agent.deb
 
 
 # Copy custom Wazuh agent configuration
