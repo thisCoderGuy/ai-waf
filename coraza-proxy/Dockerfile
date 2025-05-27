@@ -1,17 +1,29 @@
 # Stage 1: Build the Go application
-FROM golang:1.22 AS builder
+FROM golang:1.23-alpine AS builder
 
 
 WORKDIR /app
 
 
-# Copy go mod and sum files
-COPY go.mod go.sum ./
-# Download all dependencies. Dependencies will be cached if the go.mod and go.sum files are unchanged
-RUN go mod download
+# Copy the go.mod and go.sum files to leverage Docker's build cache
+# This ensures that dependencies are only re-downloaded if go.mod/go.sum change
+COPY go.mod ./
+COPY go.sum ./
 
+# Initialize go modules if not already done (optional, but good for fresh builds)
+# If your go.mod already exists, this command will effectively do nothing.
+RUN go mod init coraza-proxy || true
 
-# Copy the rest of the application source code
+# Get the specific Coraza v3 module and other dependencies
+# This command fetches the module and updates go.mod/go.sum
+RUN go get github.com/corazawaf/coraza/v3
+RUN go get github.com/corazawaf/coraza/v3/types
+RUN go get rsc.io/sampler@v1.3.0
+
+# Clean up unnecessary dependencies and ensure consistent module state
+RUN go mod tidy
+
+# Copy the rest of your application source code
 COPY . .
 
 

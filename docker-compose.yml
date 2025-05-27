@@ -153,26 +153,21 @@ services:
       # This line maps your local trained model directory to /app/model inside the container
       - ./predictive_model:/app/model:ro # Host path : Container path : read-only
     networks:
-      - app-net
       - wazuh-net # For Wazuh agent to communicate with manager
     depends_on:
       - wazuh.manager # Ensure manager is up for agent enrollment
 
-
-  juice-shop:
-    image: bkimminich/juice-shop:v16.0.0
-    container_name: juice-shop
-    hostname: juice-shop
-    # Juice Shop listens on 3000 by default
-    networks:
-      - app-net # Not directly exposed to host, accessed via Coraza Proxy
-
-
   kali:
-    image: kalilinux/kali-rolling:latest
+    build:
+      context: ./kali 
+      dockerfile: Dockerfile 
     container_name: kali
     hostname: kali
-    tty: true # Keep container running
+    volumes:
+      - ./kali/locust-reports:/app/reports # Mounts a local 'locust-reports' directory to container's /app/reports
+    command: /bin/bash # Keep the container running and allow interactive access
+    stdin_open: true # Keep stdin open for interactive sessions
+    tty: true # Allocate a pseudo-TTY for interactive sessions
     cap_add:
       - NET_ADMIN # Needed for some network tools if you want to use them
     networks:
@@ -180,6 +175,31 @@ services:
     depends_on:
       - coraza-proxy # Ensure proxy is up before attacker starts
     entrypoint: /bin/bash # Default to bash for interactive use
+
+
+
+  juice-shop:
+    build:
+      context: ./juice-shop # Build from the current directory where juice-shop.Dockerfile is located
+      dockerfile: Dockerfile # Explicitly use the custom Dockerfile
+    container_name: juice-shop
+    hostname: juice-shop
+    ports:
+      - "3000:3000" # Juice Shop default port (exposed for direct access if needed, though Coraza proxies it)
+    environment:
+      - WAZUH_MANAGER=wazuh.manager # Pass the manager hostname to the agent script
+    volumes:
+      # Mount agent config from host. Ensure this file exists on your host.
+      - ./juice-shop/wazuh_agent_config/ossec.conf:/var/ossec/etc/ossec.conf:ro
+    networks:
+      - app-net # Juice Shop needs to be on the app-net for Coraza to reach it
+      - wazuh-net # Juice Shop agent needs to reach the Wazuh manager
+    depends_on:
+      - wazuh.manager
+
+
+
+
 
 
 networks:
