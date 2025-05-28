@@ -39,10 +39,10 @@ CMD ["locust", "-f", "generate_traffic.py", \
      "--host=http://coraza-proxy-waf:8080", \
      "--users", "100", "--spawn-rate", "10", \
      "--run-time", "10m", \
-     "--headless", \
+     "--headless"     , \
      "--html", "/app/reports/traffic_report.html", \
-     "--csv", "/app/reports/traffic_stats"]
-
+     "--csv", "/app/reports/traffic_stats.csv"]
+# CMD ["/bin/bash"] # for debugging: 1)docker image build -t kali .  2) docker container run -it  --name kalirunning kali
 
 # You might want to expose the Locust web UI port (default 8089) if you want to access it from your host
 # Expose the Locust web UI port (default 8089) - only needed if not using --headless

