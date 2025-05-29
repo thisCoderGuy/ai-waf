@@ -12,6 +12,7 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"time"
 
 	//"sync"
 	"embed"
@@ -19,11 +20,160 @@ import (
 	"strconv"
 
 	"github.com/corazawaf/coraza/v3"
-	//txhttp "github.com/corazawaf/coraza/v3/http"
 	"github.com/corazawaf/coraza/v3/types"
 )
 
-// ////////////////////////////////////////////////////////
+// --- Custom Log Entry Structures ---
+// These structs define the schema for your JSON log entries.
+
+type CorazaLogEntry struct {
+	Timestamp     time.Time            `json:"timestamp"`
+	TransactionID string               `json:"transaction_id"`
+	ClientIP      string               `json:"client_ip"`
+	ClientPort    int                  `json:"client_port"`
+	ServerIP      string               `json:"server_ip"`
+	ServerPort    int                  `json:"server_port"`
+	Request       RequestLogData       `json:"request"`
+	Response      ResponseLogData      `json:"response"`
+	WAFProcessing WAFProcessingLogData `json:"waf_processing"`
+}
+
+type RequestLogData struct {
+	Method   string              `json:"method"`
+	URI      string              `json:"uri"`
+	Protocol string              `json:"protocol"`
+	Headers  map[string][]string `json:"headers"`
+	Body     string              `json:"body,omitempty"` // Use omitempty for optional body
+}
+
+type ResponseLogData struct {
+	StatusCode int                 `json:"status_code"`
+	Protocol   string              `json:"protocol"`
+	Headers    map[string][]string `json:"headers"`
+	Body       string              `json:"body,omitempty"`
+}
+
+type WAFProcessingLogData struct {
+	Interrupted         bool                 `json:"interrupted"`
+	InterruptionDetails *InterruptionLogData `json:"interruption_details,omitempty"`
+	MatchedRules        []MatchedRuleLogData `json:"matched_rules"`
+	AIScore             float64              `json:"ai_score,omitempty"`
+	AIVerdict           string               `json:"ai_verdict,omitempty"`
+	CorazaDebugLog      string               `json:"coraza_debug_log,omitempty"` // Optional: if you capture debug logs
+}
+
+type InterruptionLogData struct {
+	RuleID  string `json:"rule_id"`
+	Status  int    `json:"status"`
+	Action  string `json:"action"`
+	Message string `json:"message,omitempty"`
+}
+
+type MatchedRuleLogData struct {
+	RuleID      string   `json:"rule_id"`
+	Severity    int      `json:"severity"`
+	Message     string   `json:"message,omitempty"`
+	Tags        []string `json:"tags,omitempty"`
+	MatchedData string   `json:"matched_data,omitempty"`
+}
+
+// --- CorazaLogger Struct and Methods ---
+type CorazaLogger struct {
+	file   *os.File
+	logger *log.Logger
+}
+
+func NewCorazaLogger(filename string) (*CorazaLogger, error) {
+	file, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err != nil {
+		return nil, err
+	}
+
+	return &CorazaLogger{
+		file:   file,
+		logger: log.New(file, "", log.LstdFlags),
+	}, nil
+}
+
+func (c *CorazaLogger) LogTransaction(
+	tx types.Transaction,
+	req *http.Request,
+	reqBody []byte,
+	res *http.Response,
+	resBody []byte,
+	aiScore float64, // Directly pass AI score
+	aiVerdict string, // Directly pass AI verdict
+	clientIP string, // Directly pass client IP
+	clientPort int, // Directly pass client port
+	serverIP string, // Directly pass server IP
+	serverPort int, // Directly pass server port
+) {
+	entry := CorazaLogEntry{
+		Timestamp:     time.Now(),
+		TransactionID: tx.ID(),
+		ClientIP:      clientIP,
+		ClientPort:    clientPort,
+		ServerIP:      serverIP,
+		ServerPort:    serverPort,
+	}
+
+	// Request Data
+	entry.Request = RequestLogData{
+		Method:   req.Method,
+		URI:      req.URL.String(),
+		Protocol: req.Proto,
+		Headers:  req.Header, // Raw headers
+		Body:     string(reqBody),
+	}
+
+	// Response Data
+	if res != nil {
+		entry.Response = ResponseLogData{
+			StatusCode: res.StatusCode,
+			Protocol:   res.Proto,
+			Headers:    res.Header, // Raw headers
+			Body:       string(resBody),
+		}
+	}
+
+	// WAF Processing Data
+	entry.WAFProcessing.Interrupted = tx.IsInterrupted()
+	if it := tx.Interruption(); it != nil {
+		entry.WAFProcessing.InterruptionDetails = &InterruptionLogData{
+			RuleID: fmt.Sprintf("%d", it.RuleID), // RuleID is int in types.Interruption
+			Status: it.Status,
+			Action: it.Action,
+		}
+	}
+
+	// Matched Rules
+	matchedRules := []MatchedRuleLogData{}
+	for _, mr := range tx.MatchedRules() {
+		matchedRules = append(matchedRules, MatchedRuleLogData{
+			RuleID:  fmt.Sprintf("%d", mr.Rule().ID()),
+			Message: mr.Message(),
+			Tags:    mr.Rule().Tags(),
+			//MatchedData: mr.MatchedDatas(),
+		})
+	}
+	entry.WAFProcessing.MatchedRules = matchedRules
+
+	// Directly set AI variables in the log entry
+	entry.WAFProcessing.AIScore = aiScore
+	entry.WAFProcessing.AIVerdict = aiVerdict
+
+	jsonData, err := json.Marshal(entry)
+	if err != nil {
+		c.logger.Printf("Failed to marshal log data: %v", err)
+		return
+	}
+	c.logger.Println(string(jsonData))
+}
+
+func (c *CorazaLogger) Close() error {
+	return c.file.Close()
+}
+
 // Define a custom type for context keys to avoid collisions.
 // This is a best practice for passing values through http.Request contexts.
 // corazaTxContextKey is used to store and retrieve the Coraza transaction from the context.
@@ -38,6 +188,7 @@ const (
 
 var waf coraza.WAF
 var reverseProxy *httputil.ReverseProxy
+var corazaLogger CorazaLogger
 
 // This annotation below embeds the CRS rules in the owasp-crs-v4/ folder
 //
@@ -108,8 +259,10 @@ func init() {
 			return nil
 		}
 
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Phase 3. ProcessResponseHeaders() examines the HTTP response headers sent by the backend server before the response body is sent.
 		// Coraza evaluates these headers against configured WAF rules for phase 3.
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Iterate through response headers and add them to Coraza transaction.
 		for k, v := range res.Header {
 			tx.AddResponseHeader(k, strings.Join(v, ","))
@@ -131,8 +284,10 @@ func init() {
 			res.Header.Del("Content-Encoding")           // Clear any encoding from original response
 		}
 
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Phase 4. ProcessResponseBody() inspects the body content of the HTTP response from the backend server.
 		// Applies WAF rules configured for phase 4 (Response Body phase).
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Read and process the response body if it exists.
 		if res.Body != nil {
 			bodyBytes, err := ioutil.ReadAll(res.Body)
@@ -154,9 +309,20 @@ func init() {
 			// being sent to the client. In such cases, you might log, alert, or block
 			// subsequent requests from the same source, rather than attempting to block this one.
 			// For simplicity, we just log here.
+			// Modify the response being sent back to the client.
+			res.StatusCode = it.Status
+			blockedMsg := fmt.Sprintf("Coraza WAF Blocked Response Body: %s (Rule ID: %s)", it.Action, it.RuleID)
+			res.Body = ioutil.NopCloser(bytes.NewBufferString(blockedMsg))
+			res.ContentLength = int64(len(blockedMsg))
+			res.Header.Set("Content-Type", "text/plain")
+			res.Header.Del("Content-Length")
+			res.Header.Del("Content-Encoding")
 		}
 
-		// Phase 5.
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////
+		// Phase 5. Logging
+		// This is the final logging phase, executed regardless of interruptions.
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// Process logging for the entire transaction (request and response phases).
 		tx.ProcessLogging()
 		return nil
@@ -186,6 +352,14 @@ func loadCustomDirectives(path string) (string, error) {
 }
 
 func main() {
+
+	// Create logger that saves to file
+	corazaLogger, err := NewCorazaLogger("/var/log/coraza/coraza-audit.log")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer corazaLogger.Close()
+
 	// Register the wafHandler to handle all incoming HTTP requests.
 	http.HandleFunc("/", wafHandler) //  "/": This is the URL path being registered. In this case, it's the root path (/), meaning this handler will be invoked for all incoming requests to the server regardless of the path.
 	port := ":8080"
@@ -197,20 +371,22 @@ func main() {
 
 // wafHandler processes incoming HTTP requests through Coraza WAF and an AI microservice,
 // then forwards them to the target application via a reverse proxy, if not intercepted.
+
 // Client Request
 //
 //	↓
 //
 // [wafHandler]
 //
-//	↳ Coraza WAF: analyze  request headers, request body, URI (Phases 1 & 2)
-//	↳ AI Microservice: classify threat level
-//	↳ If malicious → block
-//	↳ If safe → pass to reverseProxy
-//	    ↳ Forward to backend (e.g., Juice Shop)
-//	    ↳ Get response
-//	    ↳ Coraza WAF: analyze response
-//	    ↳ Return response to client
+//		↳ Coraza WAF: analyze  request headers, request body, URI (Phases 1 & 2)
+//		↳ AI Microservice: classify threat level
+//		↳ If malicious → block, enrich context with ai_malicious code, then  log (to be sent to wazuh)
+//		↳ If safe → pass to reverseProxy
+//	    [reverseProxy]
+//		    ↳ Forward to backend (e.g., Juice Shop)
+//		    ↳ Get response
+//		    ↳ Coraza WAF: analyze response (Phase 3 & 4)
+//		    ↳ Return response to client, if not intercepted.
 func wafHandler(w http.ResponseWriter, r *http.Request) {
 	// Create a new Coraza transaction for each incoming request.
 	tx := waf.NewTransaction()
@@ -224,6 +400,7 @@ func wafHandler(w http.ResponseWriter, r *http.Request) {
 	// Log the Coraza transaction ID for debugging and tracing.
 	log.Printf("Coraza Transaction ID: %s for %s %s", tx.ID(), r.Method, r.URL.Path)
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Phase 0. Coraza Transaction Initial Setup. Does not trigger any rule.
 	// Phase 0.0 ProcessConnection() is used to log metadata about the TCP connection that initiated the request (Client IP and port, Server IP and port).
 	// Parse client IP and port
@@ -261,6 +438,7 @@ func wafHandler(w http.ResponseWriter, r *http.Request) {
 
 	}
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Phase 0.1 ProcessURI() is used to used to initialize the transaction with key elements of the HTTP request line
 	// It sets the following: Request URI (e.g., /login?user=admin), HTTP method (e.g., GET, POST), HTTP version (e.g., HTTP/1.1, HTTP/2)
 	// Process request URI and arguments with Coraza.
@@ -270,12 +448,14 @@ func wafHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	tx.ProcessURI(uri, r.Method, r.Proto)
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Phase 0.2 AddRequestHeader() is used to inject or append HTTP request headers into the transaction object
 	// Process request headers with Coraza.
 	for k, v := range r.Header {
 		tx.AddRequestHeader(k, strings.Join(v, ","))
 	}
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Phase 1. ProcessRequestHeaders() evaluates the HTTP request headers against ModSecurity/OWASP rules.
 	it := tx.ProcessRequestHeaders()
 
@@ -285,13 +465,14 @@ func wafHandler(w http.ResponseWriter, r *http.Request) {
 
 		// Handle the interruption, if any
 		if it.Action == "deny" {
-
 			http.Error(w, "WAF headers check failed", http.StatusBadRequest)
+			tx.ProcessLogging()
 			return
 		}
 
 	}
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Phase 2. ProcessRequestBody() inspects the HTTP request body (e.g., POST data, JSON payloads, form submissions)  for malicious content based on the loaded WAF rules.
 	// Process request body if present.
 	var bodyBytes []byte
@@ -316,15 +497,18 @@ func wafHandler(w http.ResponseWriter, r *http.Request) {
 
 		// Handle the interruption, if any
 		if it.Action == "deny" {
-			http.Error(w, "Request blocked by Coraza", http.StatusForbidden)
+			http.Error(w, "Request blocked by WAF", http.StatusForbidden)
+			tx.ProcessLogging()
 			return
 		}
 
 	}
 
-	// --- AI Microservice Call ---
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// New Phase: AI Microservice Call
 	// This section integrates with an external AI microservice for additional threat classification.
 	aiVerdict := "benign" // Default verdict
+	aiScore := 0.0        //Default score
 	// Only send requests with body, query parameters, or specific methods to AI for efficiency.
 	if len(bodyBytes) > 0 || r.URL.RawQuery != "" || r.Method == http.MethodPost || r.Method == http.MethodPut {
 		// Prepare the request payload for the AI microservice.
@@ -334,6 +518,7 @@ func wafHandler(w http.ResponseWriter, r *http.Request) {
 			"query":  r.URL.RawQuery,
 			"body":   string(bodyBytes),
 			// Additional request details (headers, client IP) could be added here.
+			//TODO: format data point for prediction!!!!!
 		}
 		aiReqJSON, err := json.Marshal(aiReq) // Marshal to JSON, ignoring error for simplicity in example
 		if err != nil {
@@ -356,14 +541,14 @@ func wafHandler(w http.ResponseWriter, r *http.Request) {
 						if err := json.Unmarshal(aiRespBody, &aiRespMap); err == nil {
 							if verdict, ok := aiRespMap["verdict"].(string); ok {
 								aiVerdict = verdict
+								tx.AddRequestHeader("aiVerdict", aiVerdict)
 								log.Printf("AI Microservice verdict: %s", aiVerdict)
 							}
 							if score, ok := aiRespMap["score"].(float64); ok {
-								log.Printf("AI Microservice score: %.2f", score)
-								// Inject AI score into Coraza transaction for rule evaluation.
-								tx.AddRequestHeader("X-AI-Score", fmt.Sprintf("%.2f", score))
-								// A custom Coraza rule could then use TX:AI_SCORE, e.g.:
-								// SecRule TX:AI_SCORE "@gt 0.8" "id:1000,phase:2,deny,msg:'AI detected high score'"
+								aiScore = score
+
+								log.Printf("AI Microservice score: %.2f", aiScore)
+								tx.AddRequestHeader("aiScore", strconv.FormatFloat(aiScore, 'f', 2, 64))
 							}
 						} else {
 							log.Printf("Error unmarshaling AI response: %v", err)
@@ -377,20 +562,7 @@ func wafHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// --- Coraza Interruption and AI Decision Enforcement ---
-	// Process the request with Coraza rules and check for any immediate interruption.
-	tx.ProcessRequestBody()
-
-	// Check for any interruptions triggered by request inspection.
-	if it := tx.Interruption(); it != nil {
-		log.Printf("Request Coraza Interruption detected! Action: %s, Rule ID: %s, Status: %d", it.Action, it.RuleID, it.Status)
-
-		// Handle the interruption, if any
-		if it.Action == "deny" {
-			http.Error(w, "Request blocked by Coraza", http.StatusForbidden)
-			return
-		}
-
-	}
+	it = tx.Interruption()
 
 	// If Coraza didn't block the request, but the AI microservice deemed it malicious,
 	// we can force an interruption based on the AI's verdict.
@@ -398,7 +570,7 @@ func wafHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("AI detected malicious request, forcing Coraza interruption.")
 		// Manually create an interruption struct to simulate a WAF block.
 		it = &types.Interruption{
-			RuleID: 9631,   // A custom identifier for blocks initiated by AI
+			RuleID: 666,    // A custom identifier for blocks initiated by AI
 			Status: 403,    // HTTP status code (e.g., Forbidden)
 			Action: "deny", // The action taken
 		}
@@ -407,25 +579,23 @@ func wafHandler(w http.ResponseWriter, r *http.Request) {
 	// Check for interruption again (either from Coraza rules or AI-forced).
 	// If `it` is still nil, it means no interruption occurred.
 	if it != nil {
-		log.Printf("Coraza WAF Blocked Request! Action: %s, Rule ID: %s, Status: %d", it.Action, it.RuleID, it.Status)
+		log.Printf("Coraza WAF Blocked Request! Action: %s, Rule ID: %d, Status: %d", it.Action, it.RuleID, it.Status)
 		w.Header().Set("Content-Type", "text/plain")
 		w.WriteHeader(it.Status)
 		// Write a response to the client indicating the block.
-		_, _ = w.Write([]byte(fmt.Sprintf("Coraza WAF Blocked: %s (Rule ID: %s)", it.Action, it.RuleID)))
+		_, _ = w.Write([]byte(fmt.Sprintf("Coraza WAF Blocked: %s (Rule ID: %d)", it.Action, it.RuleID)))
 		// Phase 5. Logging
 		tx.ProcessLogging() // Ensure logging is processed for blocked requests.
-		return              // Stop processing and return the response.
+		//TODO
+		// Log the full transaction details using the custom logger.
+		//	corazaLogger.LogTransaction(tx, res.Request, reqBody, res, resBodyBytes, aiScore, aiVerdict, clientIP, clientPort, serverIP, serverPort)
+
+		return // Stop processing and return the response.
 	}
 
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// If no interruption occurred, forward the request to the target application by using the reverse proxy.
 	reverseProxy.ServeHTTP(w, r)
-
 	// Note: Phase 3 (Response Headers Inspection), Phase 4 (Response body inspection) and Phase 5 (`tx.ProcessLogging()`) for the full transaction
 	// are handled within the `reverseProxy.ModifyResponse` function.
-}
-
-func logError(error types.MatchedRule) {
-	msg := error.ErrorLog()
-	fmt.Printf("[logError][%s] %s\n", error.Rule().Severity(), msg)
 }

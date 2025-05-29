@@ -5,26 +5,21 @@ WORKDIR /app
 
 # Copy the go.mod and go.sum files to leverage Docker's build cache
 # This ensures that dependencies are only re-downloaded if go.mod/go.sum change
-COPY go.mod ./
-COPY go.sum ./
+COPY go.mod .
+COPY go.sum .
 
-# Initialize go modules if not already done (optional, but good for fresh builds)
-# If your go.mod already exists, this command will effectively do nothing.
-RUN go mod init coraza-proxy || true
 
-# Get the specific Coraza v4 module and other dependencies
-# This command fetches the module and updates go.mod/go.sum
-RUN go get github.com/corazawaf/coraza/v3
-RUN go get rsc.io/sampler@v1.3.0
-
-# Clean up unnecessary dependencies and ensure consistent module state
-RUN go mod tidy
+# Download dependencies based on existing go.mod
+# Remove the go mod init line as it overwrites your existing module
+RUN go mod download && go mod verify
 
 # Copy the rest of your application source code
 COPY . .
 
 
 # Build the Go application
+# CGO_ENABLED=0 creates a statically linked binary, which is ideal for a small final image.
+# Output the compiled binary to /coraza-proxy in this build stage.
 RUN CGO_ENABLED=0 GOOS=linux go build -o /coraza-proxy ./main.go
 
 
