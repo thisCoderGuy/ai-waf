@@ -1,23 +1,80 @@
 package main
 
 import (
+	"log"
+	"github.com/corazawaf/coraza/v4/types/variables"
+)
+
+// SimpleCorazaLogger implements the Coraza v4 debuglog.Logger interface
+// by directly using Go's standard logger.
+type SimpleCorazaLogger struct{}
+
+// Debug implements the Debug method of the debuglog.Logger interface.
+// Coraza v4 passes a Tx and any additional arguments.
+func (l *SimpleCorazaLogger) Debug(tx variables.Transaction, msg string, args ...interface{}) {
+	// Format the args as key=value pairs for better readability if they are structured.
+	formattedArgs := make([]string, len(args))
+	for i, arg := range args {
+		formattedArgs[i] = fmt.Sprintf("%v", arg) // Simply format each argument
+	}
+	log.Printf("[CORAZA_DEBUG] [TX: %s] %s %s", tx.ID(), msg, strings.Join(formattedArgs, " "))
+}
+
+// Info implements the Info method.
+func (l *SimpleCorazaLogger) Info(tx variables.Transaction, msg string, args ...interface{}) {
+	formattedArgs := make([]string, len(args))
+	for i, arg := range args {
+		formattedArgs[i] = fmt.Sprintf("%v", arg)
+	}
+	log.Printf("[CORAZA_INFO] [TX: %s] %s %s", tx.ID(), msg, strings.Join(formattedArgs, " "))
+}
+
+// Warn implements the Warn method.
+func (l *SimpleCorazaLogger) Warn(tx variables.Transaction, msg string, args ...interface{}) {
+	formattedArgs := make([]string, len(args))
+	for i, arg := range args {
+		formattedArgs[i] = fmt.Sprintf("%v", arg)
+	}
+	log.Printf("[CORAZA_WARN] [TX: %s] %s %s", tx.ID(), msg, strings.Join(formattedArgs, " "))
+}
+
+// Error implements the Error method.
+func (l *SimpleCorazaLogger) Error(tx variables.Transaction, msg string, args ...interface{}) {
+	formattedArgs := make([]string, len(args))
+	for i, arg := range args {
+		formattedArgs[i] = fmt.Sprintf("%v", arg)
+	}
+	log.Printf("[CORAZA_ERROR] [TX: %s] %s %s", tx.ID(), msg, strings.Join(formattedArgs, " "))
+}
+
+// Fatal implements the Fatal method.
+func (l *SimpleCorazaLogger) Fatal(tx variables.Transaction, msg string, args ...interface{}) {
+	formattedArgs := make([]string, len(args))
+	for i, arg := range args {
+		formattedArgs[i] = fmt.Sprintf("%v", arg)
+	}
+	log.Fatalf("[CORAZA_FATAL] [TX: %s] %s %s", tx.ID(), msg, strings.Join(formattedArgs, " "))
+}
+////////////////////////////////////////////////////////////
+package main
+
+import (
 	"bytes"
 	"context" // Import context package for proper request context handling
 	"encoding/json"
 	"fmt"
-	"io/ioutil" // Deprecated, but used in user's original code. Keeping for consistency.
+	"io/ioutil" 
 	"log"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
 	"os"
 	"strings"
+	"sync"
 
 	// Coraza v3, a ModSecurity-compatible WAF engine.
 	"github.com/corazawaf/coraza/v3"
-	// The import "github.com/corazawaf/coraza/v3/secreules" was incorrect and has been removed.
-	// If you intend to embed rule files, you would typically use Go's `go:embed` directive
-	// within your project and then provide the resulting `fs.FS` to Coraza's `WithRootFS`.
+	"github.com/corazawaf/coraza/v3/debuglog"
 	"github.com/corazawaf/coraza/v3/types" // For Coraza types like Transaction, Interruption, etc.
 )
 
@@ -28,33 +85,24 @@ type contextKey string
 const corazaTxContextKey contextKey = "coraza_tx"
 
 const (
-	// aiMicroserviceURL defines the URL for the AI classification service.
-	// This should be set as an environment variable in a production setup.
 	aiMicroserviceURL = "http://ai-microservice:5000/classify"
-	// targetAppURL defines the URL of the backend web application to be protected.
-	// This should also be set as an environment variable.
 	targetAppURL = "http://juice-shop:3000"
 )
 
 var waf coraza.WAF
 var reverseProxy *httputil.ReverseProxy
 
-// init function runs automatically once when the program starts.
-// It's used here to initialize the WAF and the reverse proxy.
+
+
 func init() {
-	// 1. Initialize Coraza WAF
-	// Create a new WAF configuration.
+
+    myDebugLogger := &SimpleDebugLogger{} // Create an instance of your logger
+
 	cfg := coraza.NewWAFConfig().
-		// WithRootFS(secreules.FS). // This line was problematic.
-		// If you have your OWASP CRS files embedded using `go:embed`,
-		// you would provide the `fs.FS` here. For example:
-		// `import "embed"`
-		// `//go:embed owasp-crs/*`
-		// `var embeddedCRSFS embed.FS`
-		// `cfg = cfg.WithRootFS(embeddedCRSFS)`
-		WithRequestBodyAccess(true).                 // Enable access to the request body for WAF inspection
-		WithResponseBodyAccess(true).                // Enable access to the response body for WAF inspection
-		WithDebugLogger(coraza.DefaultDebugLogger()) // Enable debug logging for Coraza
+		WithRequestBodyAccess().                 // Enable access to the request body for WAF inspection
+		WithResponseBodyAccess().                // Enable access to the response body for WAF inspection
+		WithDebugLogger(myDebugLogger). // Enable debug logging for Coraza
+		WithRootFS(GetEmbeddedCRSFS()) // Call the function from rules.go
 
 	var err error
 	waf, err = coraza.NewWAF(cfg)
@@ -62,35 +110,21 @@ func init() {
 		log.Fatalf("Failed to create WAF: %v", err)
 	}
 
-	// Add a simple SecRule directive directly to the configuration as a working example.
-	// This rule (id:1) will deny requests in phase 1 (request headers)
-	// if the URI contains "attack". It will also log the event and return a 403 Forbidden status.
-	// In a real-world scenario, you would load a comprehensive rule set like OWASP CRS.
-	//
-	// Example of loading OWASP CRS if you have the files locally on the filesystem:
-	// log.Println("Attempting to load OWASP CRS from filesystem...")
-	// // Ensure you have the OWASP CRS files downloaded and accessible in your container.
-	// // For example, if they are mounted to a directory named '/opt/owasp-crs':
-	// crsPath := "/opt/owasp-crs" // Adjust this path as needed in your Dockerfile/deployment
-	// if _, err := waf.NewTransaction().ExecuteMacro(fmt.Sprintf(`
-	//     Include %s/crs-setup.conf.example
-	//     Include %s/rules/*.conf
-	// `, crsPath, crsPath)); err != nil {
-	// 	log.Printf("Failed to load OWASP CRS from %s: %v. Please ensure CRS files are available.", crsPath, err)
-	// 	// Decide if this is a fatal error or if you want to continue without CRS.
-	// 	// For now, we log and continue with just the basic rule below.
-	// } else {
-	// 	log.Println("OWASP CRS loaded from filesystem.")
-	// }
-	//
-	// The simple rule below serves as a guaranteed working example if CRS files are not present.
-	if _, err := waf.NewTransaction().ExecuteMacro(`
+	// Load OWASP CRS rules using Coraza's `Include` directive
+	// The paths are relative to the root of the embedded filesystem provided to WithRootFS.
+	// In our case, the root is 'owasp-crs-v4' itself.
+	crsLoadScript := `
 		SecRuleEngine On
-		SecRule ARGS|REQUEST_URI "@rx attack" "id:1,phase:1,deny,status:403,msg:'Attack detected in URI or arguments!'"
-	`); err != nil {
-		log.Fatalf("Failed to load initial SecRule: %v", err)
+		Include owasp-crs-v4/crs-setup.conf.example
+		Include owasp-crs-v4/rules/*.conf
+	`
+
+	if _, err := waf.NewTransaction().ExecuteMacro(crsLoadScript); err != nil {
+		log.Fatalf("Failed to load OWASP CRS rules: %v", err)
 	}
-	log.Println("Coraza WAF initialized successfully with basic rule.")
+	log.Println("Coraza WAF initialized successfully with OWASP CRS v4 embedded rules.")
+
+
 
 	// Load our custom Coraza configuration for this proxy.
 	// This assumes a file named 'coraza.conf' exists at '/etc/coraza/coraza.conf' in the container.
@@ -172,7 +206,7 @@ func init() {
 // main function is the entry point of the application.
 func main() {
 	// Register the wafHandler to handle all incoming HTTP requests.
-	http.HandleFunc("/", wafHandler)
+	http.HandleFunc("/", wafHandler)  
 	port := ":8080"
 	log.Printf("Coraza Proxy listening on port %s, forwarding to %s", port, targetAppURL)
 	// Start the HTTP server. This call blocks until the server stops or an error occurs.
