@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"log"
+	//"log"
 	"github.com/corazawaf/coraza/v3"
 	"io/ioutil"
 	"os"

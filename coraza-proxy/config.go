@@ -12,7 +12,7 @@ const (
 //Custom log file
 // The path /var/log/coraza/coraza-audit.log needs write permissions for the user running the app.
 // Consider making this configurable via env var or flag.
-const	loggerPath = "/var/log/coraza/coraza-audit.log"
+const	loggerPath = "/var/log/coraza/coraza-audit.csv"
 
 //Custom Directives for Craza
 const customCorazaPath = "/etc/coraza/coraza.conf"

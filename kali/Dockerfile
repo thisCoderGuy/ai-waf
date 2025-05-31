@@ -37,9 +37,15 @@ WORKDIR /app/scripts
 # --csv /app/reports/traffic_stats: Generates CSV stats (will create traffic_stats_stats.csv and traffic_stats_failures.csv).
 # Create a startup script
 RUN echo '#!/bin/bash\n\
+\n\
+# Define the delay in seconds\n\
+DELAY_SECONDS=60\n\
+\n\
 if [ "$1" = "shell" ]; then\n\
     exec /bin/bash\n\
 elif [ "$1" = "locust-then-shell" ]; then\n\
+    echo "Waiting for $DELAY_SECONDS seconds before starting Locust..."\n\
+    sleep $DELAY_SECONDS\n\
     locust -f generate_traffic.py \\\n\
            --host=http://coraza-proxy-waf:8080 \\\n\
            --users 100 --spawn-rate 10 \\\n\
@@ -50,6 +56,8 @@ elif [ "$1" = "locust-then-shell" ]; then\n\
     echo "Locust finished. Starting interactive shell..."\n\
     exec /bin/bash\n\
 else\n\
+    echo "Waiting for $DELAY_SECONDS seconds before starting Locust..."\n\
+    sleep $DELAY_SECONDS\n\
     locust -f generate_traffic.py \\\n\
            --host=http://coraza-proxy-waf:8080 \\\n\
            --users 100 --spawn-rate 10 \\\n\
@@ -58,6 +66,8 @@ else\n\
            --html /app/reports/traffic_report.html \\\n\
            --csv /app/reports/traffic_stats.csv\n\
 fi' > /app/startup.sh && chmod +x /app/startup.sh
+
+# Default command runs locust normally
 
 # Default command runs locust normally
 CMD ["/app/startup.sh"]
