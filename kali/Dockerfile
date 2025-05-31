@@ -35,13 +35,32 @@ WORKDIR /app/scripts
 # --headless: Runs Locust without the web UI.
 # --html /app/reports/traffic_report.html: Generates a full HTML report.
 # --csv /app/reports/traffic_stats: Generates CSV stats (will create traffic_stats_stats.csv and traffic_stats_failures.csv).
-CMD ["locust", "-f", "generate_traffic.py", \
-     "--host=http://coraza-proxy-waf:8080", \
-     "--users", "100", "--spawn-rate", "10", \
-     "--run-time", "10m", \
-     "--headless"     , \
-     "--html", "/app/reports/traffic_report.html", \
-     "--csv", "/app/reports/traffic_stats.csv"]
+# Create a startup script
+RUN echo '#!/bin/bash\n\
+if [ "$1" = "shell" ]; then\n\
+    exec /bin/bash\n\
+elif [ "$1" = "locust-then-shell" ]; then\n\
+    locust -f generate_traffic.py \\\n\
+           --host=http://coraza-proxy-waf:8080 \\\n\
+           --users 100 --spawn-rate 10 \\\n\
+           --run-time 10m \\\n\
+           --headless \\\n\
+           --html /app/reports/traffic_report.html \\\n\
+           --csv /app/reports/traffic_stats.csv\n\
+    echo "Locust finished. Starting interactive shell..."\n\
+    exec /bin/bash\n\
+else\n\
+    locust -f generate_traffic.py \\\n\
+           --host=http://coraza-proxy-waf:8080 \\\n\
+           --users 100 --spawn-rate 10 \\\n\
+           --run-time 10m \\\n\
+           --headless \\\n\
+           --html /app/reports/traffic_report.html \\\n\
+           --csv /app/reports/traffic_stats.csv\n\
+fi' > /app/startup.sh && chmod +x /app/startup.sh
+
+# Default command runs locust normally
+CMD ["/app/startup.sh"]
 # CMD ["/bin/bash"] # for debugging: 1)docker image build -t kali .  2) docker container run -it  --name kalirunning kali
 
 # You might want to expose the Locust web UI port (default 8089) if you want to access it from your host

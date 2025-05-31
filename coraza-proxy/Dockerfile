@@ -20,7 +20,7 @@ COPY . .
 # Build the Go application
 # CGO_ENABLED=0 creates a statically linked binary, which is ideal for a small final image.
 # Output the compiled binary to /coraza-proxy in this build stage.
-RUN CGO_ENABLED=0 GOOS=linux go build -o /coraza-proxy ./main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -o /coraza-proxy .
 
 
 # Stage 2: Create the final image with Wazuh agent

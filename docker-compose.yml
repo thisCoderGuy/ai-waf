@@ -167,6 +167,7 @@ services:
       - ./kali/locust-reports:/app/reports # Mounts a local 'locust-reports' directory to container's /app/reports
     stdin_open: true # Keep stdin open for interactive sessions
     tty: true # Allocate a pseudo-TTY for interactive sessions
+    command: /app/startup.sh locust-then-shell
     cap_add:
       - NET_ADMIN # Needed for some network tools if you want to use them
     networks:
