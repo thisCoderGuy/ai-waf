@@ -169,14 +169,9 @@ func WAFHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	aiVerdict, aiScore := CallAIMicroservice(r, bodyBytes, tx)
-	
-	
-	
-
     
     // Cache the AI score and verdict in the context
         ctx = context.WithValue(ctx, aiScoreContextKey, aiScore) // Store float64
-   
         ctx = context.WithValue(ctx, aiVerdictContextKey, aiVerdict) // Store string
     
     

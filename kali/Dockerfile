@@ -27,7 +27,7 @@ WORKDIR /app/scripts
 
 # Command to run the Locust traffic generation script in headless mode and save reports.
 # -f generate_traffic.py: Specifies your Locust test file.
-# --host=http://coraza-proxy-waf:8080: Sets the target host for Locust.
+# --host=http://coraza-proxy:8080: Sets the target host for Locust.
 # --users 100: Total number of simulated users.
 # --spawn-rate 10: Rate at which users are spawned per second.
 # --run-time 10m: Run the test for a specific duration (e.g., 10 minutes).
@@ -47,9 +47,9 @@ elif [ "$1" = "locust-then-shell" ]; then\n\
     echo "Waiting for $DELAY_SECONDS seconds before starting Locust..."\n\
     sleep $DELAY_SECONDS\n\
     locust -f generate_traffic.py \\\n\
-           --host=http://coraza-proxy-waf:8080 \\\n\
+           --host=http://coraza-proxy:8080 \\\n\
            --users 100 --spawn-rate 10 \\\n\
-           --run-time 10m \\\n\
+           --run-time 1m \\\n\
            --headless \\\n\
            --html /app/reports/traffic_report.html \\\n\
            --csv /app/reports/traffic_stats.csv\n\
@@ -59,7 +59,7 @@ else\n\
     echo "Waiting for $DELAY_SECONDS seconds before starting Locust..."\n\
     sleep $DELAY_SECONDS\n\
     locust -f generate_traffic.py \\\n\
-           --host=http://coraza-proxy-waf:8080 \\\n\
+           --host=http://coraza-proxy:8080 \\\n\
            --users 100 --spawn-rate 10 \\\n\
            --run-time 10m \\\n\
            --headless \\\n\

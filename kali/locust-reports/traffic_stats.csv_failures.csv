@@ -1,55 +1,62 @@
 Method,Name,Error,Occurrences
-GET,/rest/product/search?category=[SQLi_FUZZ],"gaierror(-2, 'Name or service not known')",3
-GET,/rest/products/7,"gaierror(-2, 'Name or service not known')",6
-GET,/rest/products/[SQLi_FUZZ_PATH],"gaierror(-2, 'Name or service not known')",17
-GET,/rest/products/2,"gaierror(-2, 'Name or service not known')",6
-GET,/search?query=[XSS_FUZZ_GET],"gaierror(-2, 'Name or service not known')",6
-GET,/rest/product/search?id=[SQLi_FUZZ],"gaierror(-2, 'Name or service not known')",4
-GET,/search?query=[SQLi_FUZZ],"gaierror(-2, 'Name or service not known')",5
-GET,/rest/products/search?q=banana,"gaierror(-2, 'Name or service not known')",22
-GET,/rest/product/search?q=[SQLi_FUZZ],"gaierror(-2, 'Name or service not known')",3
-GET,/search?term=[XSS_FUZZ_GET],"gaierror(-2, 'Name or service not known')",3
-GET,/rest/product/search?query=[SQLi_FUZZ],"gaierror(-2, 'Name or service not known')",1
-GET,/rest/products/3,"gaierror(-2, 'Name or service not known')",9
-POST,/rest/user/login,"gaierror(-2, 'Name or service not known')",49
-GET,/rest/products/search?query=[XSS_FUZZ_GET],"gaierror(-2, 'Name or service not known')",2
-GET,/rest/product/search?q=[SQLi_FUZZ_QUOTE],"gaierror(-2, 'Name or service not known')",3
-GET,/rest/products/4,"gaierror(-2, 'Name or service not known')",4
-GET,/rest/products/search?q=apple,"gaierror(-2, 'Name or service not known')",35
-GET,/search?id=[SQLi_FUZZ],"gaierror(-2, 'Name or service not known')",4
-GET,/rest/products/6,"gaierror(-2, 'Name or service not known')",5
-GET,/search?q=[SQLi_FUZZ],"gaierror(-2, 'Name or service not known')",4
-GET,/rest/products/search?query=[SQLi_FUZZ_QUOTE],"gaierror(-2, 'Name or service not known')",1
-GET,/search?category=[SQLi_FUZZ_QUOTE],"gaierror(-2, 'Name or service not known')",4
-GET,/#/search?term=[XSS_FUZZ_GET],"gaierror(-2, 'Name or service not known')",4
-GET,/rest/product/search?category=[SQLi_FUZZ_QUOTE],"gaierror(-2, 'Name or service not known')",3
-GET,/search?id=[SQLi_FUZZ_QUOTE],"gaierror(-2, 'Name or service not known')",4
-GET,/,"gaierror(-2, 'Name or service not known')",167
-POST,/api/Feedbacks/[XSS_POST_COMMENT],"gaierror(-2, 'Name or service not known')",6
-GET,/rest/products/1,"gaierror(-2, 'Name or service not known')",5
-GET,/#/search?query=[XSS_FUZZ_GET],"gaierror(-2, 'Name or service not known')",1
-GET,/rest/product/search?id=[SQLi_FUZZ_QUOTE],"gaierror(-2, 'Name or service not known')",4
-GET,/rest/products/8,"gaierror(-2, 'Name or service not known')",5
-GET,/search?q=[XSS_FUZZ_GET],"gaierror(-2, 'Name or service not known')",2
-GET,/rest/products/search?q=orange,"gaierror(-2, 'Name or service not known')",16
-GET,/rest/products/search?id=[SQLi_FUZZ],"gaierror(-2, 'Name or service not known')",1
-POST,/api/Users/[XSS_EMAIL],"gaierror(-2, 'Name or service not known')",9
-GET,/search?query=[SQLi_FUZZ_QUOTE],"gaierror(-2, 'Name or service not known')",5
-GET,/rest/products/10,"gaierror(-2, 'Name or service not known')",4
-GET,/search?q=[SQLi_FUZZ_QUOTE],"gaierror(-2, 'Name or service not known')",4
-POST,/rest/user/login/[SQLi_EMAIL],"gaierror(-2, 'Name or service not known')",16
-GET,/rest/products/5,"gaierror(-2, 'Name or service not known')",4
-GET,/rest/products/search?q=[SQLi_FUZZ],"gaierror(-2, 'Name or service not known')",2
-GET,/search?category=[SQLi_FUZZ],"gaierror(-2, 'Name or service not known')",5
-GET,/rest/products/search?q=lemon,"gaierror(-2, 'Name or service not known')",26
-POST,/api/Users/,"gaierror(-2, 'Name or service not known')",56
-POST,/api/Users/[XSS_SECURITY_ANSWER],"gaierror(-2, 'Name or service not known')",6
-GET,/rest/products/search?term=[XSS_FUZZ_GET],"gaierror(-2, 'Name or service not known')",2
-GET,/rest/product/search?query=[SQLi_FUZZ_QUOTE],"gaierror(-2, 'Name or service not known')",1
-GET,/#/search?q=[XSS_FUZZ_GET],"gaierror(-2, 'Name or service not known')",3
-GET,/rest/products/search?q=juice,"gaierror(-2, 'Name or service not known')",22
-GET,/rest/products/search?query=[SQLi_FUZZ],"gaierror(-2, 'Name or service not known')",1
-GET,/rest/products/[SQLi_FUZZ_QUERY_ID],"gaierror(-2, 'Name or service not known')",16
-GET,/rest/products/search?q=[SQLi_FUZZ_QUOTE],"gaierror(-2, 'Name or service not known')",2
-POST,/rest/user/login/[SQLi_PASSWORD],"gaierror(-2, 'Name or service not known')",16
-GET,/rest/products/9,"gaierror(-2, 'Name or service not known')",6
+GET,/rest/product/search?q=[SQLi_FUZZ],HTTPError('500 Server Error: Internal Server Error for url: /rest/product/search?q=[SQLi_FUZZ]'),9
+GET,/search?q=[SQLi_FUZZ],HTTPError('403 Client Error: Forbidden for url: /search?q=[SQLi_FUZZ]'),7
+GET,/rest/products/[SQLi_FUZZ_PATH],HTTPError('500 Server Error: Internal Server Error for url: /rest/products/[SQLi_FUZZ_PATH]'),121
+GET,/rest/product/search?category=[SQLi_FUZZ],HTTPError('403 Client Error: Forbidden for url: /rest/product/search?category=[SQLi_FUZZ]'),15
+GET,/search?q=[XSS_FUZZ_GET],HTTPError('403 Client Error: Forbidden for url: /search?q=[XSS_FUZZ_GET]'),6
+GET,/search?query=[SQLi_FUZZ],HTTPError('403 Client Error: Forbidden for url: /search?query=[SQLi_FUZZ]'),16
+GET,/rest/product/search?id=[SQLi_FUZZ],HTTPError('403 Client Error: Forbidden for url: /rest/product/search?id=[SQLi_FUZZ]'),10
+GET,/rest/products/10,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/10'),16
+GET,/search?category=[SQLi_FUZZ],HTTPError('403 Client Error: Forbidden for url: /search?category=[SQLi_FUZZ]'),14
+GET,/rest/products/search?query=[SQLi_FUZZ],HTTPError('403 Client Error: Forbidden for url: /rest/products/search?query=[SQLi_FUZZ]'),14
+GET,/rest/product/search?query=[SQLi_FUZZ_QUOTE],HTTPError('403 Client Error: Forbidden for url: /rest/product/search?query=[SQLi_FUZZ_QUOTE]'),23
+GET,/search?term=[XSS_FUZZ_GET],HTTPError('403 Client Error: Forbidden for url: /search?term=[XSS_FUZZ_GET]'),10
+POST,/api/Users/[XSS_SECURITY_ANSWER],HTTPError('400 Client Error: Bad Request for url: /api/Users/[XSS_SECURITY_ANSWER]'),1
+GET,/rest/product/search?query=[SQLi_FUZZ],HTTPError('403 Client Error: Forbidden for url: /rest/product/search?query=[SQLi_FUZZ]'),17
+GET,/search?category=[SQLi_FUZZ_QUOTE],HTTPError('403 Client Error: Forbidden for url: /search?category=[SQLi_FUZZ_QUOTE]'),20
+GET,/rest/products/search?term=[XSS_FUZZ_GET],HTTPError('403 Client Error: Forbidden for url: /rest/products/search?term=[XSS_FUZZ_GET]'),6
+GET,/rest/products/3,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/3'),19
+GET,/rest/products/5,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/5'),18
+GET,/rest/products/7,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/7'),18
+GET,/rest/products/[SQLi_FUZZ_QUERY_ID],HTTPError('403 Client Error: Forbidden for url: /rest/products/[SQLi_FUZZ_QUERY_ID]'),85
+POST,/api/Users/[XSS_EMAIL],HTTPError('400 Client Error: Bad Request for url: /api/Users/[XSS_EMAIL]'),10
+GET,/rest/products/search?query=[SQLi_FUZZ_QUOTE],HTTPError('403 Client Error: Forbidden for url: /rest/products/search?query=[SQLi_FUZZ_QUOTE]'),15
+POST,/api/Users/[XSS_EMAIL],HTTPError('403 Client Error: Forbidden for url: /api/Users/[XSS_EMAIL]'),13
+GET,/search?query=[XSS_FUZZ_GET],HTTPError('403 Client Error: Forbidden for url: /search?query=[XSS_FUZZ_GET]'),9
+POST,/api/Feedbacks/[XSS_POST_COMMENT],HTTPError('403 Client Error: Forbidden for url: /api/Feedbacks/[XSS_POST_COMMENT]'),30
+GET,/rest/products/9,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/9'),19
+GET,/rest/products/search?q=[SQLi_FUZZ],HTTPError('403 Client Error: Forbidden for url: /rest/products/search?q=[SQLi_FUZZ]'),12
+POST,/rest/user/login,HTTPError('401 Client Error: Unauthorized for url: /rest/user/login'),179
+GET,/rest/products/6,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/6'),10
+POST,/rest/user/login/[SQLi_EMAIL],HTTPError('401 Client Error: Unauthorized for url: /rest/user/login/[SQLi_EMAIL]'),25
+POST,/rest/user/login/[SQLi_PASSWORD],HTTPError('403 Client Error: Forbidden for url: /rest/user/login/[SQLi_PASSWORD]'),10
+GET,/rest/products/search?q=[SQLi_FUZZ_QUOTE],HTTPError('403 Client Error: Forbidden for url: /rest/products/search?q=[SQLi_FUZZ_QUOTE]'),16
+GET,/rest/product/search?q=[SQLi_FUZZ_QUOTE],HTTPError('403 Client Error: Forbidden for url: /rest/product/search?q=[SQLi_FUZZ_QUOTE]'),21
+GET,/rest/products/search?category=[SQLi_FUZZ_QUOTE],HTTPError('403 Client Error: Forbidden for url: /rest/products/search?category=[SQLi_FUZZ_QUOTE]'),9
+GET,/search?id=[SQLi_FUZZ],HTTPError('403 Client Error: Forbidden for url: /search?id=[SQLi_FUZZ]'),15
+GET,/rest/product/search?id=[SQLi_FUZZ],HTTPError('500 Server Error: Internal Server Error for url: /rest/product/search?id=[SQLi_FUZZ]'),5
+GET,/rest/products/[SQLi_FUZZ_QUERY_ID],HTTPError('500 Server Error: Internal Server Error for url: /rest/products/[SQLi_FUZZ_QUERY_ID]'),36
+GET,/rest/products/search?query=[XSS_FUZZ_GET],HTTPError('403 Client Error: Forbidden for url: /rest/products/search?query=[XSS_FUZZ_GET]'),8
+POST,/rest/user/login/[SQLi_PASSWORD],HTTPError('401 Client Error: Unauthorized for url: /rest/user/login/[SQLi_PASSWORD]'),56
+POST,/rest/user/login/[SQLi_EMAIL],HTTPError('500 Server Error: Internal Server Error for url: /rest/user/login/[SQLi_EMAIL]'),11
+GET,/rest/products/search?q=[SQLi_FUZZ],HTTPError('500 Server Error: Internal Server Error for url: /rest/products/search?q=[SQLi_FUZZ]'),4
+GET,/search?query=[SQLi_FUZZ_QUOTE],HTTPError('403 Client Error: Forbidden for url: /search?query=[SQLi_FUZZ_QUOTE]'),18
+GET,/rest/product/search?category=[SQLi_FUZZ],HTTPError('500 Server Error: Internal Server Error for url: /rest/product/search?category=[SQLi_FUZZ]'),3
+POST,/rest/user/login/[SQLi_EMAIL],HTTPError('403 Client Error: Forbidden for url: /rest/user/login/[SQLi_EMAIL]'),10
+GET,/rest/products/search?q=[XSS_FUZZ_GET],HTTPError('403 Client Error: Forbidden for url: /rest/products/search?q=[XSS_FUZZ_GET]'),10
+GET,/rest/products/8,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/8'),22
+GET,/rest/products/4,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/4'),11
+GET,/search?q=[SQLi_FUZZ_QUOTE],HTTPError('403 Client Error: Forbidden for url: /search?q=[SQLi_FUZZ_QUOTE]'),10
+GET,/rest/products/1,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/1'),15
+GET,/rest/products/search?id=[SQLi_FUZZ],HTTPError('403 Client Error: Forbidden for url: /rest/products/search?id=[SQLi_FUZZ]'),17
+POST,/api/Feedbacks/[XSS_POST_COMMENT],HTTPError('500 Server Error: Internal Server Error for url: /api/Feedbacks/[XSS_POST_COMMENT]'),26
+POST,/api/Users/[XSS_SECURITY_ANSWER],HTTPError('403 Client Error: Forbidden for url: /api/Users/[XSS_SECURITY_ANSWER]'),13
+GET,/rest/products/2,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/2'),21
+GET,/search?id=[SQLi_FUZZ_QUOTE],HTTPError('403 Client Error: Forbidden for url: /search?id=[SQLi_FUZZ_QUOTE]'),19
+GET,/rest/products/search?category=[SQLi_FUZZ],HTTPError('403 Client Error: Forbidden for url: /rest/products/search?category=[SQLi_FUZZ]'),6
+POST,/api/Users/,HTTPError('400 Client Error: Bad Request for url: /api/Users/'),1
+GET,/rest/product/search?category=[SQLi_FUZZ_QUOTE],HTTPError('403 Client Error: Forbidden for url: /rest/product/search?category=[SQLi_FUZZ_QUOTE]'),18
+GET,/rest/product/search?query=[SQLi_FUZZ],HTTPError('500 Server Error: Internal Server Error for url: /rest/product/search?query=[SQLi_FUZZ]'),6
+GET,/rest/product/search?q=[SQLi_FUZZ],HTTPError('403 Client Error: Forbidden for url: /rest/product/search?q=[SQLi_FUZZ]'),12
+GET,/rest/products/search?id=[SQLi_FUZZ_QUOTE],HTTPError('403 Client Error: Forbidden for url: /rest/products/search?id=[SQLi_FUZZ_QUOTE]'),22
+GET,/rest/product/search?id=[SQLi_FUZZ_QUOTE],HTTPError('403 Client Error: Forbidden for url: /rest/product/search?id=[SQLi_FUZZ_QUOTE]'),15
