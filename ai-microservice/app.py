@@ -26,7 +26,7 @@ def classify():
 
 
     verdict = "benign"
-    score = 0.1 # Default score
+    score = 0 # Default score
 
 
     # --- Dummy AI Logic (Replace with your actual model) ---

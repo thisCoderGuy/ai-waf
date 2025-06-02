@@ -10,8 +10,12 @@ import (
 func init() {
 	var err error
 
+	loggerConfig := LoggerConfig{
+		Format:   loggerFormat,
+		Filename: loggerPath,
+	}
 	// Create logger that saves to file
-	loggerInstance, err := NewCorazaLogger(loggerPath)
+	loggerInstance, err := NewCorazaLogger(loggerConfig)
 	if err != nil {
 		log.Fatalf("Failed to create Coraza logger: %v", err)
 	}

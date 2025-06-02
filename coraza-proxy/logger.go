@@ -6,6 +6,9 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"net/url"
+	"regexp"
+	"unicode/utf8"
 	"os"
 	"strconv"
 	"io/ioutil"
@@ -18,41 +21,52 @@ import (
 
 
 // --- CorazaLogger Struct and Methods ---
+
+// LoggerConfig defines the configuration for the logger.
+type LoggerConfig struct {
+	Format    string // "json" or "csv"
+	Filename  string
+	CSVHeader []string // Only relevant for CSV
+}
+
+
 type CorazaLogger struct {
 	file   *os.File
 	logger *log.Logger
 	csvWriter *csv.Writer
+	config    LoggerConfig
 }
 
 var globalLogger *CorazaLogger
 
-func NewCorazaLogger(filename string) (*CorazaLogger, error) {
-	file, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+// NewCorazaLogger creates a new CorazaLogger based on the provided configuration.
+func NewCorazaLogger(config LoggerConfig) (*CorazaLogger, error) {
+	file, err := os.OpenFile(config.Filename, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		return nil, err
 	}
 
-	csvWriter := csv.NewWriter(file)
-
 	logger := &CorazaLogger{
-		file:      file,
-		logger:    log.New(file, "", log.LstdFlags), // You can still use this for non-CSV specific logs if needed
-		csvWriter: csvWriter,
+		file:   file,
+		logger: log.New(file, "", log.LstdFlags),
+		config: config,
 	}
 
-
-
-	// Write CSV header only if the file is new/empty
-	fileInfo, _ := file.Stat()
-	if fileInfo.Size() == 0 {
-		if err := logger.writeCSVHeader(); err != nil {
-			file.Close()
-			return nil, fmt.Errorf("failed to write CSV header: %w", err)
+	if config.Format == "csv" {
+		logger.csvWriter = csv.NewWriter(file)
+		// Write CSV header only if the file is new/empty
+		fileInfo, _ := file.Stat()
+		if fileInfo.Size() == 0 {
+			if err := logger.writeCSVHeader(); err != nil {
+				file.Close()
+				return nil, fmt.Errorf("failed to write CSV header: %w", err)
+			}
 		}
 	}
 
 	return logger, nil
 }
+
 
 func SetGlobalLogger(logger *CorazaLogger) {
 	globalLogger = logger
@@ -70,6 +84,10 @@ func (c *CorazaLogger) LogInfo(
 
 // writeCSVHeader defines and writes the header row for the CSV.
 func (c *CorazaLogger) writeCSVHeader() error {
+	if c.config.Format != "csv" {
+		return nil
+	}
+
 	header := []string{
 		"Timestamp",
 		"TransactionID",
@@ -78,49 +96,112 @@ func (c *CorazaLogger) writeCSVHeader() error {
 		"ServerIP",
 		"ServerPort",
 		"RequestMethod",
-		"RequestURI",
+		"RequestURIPath",
+		"RequestURIQuery",
 		"RequestProtocol",
-		"RequestHeaders", // Flattened
-		"RequestBody",    // Flattened
+		"UserAgent",
+		"Referer",
+		"AcceptEncoding",
+		"ContentType",
+		"Accept",
+		"Cookie",
+		"Connection",
+		"OtherHeaders",
+		"RequestBody",
 		"ResponseStatus",
 		"ResponseProtocol",
-		"ResponseHeaders", // Flattened
-		"ResponseBody",    // Flattened
+		"ResponseHeaders",
+		"ResponseBody",
 		"WAFInterrupted",
 		"InterruptionRuleID",
 		"InterruptionStatus",
 		"InterruptionAction",
 		"MatchedRulesCount",
-		"MatchedRulesIDs",     // Flattened
-		"MatchedRulesMessages", // Flattened
-		"MatchedRulesTags",    // Flattened
+		"MatchedRulesIDs",
+		"MatchedRulesMessages",
+		"MatchedRulesTags",
 		"AIScore",
 		"AIVerdict",
+		// Calculated fields
+		"RequestLength",
+		"PathLength",
+		"QueryLength",
+		"BodyLength",
+		"NumParams",
+		"LongestParamValueLength",
+		"NumSpecialChars",
+		"NumEncodedChars",
+		"NumDoubleEncodedChars",
+		"RatioSpecialCharsToTotalChars",
+		"NumKeywords",
+		"NumUniqueChars",
+		"IsJSONBody",
+		"IsXMLBody",
+		"IsMultipartForm",
+		"HasNumericPathSegment",
+		"DepthOfPath",
+		"UsesBase64Encoding",
+		"UsesHexEncoding",
+		"HasMultipleContentLength",
+		"InvalidHTTPVersion",
+		"NumHTTPHeaders",
+		"TimeOfDayHour",
+		"TimeOfDayDayOfWeek",
 	}
 	if err := c.csvWriter.Write(header); err != nil {
 		return err
 	}
-	c.csvWriter.Flush() // Ensure header is written to file
+	c.csvWriter.Flush()
 	return c.csvWriter.Error()
 }
 
-
-func (c *CorazaLogger) LogTransactionJSON(
+// LogTransaction dispatches logging to either JSON or CSV format.
+func (c *CorazaLogger) LogTransaction(
 	tx types.Transaction,
 	req *http.Request,
 	res *http.Response,
-	aiScore float64, // Directly pass AI score
-	aiVerdict string, // Directly pass AI verdict
+	aiScore float64,
+	aiVerdict string,
 ) {
-	clientIP, clientPortStr, err := net.SplitHostPort(req.RemoteAddr)
+	if c.config.Format == "json" {
+		c.logTransactionJSON(tx, req, res, aiScore, aiVerdict)
+	} else if c.config.Format == "csv" {
+		c.logTransactionCSV(tx, req, res, aiScore, aiVerdict)
+	} else {
+		c.logger.Printf("Unknown log format: %s", c.config.Format)
+	}
+}
+
+// logTransactionJSON logs transaction details in JSON format.
+func (c *CorazaLogger) logTransactionJSON(
+	tx types.Transaction,
+	req *http.Request,
+	res *http.Response,
+	aiScore float64,
+	aiVerdict string,
+) {
+	clientIP, clientPortStr, _ := net.SplitHostPort(req.RemoteAddr)
 	clientPort, _ := strconv.Atoi(clientPortStr)
-	
+
 	serverHost := req.Host
 	if _, _, err := net.SplitHostPort(serverHost); err != nil {
 		serverHost += ":80"
 	}
-	serverIP, serverPortStr, err := net.SplitHostPort(serverHost)
+	serverIP, serverPortStr, _ := net.SplitHostPort(serverHost)
 	serverPort, _ := strconv.Atoi(serverPortStr)
+
+	var reqBodyBytes []byte
+	if req.Body != nil {
+		var err error
+		reqBodyBytes, err = ioutil.ReadAll(req.Body)
+		if err != nil {
+			c.logger.Printf("Failed to read request body: %v", err)
+		}
+		req.Body = ioutil.NopCloser(bytes.NewBuffer(reqBodyBytes))
+	}
+
+	uriPath, uriQuery := splitRequestURI(req.URL)
+	parsedHeaders := parseRequestHeaders(req.Header)
 
 	entry := CorazaLogEntry{
 		Timestamp:     time.Now(),
@@ -129,85 +210,51 @@ func (c *CorazaLogger) LogTransactionJSON(
 		ClientPort:    clientPort,
 		ServerIP:      serverIP,
 		ServerPort:    serverPort,
+		Request: RequestLogData{
+			Method:   req.Method,
+			URI:      req.URL.String(),
+			Path:     uriPath,
+			Query:    uriQuery,
+			Protocol: req.Proto,
+			Headers:  parsedHeaders,
+			Body:     string(reqBodyBytes),
+		},
 	}
 
-	var bodyBytes []byte 
-	if req.Body != nil {
-		var err error
-		// Read the entire request body.
-		bodyBytes, err = ioutil.ReadAll(req.Body)
-		if err != nil {
-			//log.Printf("Failed to read request body: %v", err)
-			return // Exit if body cannot be read
-		}
-		// Restore the body for subsequent handlers (AI service and reverse proxy)
-		// as `ioutil.ReadAll` consumes the original `r.Body`.
-		req.Body = ioutil.NopCloser(bytes.NewBuffer(bodyBytes))
-	}
-
-
-	// Request Data
-	entry.Request = RequestLogData{
-		Method:   req.Method,
-		URI:      req.URL.String(),
-		Protocol: req.Proto,
-		Headers:  req.Header, // Raw headers
-		Body:      string(bodyBytes),
-	}
-
-	
-	/*if res.Body != nil {
-			bodyBytes, err = ioutil.ReadAll(res.Body)
-			if err != nil {
-				//log.Printf("Failed to read response body: %v", err)
-				return
-			}
-			res.Body.Close() // Close the original body to prevent resource leaks
-			// Restore the body for the client by creating a new io.ReadCloser from the bytes.
-			res.Body = ioutil.NopCloser(bytes.NewBuffer(bodyBytes))
-
-			// Process the response body with Coraza.
-			tx.ProcessResponseBody()
-		}
-			*/
-
-	// Response Data
+	var resBodyBytes []byte
 	if res != nil {
-		entry.Response = ResponseLogData{
+		entry.Response = &ResponseLogData{
 			StatusCode: res.StatusCode,
 			Protocol:   res.Proto,
-			Headers:    res.Header, // Raw headers
-			Body:       string(bodyBytes),
+			Headers:    res.Header,
+			Body:       string(resBodyBytes), // Populate if response body is captured
 		}
 	}
 
-	// WAF Processing Data
 	entry.WAFProcessing.Interrupted = tx.IsInterrupted()
 	if it := tx.Interruption(); it != nil {
 		entry.WAFProcessing.InterruptionDetails = &InterruptionLogData{
-			RuleID: fmt.Sprintf("%d", it.RuleID), // RuleID is int in types.Interruption
+			RuleID: fmt.Sprintf("%d", it.RuleID),
 			Status: it.Status,
 			Action: it.Action,
 		}
 	}
 
-	// Matched Rules
 	matchedRules := []MatchedRuleLogData{}
 	for _, mr := range tx.MatchedRules() {
 		matchedRules = append(matchedRules, MatchedRuleLogData{
 			RuleID:  fmt.Sprintf("%d", mr.Rule().ID()),
 			Message: mr.Message(),
 			Tags:    mr.Rule().Tags(),
-			//MatchedData: mr.MatchedDatas(),
 		})
 	}
 	entry.WAFProcessing.MatchedRules = matchedRules
-
-	// Directly set AI variables in the log entry
 	entry.WAFProcessing.AIScore = aiScore
 	entry.WAFProcessing.AIVerdict = aiVerdict
 
-	jsonData, err := json.Marshal(entry)
+	entry.Calculated = calculateFields(req, string(reqBodyBytes), uriPath, uriQuery)
+
+	jsonData, err := json.MarshalIndent(entry, "", " ") // Use MarshalIndent for pretty printing
 	if err != nil {
 		c.logger.Printf("Failed to marshal log data: %v", err)
 		return
@@ -215,46 +262,37 @@ func (c *CorazaLogger) LogTransactionJSON(
 	c.logger.Println(string(jsonData))
 }
 
-// LogTransaction now writes in CSV format
-func (c *CorazaLogger) LogTransaction(
+// logTransactionCSV logs transaction details in CSV format.
+func (c *CorazaLogger) logTransactionCSV(
 	tx types.Transaction,
 	req *http.Request,
 	res *http.Response,
-	aiScore float64,    // Directly pass AI score
-	aiVerdict string, // Directly pass AI verdict
+	aiScore float64,
+	aiVerdict string,
 ) {
 	clientIP, clientPortStr, _ := net.SplitHostPort(req.RemoteAddr)
 	clientPort, _ := strconv.Atoi(clientPortStr)
 
 	serverHost := req.Host
 	if _, _, err := net.SplitHostPort(serverHost); err != nil {
-		serverHost += ":80" // Default to port 80 if not specified
+		serverHost += ":80"
 	}
 	serverIP, serverPortStr, _ := net.SplitHostPort(serverHost)
 	serverPort, _ := strconv.Atoi(serverPortStr)
 
-	// --- Request Body Handling ---
 	var reqBodyBytes []byte
 	if req.Body != nil {
 		var err error
-		// Read the entire request body.
 		reqBodyBytes, err = ioutil.ReadAll(req.Body)
 		if err != nil {
-			//log.Printf("Failed to read request body for logging: %v", err)
-			// Don't return, still log other data if body fails
+			c.logger.Printf("Failed to read request body for logging: %v", err)
 		}
-		// Restore the body for subsequent handlers
 		req.Body = ioutil.NopCloser(bytes.NewBuffer(reqBodyBytes))
 	}
 
-	// --- Response Body Handling (placeholder, needs to be passed or retrieved from context) ---
-	// As per previous discussion, resBodyBytes is collected in ModifyResponse.
-	// For this `LogTransaction` to get it, it would need to be passed as a parameter
-	// or stored in context and retrieved here.
-	var resBodyBytes []byte // This will be empty if not explicitly retrieved or passed
+	uriPath, uriQuery := splitRequestURI(req.URL)
+	parsedHeaders := parseRequestHeaders(req.Header)
 
-
-	// --- Interruption Details ---
 	interrupted := tx.IsInterrupted()
 	var interruptionRuleID, interruptionAction string
 	var interruptionStatus int
@@ -264,86 +302,427 @@ func (c *CorazaLogger) LogTransaction(
 		interruptionAction = it.Action
 	}
 
-	// --- Matched Rules Details ---
 	var matchedRuleIDs, matchedRuleMessages, matchedRuleTags []string
 	for _, mr := range tx.MatchedRules() {
 		matchedRuleIDs = append(matchedRuleIDs, fmt.Sprintf("%d", mr.Rule().ID()))
 		matchedRuleMessages = append(matchedRuleMessages, mr.Message())
-		matchedRuleTags = append(matchedRuleTags, strings.Join(mr.Rule().Tags(), ";")) // Join multiple tags with a semicolon
+		matchedRuleTags = append(matchedRuleTags, strings.Join(mr.Rule().Tags(), ";"))
 	}
 
-	// Prepare data for the CSV row
+	calculated := calculateFields(req, string(reqBodyBytes), uriPath, uriQuery)
+
 	record := []string{
-		time.Now().Format(time.RFC3339),       // Timestamp
-		tx.ID(),                               // TransactionID
-		clientIP,                              // ClientIP
-		strconv.Itoa(clientPort),              // ClientPort
-		serverIP,                              // ServerIP
-		strconv.Itoa(serverPort),              // ServerPort
-		req.Method,                            // RequestMethod
-		req.URL.String(),                      // RequestURI
-		req.Proto,                             // RequestProtocol
-		flattenHeaders(req.Header),            // RequestHeaders
-		string(reqBodyBytes),                  // RequestBody
+		time.Now().Format(time.RFC3339),
+		tx.ID(),
+		clientIP,
+		strconv.Itoa(clientPort),
+		serverIP,
+		strconv.Itoa(serverPort),
+		req.Method,
+		uriPath,
+		uriQuery,
+		req.Proto,
+		parsedHeaders.UserAgent,
+		parsedHeaders.Referer,
+		parsedHeaders.AcceptEncoding,
+		parsedHeaders.ContentType,
+		parsedHeaders.Accept,
+		parsedHeaders.Cookie,
+		parsedHeaders.Connection,
+		flattenOtherHeaders(parsedHeaders.OtherHeaders),
+		string(reqBodyBytes),
 	}
 
-    // --- Defensive Check for Response Data ---
-    // Only attempt to access res.StatusCode, res.Proto, res.Header if res is not nil
-    if res != nil {
-        record = append(record, strconv.Itoa(res.StatusCode)) // ResponseStatus
-        record = append(record, res.Proto)                     // ResponseProtocol
-        record = append(record, flattenHeaders(res.Header))    // ResponseHeaders
-        record = append(record, string(resBodyBytes))          // ResponseBody
-    } else {
-        // Append empty or placeholder values if no response is available
-        record = append(record, "", "", "", "") // For ResponseStatus, Protocol, Headers, Body
-    }
+	if res != nil {
+		record = append(record, strconv.Itoa(res.StatusCode))
+		record = append(record, res.Proto)
+		record = append(record, flattenHeaders(res.Header))
+		record = append(record, "") // Response body is not captured in this flow currently
+	} else {
+		record = append(record, "", "", "", "")
+	}
 
-	// Append WAF and AI data
 	record = append(record,
-		strconv.FormatBool(interrupted),      // WAFInterrupted
-		interruptionRuleID,                   // InterruptionRuleID
-		strconv.Itoa(interruptionStatus),     // InterruptionStatus
-		interruptionAction,                   // InterruptionAction
-		strconv.Itoa(len(tx.MatchedRules())), // MatchedRulesCount
-		strings.Join(matchedRuleIDs, ";"),    // MatchedRulesIDs
-		strings.Join(matchedRuleMessages, ";"), // MatchedRulesMessages
-		strings.Join(matchedRuleTags, ";"),     // MatchedRulesTags
-		fmt.Sprintf("%.2f", aiScore),         // AIScore
-		aiVerdict,                            // AIVerdict
+		strconv.FormatBool(interrupted),
+		interruptionRuleID,
+		strconv.Itoa(interruptionStatus),
+		interruptionAction,
+		strconv.Itoa(len(tx.MatchedRules())),
+		strings.Join(matchedRuleIDs, ";"),
+		strings.Join(matchedRuleMessages, ";"),
+		strings.Join(matchedRuleTags, ";"),
+		fmt.Sprintf("%.2f", aiScore),
+		aiVerdict,
+		// Append calculated fields
+		strconv.Itoa(calculated.RequestLength),
+		strconv.Itoa(calculated.PathLength),
+		strconv.Itoa(calculated.QueryLength),
+		strconv.Itoa(calculated.BodyLength),
+		strconv.Itoa(calculated.NumParams),
+		strconv.Itoa(calculated.LongestParamValueLength),
+		strconv.Itoa(calculated.NumSpecialChars),
+		strconv.Itoa(calculated.NumEncodedChars),
+		strconv.Itoa(calculated.NumDoubleEncodedChars),
+		fmt.Sprintf("%.4f", calculated.RatioSpecialCharsToTotalChars),
+		strconv.Itoa(calculated.NumKeywords),
+		strconv.Itoa(calculated.NumUniqueChars),
+		strconv.FormatBool(calculated.IsJSONBody),
+		strconv.FormatBool(calculated.IsXMLBody),
+		strconv.FormatBool(calculated.IsMultipartForm),
+		strconv.FormatBool(calculated.HasNumericPathSegment),
+		strconv.Itoa(calculated.DepthOfPath),
+		strconv.FormatBool(calculated.UsesBase64Encoding),
+		strconv.FormatBool(calculated.UsesHexEncoding),
+		strconv.FormatBool(calculated.HasMultipleContentLength),
+		strconv.FormatBool(calculated.InvalidHTTPVersion),
+		strconv.Itoa(calculated.NumHTTPHeaders),
+		strconv.Itoa(calculated.TimeOfDayHour),
+		calculated.TimeOfDayDayOfWeek,
 	)
 
-
-	// Write the record to CSV
 	if err := c.csvWriter.Write(record); err != nil {
 		c.logger.Printf("Failed to write CSV record: %v", err)
 	}
-	c.csvWriter.Flush() // Ensure data is written to the file
+	c.csvWriter.Flush()
 	if err := c.csvWriter.Error(); err != nil {
 		c.logger.Printf("CSV writer error: %v", err)
 	}
 }
 
-// Helper to flatten headers into a single string for CSV
+
+// splitRequestURI separates the request URI into path and query.
+func splitRequestURI(u *url.URL) (path, query string) {
+	path = u.Path
+	if u.RawQuery != "" {
+		query = u.RawQuery
+	}
+	return path, query
+}
+
+// parseRequestHeaders categorizes and concatenates request headers.
+func parseRequestHeaders(headers http.Header) ParsedHeaders {
+	parsed := ParsedHeaders{
+		OtherHeaders: make(map[string][]string),
+	}
+
+	for name, values := range headers {
+		headerName := http.CanonicalHeaderKey(name)
+		concatenatedValues := strings.Join(values, ", ")
+
+		switch headerName {
+		case "User-Agent":
+			parsed.UserAgent = concatenatedValues
+		case "Referer":
+			parsed.Referer = concatenatedValues
+		case "Accept-Encoding":
+			parsed.AcceptEncoding = concatenatedValues
+		case "Content-Type":
+			parsed.ContentType = concatenatedValues
+		case "Accept":
+			parsed.Accept = concatenatedValues
+		case "Cookie":
+			parsed.Cookie = concatenatedValues
+		case "Connection":
+			parsed.Connection = concatenatedValues
+		default:
+			parsed.OtherHeaders[name] = values // Store original name to preserve case for other headers
+		}
+	}
+	return parsed
+}
+
+// flattenHeaders flattens all headers into a single string for CSV.
 func flattenHeaders(headers http.Header) string {
 	var sb strings.Builder
 	first := true
 	for name, values := range headers {
 		if !first {
-			sb.WriteString("; ") // Use semicolon to separate headers
+			sb.WriteString("; ")
 		}
 		sb.WriteString(name)
 		sb.WriteString(":")
-		sb.WriteString(strings.Join(values, ",")) // Join multiple values for one header with comma
+		sb.WriteString(strings.Join(values, ","))
 		first = false
 	}
 	return sb.String()
 }
 
+// flattenOtherHeaders flattens the 'OtherHeaders' map into a single string for CSV.
+func flattenOtherHeaders(headers map[string][]string) string {
+	var sb strings.Builder
+	first := true
+	for name, values := range headers {
+		if !first {
+			sb.WriteString("; ")
+		}
+		sb.WriteString(name)
+		sb.WriteString(":")
+		sb.WriteString(strings.Join(values, ","))
+		first = false
+	}
+	return sb.String()
+}
+
+// Close flushes any pending writes and closes the file.
 func (c *CorazaLogger) Close() error {
-	c.csvWriter.Flush() // Flush any pending writes before closing
-	if err := c.csvWriter.Error(); err != nil {
-		c.logger.Printf("Error flushing CSV writer before closing: %v", err)
+	if c.config.Format == "csv" {
+		c.csvWriter.Flush()
+		if err := c.csvWriter.Error(); err != nil {
+			c.logger.Printf("Error flushing CSV writer before closing: %v", err)
+		}
 	}
 	return c.file.Close()
+}
+
+// --- New Calculated Fields Functions ---
+
+// calculateFields calculates various metrics from the request.
+func calculateFields(req *http.Request, body string, path string, query string) CalculatedFields {
+	calc := CalculatedFields{}
+
+	rawRequest := buildRawRequest(req, body)
+	calc.RequestLength = len(rawRequest)
+
+	calc.PathLength = len(path)
+	calc.QueryLength = len(query)
+	calc.BodyLength = len(body)
+
+	calc.NumParams, calc.LongestParamValueLength = countParamsAndLongestValue(req.URL.RawQuery, body, req.Header.Get("Content-Type"))
+
+	allContent := path + query + body
+	calc.NumSpecialChars = countSpecialChars(allContent)
+	calc.NumEncodedChars, calc.NumDoubleEncodedChars = countEncodedChars(allContent)
+	if len(allContent) > 0 {
+		calc.RatioSpecialCharsToTotalChars = float64(calc.NumSpecialChars) / float64(len(allContent))
+	}
+
+	calc.NumKeywords = countKeywords(allContent)
+	calc.NumUniqueChars = countUniqueChars(allContent)
+
+	calc.IsJSONBody = isJSON(body)
+	calc.IsXMLBody = isXML(body)
+	calc.IsMultipartForm = strings.HasPrefix(req.Header.Get("Content-Type"), "multipart/form-data")
+	calc.HasNumericPathSegment = hasNumericPathSegment(path)
+	calc.DepthOfPath = countPathDepth(path)
+
+	calc.UsesBase64Encoding = usesBase64Encoding(allContent)
+	calc.UsesHexEncoding = usesHexEncoding(allContent)
+
+	calc.HasMultipleContentLength = len(req.Header["Content-Length"]) > 1
+	calc.InvalidHTTPVersion = !isValidHTTPVersion(req.Proto)
+	calc.NumHTTPHeaders = len(req.Header)
+
+	now := time.Now()
+	calc.TimeOfDayHour = now.Hour()
+	calc.TimeOfDayDayOfWeek = now.Weekday().String()
+
+	return calc
+}
+
+// buildRawRequest reconstructs a simplified raw HTTP request for length calculation.
+func buildRawRequest(req *http.Request, body string) string {
+	var sb strings.Builder
+	sb.WriteString(fmt.Sprintf("%s %s %s\r\n", req.Method, req.RequestURI, req.Proto))
+	for name, values := range req.Header {
+		for _, value := range values {
+			sb.WriteString(fmt.Sprintf("%s: %s\r\n", name, value))
+		}
+	}
+	sb.WriteString("\r\n")
+	sb.WriteString(body)
+	return sb.String()
+}
+
+// countParamsAndLongestValue counts parameters and finds the longest parameter value.
+func countParamsAndLongestValue(queryString, body string, contentType string) (int, int) {
+	numParams := 0
+	longestParamValueLength := 0
+
+	// Parse query string parameters
+	if queryString != "" {
+		m, err := url.ParseQuery(queryString)
+		if err == nil {
+			for _, values := range m {
+				for _, v := range values {
+					numParams++
+					if len(v) > longestParamValueLength {
+						longestParamValueLength = len(v)
+					}
+				}
+			}
+		}
+	}
+
+	// Parse body parameters for form-urlencoded
+	if strings.Contains(contentType, "application/x-www-form-urlencoded") {
+		m, err := url.ParseQuery(body)
+		if err == nil {
+			for _, values := range m {
+				for _, v := range values {
+					numParams++
+					if len(v) > longestParamValueLength {
+						longestParamValueLength = len(v)
+					}
+				}
+			}
+		}
+	}
+
+	// For JSON/XML bodies, consider top-level keys/values or string values within.
+	// This is a simplified approach; a full parser would be more accurate.
+	if isJSON(body) {
+		var jsonMap map[string]interface{}
+		if err := json.Unmarshal([]byte(body), &jsonMap); err == nil {
+			for _, v := range jsonMap {
+				numParams++ // Each top-level key is a "param"
+				if strVal, ok := v.(string); ok {
+					if len(strVal) > longestParamValueLength {
+						longestParamValueLength = len(strVal)
+					}
+				}
+			}
+		}
+	} else if isXML(body) {
+		// Basic XML parsing for parameters (highly simplified)
+		// This would typically require an XML parser to be accurate.
+		// For now, we'll just count any string values that look like they could be parameters.
+		r := regexp.MustCompile(`>([^<]+)<`) // find content between tags
+		matches := r.FindAllStringSubmatch(body, -1)
+		for _, match := range matches {
+			if len(match) > 1 {
+				numParams++
+				if len(match[1]) > longestParamValueLength {
+					longestParamValueLength = len(match[1])
+				}
+			}
+		}
+	}
+
+	return numParams, longestParamValueLength
+}
+
+// countSpecialChars counts specific special characters.
+func countSpecialChars(s string) int {
+	specialChars := `!@#$%^&*()_+{}[]|\:;"'<>,.?/~` // Added more common special characters
+	count := 0
+	for _, r := range s {
+		if strings.ContainsRune(specialChars, r) {
+			count++
+		}
+	}
+	return count
+}
+
+// countEncodedChars counts URL-encoded characters (%xx).
+func countEncodedChars(s string) (int, int) {
+	encodedCount := 0
+	doubleEncodedCount := 0
+	re := regexp.MustCompile(`%[0-9a-fA-F]{2}`)
+	matches := re.FindAllString(s, -1)
+	encodedCount = len(matches)
+
+	// A simple heuristic for double encoding: look for %25 followed by %xx
+	reDouble := regexp.MustCompile(`%25[0-9a-fA-F]{2}`)
+	doubleEncodedCount = len(reDouble.FindAllString(s, -1))
+
+	return encodedCount, doubleEncodedCount
+}
+
+// countKeywords counts occurrences of suspicious keywords.
+func countKeywords(s string) int {
+	keywords := []string{
+		"union", "select", "sleep", "script", "alert", "etc/passwd",
+		"cmd.exe", "exec", "system", "wget", "nc", "rm -rf", "insert",
+		"drop", "alter", "delete from", "xp_cmdshell", "benchmark", "sleep",
+		"information_schema", "/etc/passwd", "file_get_contents", "passthru",
+		"shell_exec", "system", "base64_decode", "php://filter", "data://",
+		"input.php", "load_file", "outfile", "dumpfile", "load data",
+		"into outfile", "into dumpfile", "union all", "union select",
+		"cast(", "convert(", "declare @", "nchar(", "varchar(", "nvarchar(",
+		"substring(", "mid(", "concat(", "char(", "chr(", "convert(", "cast(",
+		"schema_name()", "table_name()", "column_name()", "database()", "version()",
+		"user()", "current_user()", "session_user()", "system_user()", "@@version",
+		"@@hostname", "load_file", "select pg_sleep", "select benCHMARK",
+		"document.cookie", "window.location", "eval(", "prompt(", "confirm(",
+		"alert(", "javascript:", "vbscript:", "<script>", "</script>", "<iframe>",
+		"</iframe>", "<embed>", "</embed>", "<object>", "</object>", "<svg>",
+		"</svg>", "<img src=x onerror=", "onload=", "onerror=", "onmouseover=",
+		"onfocus=", "autofocus", "background-image:url(", "expression(",
+		"xss", "cross-site scripting", "sql injection", "remote code execution",
+		"local file inclusion", "remote file inclusion",
+	}
+	count := 0
+	lowerS := strings.ToLower(s)
+	for _, keyword := range keywords {
+		count += strings.Count(lowerS, strings.ToLower(keyword))
+	}
+	return count
+}
+
+// countUniqueChars counts the number of unique characters in a string.
+func countUniqueChars(s string) int {
+	seen := make(map[rune]bool)
+	for _, r := range s {
+		seen[r] = true
+	}
+	return len(seen)
+}
+
+// isJSON checks if a string is a valid JSON.
+func isJSON(s string) bool {
+	var js json.RawMessage
+	return json.Unmarshal([]byte(s), &js) == nil
+}
+
+// isXML checks if a string is a valid XML.
+func isXML(s string) bool {
+	// A simple check for XML by looking for a root element.
+	// A more robust solution would involve a full XML parser.
+	return strings.HasPrefix(strings.TrimSpace(s), "<") && strings.HasSuffix(strings.TrimSpace(s), ">") &&
+		(strings.Contains(s, "<?xml") || strings.Contains(s, "xmlns"))
+}
+
+// hasNumericPathSegment checks if any path segment contains only digits.
+func hasNumericPathSegment(path string) bool {
+	segments := strings.Split(path, "/")
+	for _, segment := range segments {
+		if segment != "" && regexp.MustCompile(`^\d+$`).MatchString(segment) {
+			return true
+		}
+	}
+	return false
+}
+
+// countPathDepth counts the number of '/' in the path.
+func countPathDepth(path string) int {
+	if path == "/" || path == "" {
+		return 0
+	}
+	return strings.Count(strings.Trim(path, "/"), "/") + 1
+}
+
+// usesBase64Encoding detects common base64 patterns.
+func usesBase64Encoding(s string) bool {
+	// Base64 regex: characters A-Z, a-z, 0-9, +, /, =
+	// Minimum length for a meaningful base64 string (e.g., "AA==" for one byte)
+	// Must be a multiple of 4 characters, padded with '='
+	re := regexp.MustCompile(`(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?`)
+	return re.MatchString(s) && len(s)%4 == 0 && utf8.ValidString(s) // Ensure it's valid UTF-8
+}
+
+// usesHexEncoding detects common hex patterns.
+func usesHexEncoding(s string) bool {
+	// Hex pattern: sequences of two hex characters
+	re := regexp.MustCompile(`(?:%[0-9a-fA-F]{2})+`) // e.g., %20%41
+	if re.MatchString(s) {
+		return true
+	}
+	// Another common hex pattern, e.g., \x41\x42
+	re = regexp.MustCompile(`(?:\\x[0-9a-fA-F]{2})+`)
+	return re.MatchString(s)
+}
+
+// isValidHTTPVersion checks if the HTTP protocol version is valid.
+func isValidHTTPVersion(proto string) bool {
+	return proto == "HTTP/1.0" || proto == "HTTP/1.1" || proto == "HTTP/2.0"
 }

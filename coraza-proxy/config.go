@@ -9,13 +9,20 @@ const (
 	targetAppURL      = "http://juice-shop:3000"
 )
 
+
+
+//Custom Directives for Coraza
+const customCorazaPath = "/etc/coraza/coraza.conf"
+
 //Custom log file
 // The path /var/log/coraza/coraza-audit.log needs write permissions for the user running the app.
 // Consider making this configurable via env var or flag.
-const	loggerPath = "/var/log/coraza/coraza-audit.csv"
+const loggerFormat = "csv"
+const loggerPath ="/var/log/coraza/coraza-audit.csv"
 
-//Custom Directives for Craza
-const customCorazaPath = "/etc/coraza/coraza.conf"
+
+
+
 
 // The annotation below embeds the CRS rules in the "owasp-crs-v4/"" folder
 //
