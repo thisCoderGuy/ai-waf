@@ -1,15 +1,9 @@
 Method,Name,Error,Occurrences
-GET,product_search/[GET_SQLi_FUZZ_GET],HTTPError('500 Server Error: Internal Server Error for url: product_search/[GET_SQLi_FUZZ_GET]'),4
-GET,product_details/[GET_SQLi_FUZZ_QUERY_ID],HTTPError('500 Server Error: Internal Server Error for url: product_details/[GET_SQLi_FUZZ_QUERY_ID]'),2328
-GET,product_search/[GET_SQLi_FUZZ_GET],HTTPError('403 Client Error: Forbidden for url: product_search/[GET_SQLi_FUZZ_GET]'),5036
-POST,user_login/[POST_SQLi_EMAIL_POST],HTTPError('401 Client Error: Unauthorized for url: user_login/[POST_SQLi_EMAIL_POST]'),2544
-POST,user_login/[POST_SQLi_EMAIL_POST],HTTPError('403 Client Error: Forbidden for url: user_login/[POST_SQLi_EMAIL_POST]'),242
-GET,/rest/products/{product_id}/[GET_SQLi_FUZZ_PATH],HTTPError('403 Client Error: Forbidden for url: /rest/products/{product_id}/[GET_SQLi_FUZZ_PATH]'),155
-GET,product_details/[GET_SQLi_FUZZ_QUERY_ID],HTTPError('403 Client Error: Forbidden for url: product_details/[GET_SQLi_FUZZ_QUERY_ID]'),2962
-PUT,update_product/[PUT_SQLi_PRODUCT_UPDATE_PUT],HTTPError('403 Client Error: Forbidden for url: update_product/[PUT_SQLi_PRODUCT_UPDATE_PUT]'),1807
-GET,/rest/products/{product_id}/[GET_SQLi_FUZZ_PATH_NO_OBF],HTTPError('403 Client Error: Forbidden for url: /rest/products/{product_id}/[GET_SQLi_FUZZ_PATH_NO_OBF]'),157
-POST,user_login/[POST_SQLi_PASSWORD_POST],HTTPError('401 Client Error: Unauthorized for url: user_login/[POST_SQLi_PASSWORD_POST]'),3392
-GET,/rest/products/{product_id}/[GET_SQLi_FUZZ_PATH_NO_OBF],HTTPError('500 Server Error: Internal Server Error for url: /rest/products/{product_id}/[GET_SQLi_FUZZ_PATH_NO_OBF]'),1609
-GET,/rest/products/{product_id}/[GET_SQLi_FUZZ_PATH],HTTPError('500 Server Error: Internal Server Error for url: /rest/products/{product_id}/[GET_SQLi_FUZZ_PATH]'),3369
-POST,user_login/[POST_SQLi_PASSWORD_POST],HTTPError('403 Client Error: Forbidden for url: user_login/[POST_SQLi_PASSWORD_POST]'),243
-POST,user_login/[POST_SQLi_EMAIL_POST],HTTPError('500 Server Error: Internal Server Error for url: user_login/[POST_SQLi_EMAIL_POST]'),830
+POST,user_register/[POST_XSS_EMAIL_POST],HTTPError('400 Client Error: Bad Request for url: user_register/[POST_XSS_EMAIL_POST]'),1828
+POST,feedback/[POST_XSS_POST_COMMENT],HTTPError('500 Server Error: Internal Server Error for url: feedback/[POST_XSS_POST_COMMENT]'),5068
+POST,user_register/[POST_XSS_SECURITY_ANSWER_POST],HTTPError('400 Client Error: Bad Request for url: user_register/[POST_XSS_SECURITY_ANSWER_POST]'),76
+POST,user_register/[POST_XSS_EMAIL_POST],HTTPError('403 Client Error: Forbidden for url: user_register/[POST_XSS_EMAIL_POST]'),193
+POST,user_register/[POST_XSS_SECURITY_ANSWER_POST],HTTPError('403 Client Error: Forbidden for url: user_register/[POST_XSS_SECURITY_ANSWER_POST]'),188
+GET,product_search/[GET_XSS_FUZZ_GET],HTTPError('403 Client Error: Forbidden for url: product_search/[GET_XSS_FUZZ_GET]'),7065
+POST,feedback/[POST_XSS_POST_COMMENT],HTTPError('403 Client Error: Forbidden for url: feedback/[POST_XSS_POST_COMMENT]'),243
+PUT,user_profile/[PUT_XSS_PROFILE_UPDATE_PUT],HTTPError('403 Client Error: Forbidden for url: user_profile/[PUT_XSS_PROFILE_UPDATE_PUT]'),1788

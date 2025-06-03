@@ -44,10 +44,10 @@ const loggerPath ="/var/log/coraza/coraza-audit-benign.csv"
 
 const (
 
-	DefaultAIVerdictLabel         = "benign" # benign or malicious
+	DefaultAIVerdictLabel         = "benign" // benign or malicious
 
-	DefaultAIVulnerabilityTypeLabel = "none"  #none, sqli, xss, etc.
-    
+	DefaultAIVulnerabilityTypeLabel = "none"  //none, sqli, xss, etc.
+
 )`
 
 
