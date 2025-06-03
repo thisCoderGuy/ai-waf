@@ -60,7 +60,6 @@ def load_and_clean_data(log_file_paths, columns_to_drop=None):
             # Note: This is a heuristic. Valid single-column CSVs or CSVs with
             # quoted commas will be handled by pandas.read_csv.
             filtered_data_lines = [line for line in data_lines if ',' in line]
-            print(f"!!!!!Cleaning {log_file}.... after: {len(filtered_data_lines)=}  before: {len(data_lines)=}")
 
             # Reconstruct the content for pandas, ensuring the header is always included
             processed_content = [header_line] + filtered_data_lines
@@ -163,10 +162,11 @@ def preprocess_data(df):
     df['label'] = df['AIVerdictLabel'].apply(lambda x: 1 if x == 'malicious' else 0)
 
     # Ensure required columns exist, or provide default empty strings/values
-    df['request_method'] = df.get('RequestMethod', 'UNKNOWN')
-    df['request_uri_path'] = df.get('RequestURIPath', '')
-    df['request_uri_query'] = df.get('RequestURIQuery', '')
-    df['request_body'] = df.get('RequestBody', '')
+    # .fillna('') method  ensures that any NaN (Not a Number) values in these text columns are explicitly converted to empty strings ('') 
+    df['request_method'] = df.get('RequestMethod', 'UNKNOWN').fillna('')
+    df['request_uri_path'] = df.get('RequestURIPath', '').fillna('')
+    df['request_uri_query'] = df.get('RequestURIQuery', '').fillna('')
+    df['request_body'] = df.get('RequestBody', '').fillna('')
     df['user_agent'] = df.get('UserAgent', '')
 
     # Numerical features (e.g., lengths)
@@ -181,11 +181,13 @@ def preprocess_data(df):
 
     # Create a ColumnTransformer to apply different transformers to different columns
     # When .fit() or .fit_transform() is called on this preprocessor object, it will apply the specified transformers to their respective columns.
+    # TfidfVectorizer(max_features=5000): TF-IDF: Term Frequency-Inverse Document Frequency,  a numerical statistic that reflects how important a word is to a document in a collection or corpus
+    #     analyzer='char': The vectorizer will now consider individual characters and sequences of characters (n-grams) as tokens, rather than whole words. We hope this will be useful for detecting patterns in highly obfuscated attacks, misspellings, or specific byte sequences that might not form meaningful words.
     preprocessor = ColumnTransformer(
         transformers=[
-            ('text_uri_path', TfidfVectorizer(max_features=5000), 'request_uri_path'), # TF-IDF: Term Frequency-Inverse Document Frequency,  a numerical statistic that reflects how important a word is to a document in a collection or corpus
-            ('text_uri_query', TfidfVectorizer(max_features=5000), 'request_uri_query'),
-            ('text_body', TfidfVectorizer(max_features=5000), 'request_body'),
+            ('text_uri_path', TfidfVectorizer(max_features=5000, analyzer='char', ngram_range=(2, 4)), 'request_uri_path'), 
+            ('text_uri_query', TfidfVectorizer(max_features=5000, analyzer='char', ngram_range=(2, 4)), 'request_uri_query'),
+            ('text_body', TfidfVectorizer(max_features=5000, analyzer='char', ngram_range=(2, 4)), 'request_body'),
             ('text_user_agent', TfidfVectorizer(max_features=5000), 'user_agent'),
             ('cat', OneHotEncoder(handle_unknown='ignore'), categorical_features),
             ('num', 'passthrough', numerical_features)
@@ -254,31 +256,31 @@ def main():
         print(f"Error saving cleaned data to CSV: {e}")
 
     # 2. Preprocess Data
-    #preprocessor, X, y = preprocess_data(df)
+    preprocessor, X, y = preprocess_data(df)
 
     # Ensure there are enough samples and features after preprocessing
-    #if X.shape[0] == 0 or X.shape[1] == 0:
-    #    print("Error: No features generated after preprocessing. Check your data and preprocessing steps.")
-    #    return
-    #if len(y.unique()) < 2:
-    #    print("Warning: Only one class present in labels. Cannot perform classification.")
-    #    print("Ensure your dummy data or real data has both 'benign' and 'malicious' examples.")
-    #    return
+    if X.shape[0] == 0 or X.shape[1] == 0:
+        print("Error: No features generated after preprocessing. Check your data and preprocessing steps.")
+        return
+    if len(y.unique()) < 2:
+        print("Warning: Only one class present in labels. Cannot perform classification.")
+        print("Ensure your dummy data or real data has both 'benign' and 'malicious' examples.")
+        return
 
     # Split data into training and testing sets
-    #X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
 
-    #print(f"Training data shape: {X_train.shape}")
-    #print(f"Testing data shape: {X_test.shape}")
+    print(f"Training data shape: {X_train.shape}")
+    print(f"Testing data shape: {X_test.shape}")
 
     # 3. Train Model
-    #model = train_model(X_train, y_train)
+    model = train_model(X_train, y_train)
 
     # 4. Evaluate Model
-    #evaluate_model(model, X_test, y_test)
+    evaluate_model(model, X_test, y_test)
 
     # 5. Save Model and Preprocessor
-    #save_model_and_preprocessor(model, preprocessor, MODEL_OUTPUT_PATH, PREPROCESSOR_OUTPUT_PATH)
+    save_model_and_preprocessor(model, preprocessor, MODEL_OUTPUT_PATH, PREPROCESSOR_OUTPUT_PATH)
 
     #print("\nTo reuse the model in your AI microservice, you will need to:")
     #print(f"1. Load the preprocessor: `preprocessor = joblib.load('{PREPROCESSOR_OUTPUT_PATH}')`")
