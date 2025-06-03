@@ -18,7 +18,13 @@ const customCorazaPath = "/etc/coraza/coraza.conf"
 // The path /var/log/coraza/coraza-audit.log needs write permissions for the user running the app.
 // Consider making this configurable via env var or flag.
 const loggerFormat = "csv"
-const loggerPath ="/var/log/coraza/coraza-audit.csv"
+const loggerPath ="/var/log/coraza/coraza-audit-sqli.csv"
+// Default values for AI verdict and vulnerability type labels.
+// These can be modified here without touching the logger logic.
+const (
+	DefaultAIVerdictLabel         = "malicious" #benign or malicious
+	DefaultAIVulnerabilityTypeLabel = "sqli" #none, sqli, xss, etc
+)
 
 
 

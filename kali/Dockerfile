@@ -4,75 +4,39 @@ FROM kalilinux/kali-rolling
 # Update package lists
 RUN apt update
 
-# Install necessary tools:
-# - locust: For traffic generation
-# - sqlmap: As previously requested
-# - python3-pip: To manage Python packages, though locust is installed via apt here
-# - python3-venv: Good practice for isolated Python environments, though not strictly needed for this direct run
-RUN apt -y install locust sqlmap python3-pip
+# Install necessary system tools:
+RUN apt -y install sqlmap python3-pip python3-venv
 
-# Create a directory for your scripts
-RUN mkdir -p /app/scripts
+# Create a Python virtual environment
+RUN python3 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 
-# Create a directory for Locust reports
+# Install Locust into the virtual environment
+RUN pip install locust
+
+# Create directories for your test files and reports
+RUN mkdir -p /app/locust_tests
 RUN mkdir -p /app/reports
 
-# Copy the traffic generation script into the container
-# IMPORTANT: Corrected the destination path from /var/ossec/etc/ossec.conf
-# to a more appropriate location like /app/scripts/
-COPY scripts/generate_traffic.py /app/scripts/generate_traffic.py
+# Copy your 'locust_tests' package into the container
+COPY locust_tests /app/locust_tests
 
-# Set the working directory to where your script is located
-WORKDIR /app/scripts
+# Copy locustfile.py to the /app/ directory (project root in container)
+# This assumes you've moved locustfile.py to your local project root
+COPY locustfile.py /app/locustfile.py
 
-# Command to run the Locust traffic generation script in headless mode and save reports.
-# -f generate_traffic.py: Specifies your Locust test file.
-# --host=http://coraza-proxy:8080: Sets the target host for Locust.
-# --users 100: Total number of simulated users.
-# --spawn-rate 10: Rate at which users are spawned per second.
-# --run-time 10m: Run the test for a specific duration (e.g., 10 minutes).
-#                 Remove this if you want it to run indefinitely until manually stopped.
-# --headless: Runs Locust without the web UI.
-# --html /app/reports/traffic_report.html: Generates a full HTML report.
-# --csv /app/reports/traffic_stats: Generates CSV stats (will create traffic_stats_stats.csv and traffic_stats_failures.csv).
-# Create a startup script
-RUN echo '#!/bin/bash\n\
-\n\
-# Define the delay in seconds\n\
-DELAY_SECONDS=60\n\
-\n\
-if [ "$1" = "shell" ]; then\n\
-    exec /bin/bash\n\
-elif [ "$1" = "locust-then-shell" ]; then\n\
-    echo "Waiting for $DELAY_SECONDS seconds before starting Locust..."\n\
-    sleep $DELAY_SECONDS\n\
-    locust -f generate_traffic.py \\\n\
-           --host=http://coraza-proxy:8080 \\\n\
-           --users 100 --spawn-rate 10 \\\n\
-           --run-time 1m \\\n\
-           --headless \\\n\
-           --html /app/reports/traffic_report.html \\\n\
-           --csv /app/reports/traffic_stats.csv\n\
-    echo "Locust finished. Starting interactive shell..."\n\
-    exec /bin/bash\n\
-else\n\
-    echo "Waiting for $DELAY_SECONDS seconds before starting Locust..."\n\
-    sleep $DELAY_SECONDS\n\
-    locust -f generate_traffic.py \\\n\
-           --host=http://coraza-proxy:8080 \\\n\
-           --users 100 --spawn-rate 10 \\\n\
-           --run-time 10m \\\n\
-           --headless \\\n\
-           --html /app/reports/traffic_report.html \\\n\
-           --csv /app/reports/traffic_stats.csv\n\
-fi' > /app/startup.sh && chmod +x /app/startup.sh
+# *** NEW: Copy the external startup script and make it executable ***
+COPY startup.sh /app/startup.sh
+RUN chmod +x /app/startup.sh
 
-# Default command runs locust normally
+# Set the working directory for the container
+WORKDIR /app/
 
-# Default command runs locust normally
+# PYTHONPATH is still needed for 'locust_tests' package to be found by absolute imports
+ENV PYTHONPATH=/app
+
+# Set the default command to run your startup script
 CMD ["/app/startup.sh"]
-# CMD ["/bin/bash"] # for debugging: 1)docker image build -t kali .  2) docker container run -it  --name kalirunning kali
 
-# You might want to expose the Locust web UI port (default 8089) if you want to access it from your host
 # Expose the Locust web UI port (default 8089) - only needed if not using --headless
 EXPOSE 8089

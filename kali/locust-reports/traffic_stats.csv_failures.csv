@@ -1,61 +1,15 @@
 Method,Name,Error,Occurrences
-GET,/rest/product/search?q=[SQLi_FUZZ],HTTPError('500 Server Error: Internal Server Error for url: /rest/product/search?q=[SQLi_FUZZ]'),4
-GET,/search?q=[SQLi_FUZZ],HTTPError('403 Client Error: Forbidden for url: /search?q=[SQLi_FUZZ]'),4
-GET,/rest/products/[SQLi_FUZZ_PATH],HTTPError('500 Server Error: Internal Server Error for url: /rest/products/[SQLi_FUZZ_PATH]'),74
-GET,/rest/product/search?category=[SQLi_FUZZ],HTTPError('403 Client Error: Forbidden for url: /rest/product/search?category=[SQLi_FUZZ]'),10
-GET,/search?q=[XSS_FUZZ_GET],HTTPError('403 Client Error: Forbidden for url: /search?q=[XSS_FUZZ_GET]'),21
-GET,/search?query=[SQLi_FUZZ],HTTPError('403 Client Error: Forbidden for url: /search?query=[SQLi_FUZZ]'),3
-GET,/rest/product/search?id=[SQLi_FUZZ],HTTPError('403 Client Error: Forbidden for url: /rest/product/search?id=[SQLi_FUZZ]'),8
-GET,/rest/products/10,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/10'),17
-GET,/search?category=[SQLi_FUZZ],HTTPError('403 Client Error: Forbidden for url: /search?category=[SQLi_FUZZ]'),3
-GET,/rest/products/search?query=[SQLi_FUZZ],HTTPError('403 Client Error: Forbidden for url: /rest/products/search?query=[SQLi_FUZZ]'),11
-GET,/rest/product/search?query=[SQLi_FUZZ_QUOTE],HTTPError('403 Client Error: Forbidden for url: /rest/product/search?query=[SQLi_FUZZ_QUOTE]'),13
-GET,/search?term=[XSS_FUZZ_GET],HTTPError('403 Client Error: Forbidden for url: /search?term=[XSS_FUZZ_GET]'),14
-GET,/rest/product/search?query=[SQLi_FUZZ],HTTPError('403 Client Error: Forbidden for url: /rest/product/search?query=[SQLi_FUZZ]'),10
-GET,/search?category=[SQLi_FUZZ_QUOTE],HTTPError('403 Client Error: Forbidden for url: /search?category=[SQLi_FUZZ_QUOTE]'),6
-GET,/rest/products/search?term=[XSS_FUZZ_GET],HTTPError('403 Client Error: Forbidden for url: /rest/products/search?term=[XSS_FUZZ_GET]'),13
-GET,/rest/products/3,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/3'),14
-GET,/rest/products/5,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/5'),14
-GET,/rest/products/7,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/7'),21
-GET,/rest/products/[SQLi_FUZZ_QUERY_ID],HTTPError('403 Client Error: Forbidden for url: /rest/products/[SQLi_FUZZ_QUERY_ID]'),55
-POST,/api/Users/[XSS_EMAIL],HTTPError('400 Client Error: Bad Request for url: /api/Users/[XSS_EMAIL]'),21
-GET,/rest/products/search?query=[SQLi_FUZZ_QUOTE],HTTPError('403 Client Error: Forbidden for url: /rest/products/search?query=[SQLi_FUZZ_QUOTE]'),13
-POST,/api/Users/[XSS_EMAIL],HTTPError('403 Client Error: Forbidden for url: /api/Users/[XSS_EMAIL]'),23
-GET,/search?query=[XSS_FUZZ_GET],HTTPError('403 Client Error: Forbidden for url: /search?query=[XSS_FUZZ_GET]'),15
-POST,/api/Feedbacks/[XSS_POST_COMMENT],HTTPError('403 Client Error: Forbidden for url: /api/Feedbacks/[XSS_POST_COMMENT]'),39
-GET,/rest/products/9,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/9'),20
-GET,/rest/products/search?q=[SQLi_FUZZ],HTTPError('403 Client Error: Forbidden for url: /rest/products/search?q=[SQLi_FUZZ]'),3
-POST,/rest/user/login,HTTPError('401 Client Error: Unauthorized for url: /rest/user/login'),186
-GET,/rest/products/6,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/6'),18
-POST,/rest/user/login/[SQLi_EMAIL],HTTPError('401 Client Error: Unauthorized for url: /rest/user/login/[SQLi_EMAIL]'),28
-POST,/rest/user/login/[SQLi_PASSWORD],HTTPError('403 Client Error: Forbidden for url: /rest/user/login/[SQLi_PASSWORD]'),9
-GET,/rest/products/search?q=[SQLi_FUZZ_QUOTE],HTTPError('403 Client Error: Forbidden for url: /rest/products/search?q=[SQLi_FUZZ_QUOTE]'),10
-GET,/rest/product/search?q=[SQLi_FUZZ_QUOTE],HTTPError('403 Client Error: Forbidden for url: /rest/product/search?q=[SQLi_FUZZ_QUOTE]'),6
-GET,/rest/products/search?category=[SQLi_FUZZ_QUOTE],HTTPError('403 Client Error: Forbidden for url: /rest/products/search?category=[SQLi_FUZZ_QUOTE]'),10
-GET,/search?id=[SQLi_FUZZ],HTTPError('403 Client Error: Forbidden for url: /search?id=[SQLi_FUZZ]'),9
-GET,/rest/product/search?id=[SQLi_FUZZ],HTTPError('500 Server Error: Internal Server Error for url: /rest/product/search?id=[SQLi_FUZZ]'),7
-GET,/rest/products/[SQLi_FUZZ_QUERY_ID],HTTPError('500 Server Error: Internal Server Error for url: /rest/products/[SQLi_FUZZ_QUERY_ID]'),19
-GET,/rest/products/search?query=[XSS_FUZZ_GET],HTTPError('403 Client Error: Forbidden for url: /rest/products/search?query=[XSS_FUZZ_GET]'),12
-POST,/rest/user/login/[SQLi_PASSWORD],HTTPError('401 Client Error: Unauthorized for url: /rest/user/login/[SQLi_PASSWORD]'),53
-POST,/rest/user/login/[SQLi_EMAIL],HTTPError('500 Server Error: Internal Server Error for url: /rest/user/login/[SQLi_EMAIL]'),9
-GET,/rest/products/search?q=[SQLi_FUZZ],HTTPError('500 Server Error: Internal Server Error for url: /rest/products/search?q=[SQLi_FUZZ]'),7
-GET,/search?query=[SQLi_FUZZ_QUOTE],HTTPError('403 Client Error: Forbidden for url: /search?query=[SQLi_FUZZ_QUOTE]'),6
-GET,/rest/product/search?category=[SQLi_FUZZ],HTTPError('500 Server Error: Internal Server Error for url: /rest/product/search?category=[SQLi_FUZZ]'),2
-POST,/rest/user/login/[SQLi_EMAIL],HTTPError('403 Client Error: Forbidden for url: /rest/user/login/[SQLi_EMAIL]'),9
-GET,/rest/products/search?q=[XSS_FUZZ_GET],HTTPError('403 Client Error: Forbidden for url: /rest/products/search?q=[XSS_FUZZ_GET]'),17
-GET,/rest/products/8,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/8'),18
-GET,/rest/products/4,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/4'),14
-GET,/search?q=[SQLi_FUZZ_QUOTE],HTTPError('403 Client Error: Forbidden for url: /search?q=[SQLi_FUZZ_QUOTE]'),6
-GET,/rest/products/1,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/1'),17
-GET,/rest/products/search?id=[SQLi_FUZZ],HTTPError('403 Client Error: Forbidden for url: /rest/products/search?id=[SQLi_FUZZ]'),10
-POST,/api/Feedbacks/[XSS_POST_COMMENT],HTTPError('500 Server Error: Internal Server Error for url: /api/Feedbacks/[XSS_POST_COMMENT]'),40
-POST,/api/Users/[XSS_SECURITY_ANSWER],HTTPError('403 Client Error: Forbidden for url: /api/Users/[XSS_SECURITY_ANSWER]'),23
-GET,/rest/products/2,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/2'),13
-GET,/search?id=[SQLi_FUZZ_QUOTE],HTTPError('403 Client Error: Forbidden for url: /search?id=[SQLi_FUZZ_QUOTE]'),12
-GET,/rest/products/search?category=[SQLi_FUZZ],HTTPError('403 Client Error: Forbidden for url: /rest/products/search?category=[SQLi_FUZZ]'),5
-POST,/api/Users/,HTTPError('400 Client Error: Bad Request for url: /api/Users/'),2
-GET,/rest/product/search?category=[SQLi_FUZZ_QUOTE],HTTPError('403 Client Error: Forbidden for url: /rest/product/search?category=[SQLi_FUZZ_QUOTE]'),12
-GET,/rest/product/search?query=[SQLi_FUZZ],HTTPError('500 Server Error: Internal Server Error for url: /rest/product/search?query=[SQLi_FUZZ]'),3
-GET,/rest/product/search?q=[SQLi_FUZZ],HTTPError('403 Client Error: Forbidden for url: /rest/product/search?q=[SQLi_FUZZ]'),2
-GET,/rest/products/search?id=[SQLi_FUZZ_QUOTE],HTTPError('403 Client Error: Forbidden for url: /rest/products/search?id=[SQLi_FUZZ_QUOTE]'),12
-GET,/rest/product/search?id=[SQLi_FUZZ_QUOTE],HTTPError('403 Client Error: Forbidden for url: /rest/product/search?id=[SQLi_FUZZ_QUOTE]'),15
+GET,product_search/[GET_SQLi_FUZZ_GET],HTTPError('500 Server Error: Internal Server Error for url: product_search/[GET_SQLi_FUZZ_GET]'),4
+GET,product_details/[GET_SQLi_FUZZ_QUERY_ID],HTTPError('500 Server Error: Internal Server Error for url: product_details/[GET_SQLi_FUZZ_QUERY_ID]'),2328
+GET,product_search/[GET_SQLi_FUZZ_GET],HTTPError('403 Client Error: Forbidden for url: product_search/[GET_SQLi_FUZZ_GET]'),5036
+POST,user_login/[POST_SQLi_EMAIL_POST],HTTPError('401 Client Error: Unauthorized for url: user_login/[POST_SQLi_EMAIL_POST]'),2544
+POST,user_login/[POST_SQLi_EMAIL_POST],HTTPError('403 Client Error: Forbidden for url: user_login/[POST_SQLi_EMAIL_POST]'),242
+GET,/rest/products/{product_id}/[GET_SQLi_FUZZ_PATH],HTTPError('403 Client Error: Forbidden for url: /rest/products/{product_id}/[GET_SQLi_FUZZ_PATH]'),155
+GET,product_details/[GET_SQLi_FUZZ_QUERY_ID],HTTPError('403 Client Error: Forbidden for url: product_details/[GET_SQLi_FUZZ_QUERY_ID]'),2962
+PUT,update_product/[PUT_SQLi_PRODUCT_UPDATE_PUT],HTTPError('403 Client Error: Forbidden for url: update_product/[PUT_SQLi_PRODUCT_UPDATE_PUT]'),1807
+GET,/rest/products/{product_id}/[GET_SQLi_FUZZ_PATH_NO_OBF],HTTPError('403 Client Error: Forbidden for url: /rest/products/{product_id}/[GET_SQLi_FUZZ_PATH_NO_OBF]'),157
+POST,user_login/[POST_SQLi_PASSWORD_POST],HTTPError('401 Client Error: Unauthorized for url: user_login/[POST_SQLi_PASSWORD_POST]'),3392
+GET,/rest/products/{product_id}/[GET_SQLi_FUZZ_PATH_NO_OBF],HTTPError('500 Server Error: Internal Server Error for url: /rest/products/{product_id}/[GET_SQLi_FUZZ_PATH_NO_OBF]'),1609
+GET,/rest/products/{product_id}/[GET_SQLi_FUZZ_PATH],HTTPError('500 Server Error: Internal Server Error for url: /rest/products/{product_id}/[GET_SQLi_FUZZ_PATH]'),3369
+POST,user_login/[POST_SQLi_PASSWORD_POST],HTTPError('403 Client Error: Forbidden for url: user_login/[POST_SQLi_PASSWORD_POST]'),243
+POST,user_login/[POST_SQLi_EMAIL_POST],HTTPError('500 Server Error: Internal Server Error for url: user_login/[POST_SQLi_EMAIL_POST]'),830
