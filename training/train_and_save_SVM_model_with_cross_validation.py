@@ -19,10 +19,9 @@ LOG_FILE_PATHS = [
     os.path.join('training_data', 'coraza-audit-sqli.csv'),
     os.path.join('training_data', 'coraza-audit-xss.csv')
 ]
-# Path to save the trained model (moved to predictive_model folder, one level up)
-MODEL_OUTPUT_PATH = os.path.join('..', 'predictive_model', 'svm_malicious_traffic_model.joblib')
-# Path to save the preprocessor (moved to configs folder)
-PREPROCESSOR_OUTPUT_PATH = os.path.join('configs', 'svm_malicious_traffic_preprocessor.joblib')
+# Path to save the trained model (moved to ai_microservice folder, one level up)
+MODEL_OUTPUT_PATH = os.path.join('..', 'ai_microservice', 'svm_malicious_traffic_model.joblib')
+PREPROCESSOR_OUTPUT_PATH = os.path.join('..', 'ai_microservice', 'svm_malicious_traffic_preprocessor.joblib')
 
 # Columns to drop during data cleaning
 COLUMNS_TO_DROP = ['Timestamp', 'TransactionID', 'ClientIP', 'ClientPort', 'ServerIP', 'ServerPort', 
