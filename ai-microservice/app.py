@@ -11,8 +11,8 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 # --- Model and Preprocessor Loading ---
 # Paths are relative to the container's /app directory, where the volumes are mounted.
-MODEL_PATH = '/app/model/mlp_malicious_traffic_model.joblib'
-PREPROCESSOR_PATH = '/app/model/mlp_malicious_traffic_preprocessor.joblib'
+MODEL_PATH = '/app/mlp_malicious_traffic_model.joblib'
+PREPROCESSOR_PATH = '/app/mlp_malicious_traffic_preprocessor.joblib'
 
 # Global variables to hold the loaded model and preprocessor
 model = None
@@ -51,14 +51,18 @@ def classify():
     if not data:
         logging.warning("No JSON data provided in request.")
         return jsonify({"error": "No JSON data provided"}), 400
-
+    
     # Extract raw features from the incoming JSON
-    method = data.get('method', 'GET')
-    path = data.get('path', '/')
-    query = data.get('query', '')
-    body = data.get('body', '')
+    requestURIPath = data.get("request_uri_path", '')
+    queryLength =data.get("query_length", '')
+    userAgent = data.get("user_agent", '')
+    requestLength = data.get("request_length", '')
+    requestURIQuery = data.get("request_uri_query", '')
+    pathLength = data.get("path_length", '')
+    requestMethod = data.get("request_method", '')
+    requestBody = data.get("request_body" , '')
 
-    logging.info(f"Received request for classification: Method={method}, Path={path}, Query={query}, Body={body[:100]}...") # Log first 100 chars of body
+    logging.info(f"Received request for classification: Method={requestMethod}, Path={requestURIPath}, Query={requestURIQuery}, Body={requestBody[:100]},  userAgent={userAgent}...") # Log first 100 chars of body
 
     verdict = "benign"
     score = 0.0 # Default score
@@ -71,26 +75,26 @@ def classify():
     try:
         # Create a Pandas DataFrame from the incoming request data
         # Ensure column names match those expected by the preprocessor
+        
         input_df = pd.DataFrame([{
-            'RequestMethod': method,
-            'RequestURIPath': path,
-            'RequestURIQuery': query,
-            'RequestBody': body,
-            'UserAgent': request.headers.get('User-Agent', '') # Attempt to get User-Agent from actual request headers
-        }])
+            'request_method': requestMethod, 
+            'request_uri_path': requestURIPath, 
+            'request_uri_query': requestURIQuery, 
+            'request_body': requestBody, 
+            'user_agent': userAgent, 
+            'request_length': requestLength, 
+            'path_length': pathLength, 
+            'query_length': queryLength,
+            }])
 
-        # Recalculate length features (as done during training)
-        input_df['RequestLength'] = len(f"{method} {path}?{query} {body}") # Simplified total length
-        input_df['PathLength'] = len(path)
-        input_df['QueryLength'] = len(query)
-
+        
         # Preprocess the input data using the loaded preprocessor
         # Ensure fillna is applied to text columns as in preprocess_data
-        input_df['RequestMethod'] = input_df['RequestMethod'].fillna('')
-        input_df['RequestURIPath'] = input_df['RequestURIPath'].fillna('')
-        input_df['RequestURIQuery'] = input_df['RequestURIQuery'].fillna('')
-        input_df['RequestBody'] = input_df['RequestBody'].fillna('')
-        input_df['UserAgent'] = input_df['UserAgent'].fillna('')
+        input_df['request_method'] = input_df['request_method'].fillna('')
+        input_df['request_uri_path'] = input_df['request_uri_path'].fillna('')
+        input_df['request_uri_query'] = input_df['request_uri_query'].fillna('')
+        input_df['request_body'] = input_df['request_body'].fillna('')
+        input_df['user_agent'] = input_df['user_agent'].fillna('')
 
 
         # Transform the DataFrame into numerical features
@@ -112,7 +116,7 @@ def classify():
             score = prediction_proba[1] # Probability of being malicious
         else:
             verdict = "benign"
-            score = prediction_proba[0] # Probability of being benign (or 1 - prob_malicious)
+            score = 1 - prediction_proba[1] # Probability of being benign (or 1 - prob_malicious)
 
         logging.info(f"Classification result: Verdict={verdict}, Score={score:.4f}")
 
@@ -130,4 +134,3 @@ def classify():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
-

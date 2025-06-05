@@ -1,9 +1,11 @@
 Method,Name,Error,Occurrences
-POST,user_register/[POST_XSS_EMAIL_POST],HTTPError('400 Client Error: Bad Request for url: user_register/[POST_XSS_EMAIL_POST]'),1828
-POST,feedback/[POST_XSS_POST_COMMENT],HTTPError('500 Server Error: Internal Server Error for url: feedback/[POST_XSS_POST_COMMENT]'),5068
-POST,user_register/[POST_XSS_SECURITY_ANSWER_POST],HTTPError('400 Client Error: Bad Request for url: user_register/[POST_XSS_SECURITY_ANSWER_POST]'),76
-POST,user_register/[POST_XSS_EMAIL_POST],HTTPError('403 Client Error: Forbidden for url: user_register/[POST_XSS_EMAIL_POST]'),193
-POST,user_register/[POST_XSS_SECURITY_ANSWER_POST],HTTPError('403 Client Error: Forbidden for url: user_register/[POST_XSS_SECURITY_ANSWER_POST]'),188
-GET,product_search/[GET_XSS_FUZZ_GET],HTTPError('403 Client Error: Forbidden for url: product_search/[GET_XSS_FUZZ_GET]'),7065
-POST,feedback/[POST_XSS_POST_COMMENT],HTTPError('403 Client Error: Forbidden for url: feedback/[POST_XSS_POST_COMMENT]'),243
-PUT,user_profile/[PUT_XSS_PROFILE_UPDATE_PUT],HTTPError('403 Client Error: Forbidden for url: user_profile/[PUT_XSS_PROFILE_UPDATE_PUT]'),1788
+POST,user_register/[POST_XSS_EMAIL_POST],HTTPError('400 Client Error: Bad Request for url: user_register/[POST_XSS_EMAIL_POST]'),65
+POST,feedback/[POST_XSS_POST_COMMENT],HTTPError('500 Server Error: Internal Server Error for url: feedback/[POST_XSS_POST_COMMENT]'),761
+POST,user_register/[POST_XSS_SECURITY_ANSWER_POST],HTTPError('400 Client Error: Bad Request for url: user_register/[POST_XSS_SECURITY_ANSWER_POST]'),1
+POST,user_register/[POST_XSS_EMAIL_POST],HTTPError('403 Client Error: Forbidden for url: user_register/[POST_XSS_EMAIL_POST]'),417
+POST,user_register/[POST_XSS_SECURITY_ANSWER_POST],HTTPError('403 Client Error: Forbidden for url: user_register/[POST_XSS_SECURITY_ANSWER_POST]'),389
+GET,product_search/[GET_XSS_FUZZ_GET],RemoteDisconnected('Remote end closed connection without response'),1
+GET,product_search/[GET_XSS_FUZZ_GET],HTTPError('403 Client Error: Forbidden for url: product_search/[GET_XSS_FUZZ_GET]'),1459
+POST,user_register/[POST_XSS_SECURITY_ANSWER_POST],RemoteDisconnected('Remote end closed connection without response'),1
+POST,feedback/[POST_XSS_POST_COMMENT],HTTPError('403 Client Error: Forbidden for url: feedback/[POST_XSS_POST_COMMENT]'),119
+PUT,user_profile/[PUT_XSS_PROFILE_UPDATE_PUT],HTTPError('403 Client Error: Forbidden for url: user_profile/[PUT_XSS_PROFILE_UPDATE_PUT]'),306
