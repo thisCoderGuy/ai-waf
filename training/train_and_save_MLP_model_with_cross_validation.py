@@ -1,15 +1,16 @@
 import json
 import pandas as pd
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, StratifiedKFold 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import ColumnTransformer
-from sklearn.neural_network import MLPClassifier # Changed from sklearn.svm import SVC
+from sklearn.neural_network import MLPClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report
 import joblib # Preferred for scikit-learn models
 import os # Import os for file path checks
 import io # Import io for StringIO
+import numpy as np # Import numpy for mean calculations
 
 # --- Configuration ---
 # Path to Coraza audit log files
@@ -165,7 +166,7 @@ def preprocess_data(df):
     df['label'] = df['AIVerdictLabel'].apply(lambda x: 1 if x == 'malicious' else 0)
 
     # Ensure required columns exist, or provide default empty strings/values
-    # .fillna('') method  ensures that any NaN (Not a Number) values in these text columns are explicitly converted to empty strings ('')
+    # .fillna('') method  ensures that any NaN (Not a Number) values in these text columns are explicitly converted to empty strings ('')
     df['request_method'] = df.get('RequestMethod', 'UNKNOWN').fillna('')
     df['request_uri_path'] = df.get('RequestURIPath', '').fillna('')
     df['request_uri_query'] = df.get('RequestURIQuery', '').fillna('')
@@ -179,13 +180,13 @@ def preprocess_data(df):
 
     # Purpose of Preprocessing: To convert raw, heterogeneous data into a consistent, numerical format that machine learning algorithms can understand and process.
     # Define preprocessing steps for different types of features
-    text_features = ['request_uri_path', 'request_uri_query', 'request_body', 'user_agent'] # Corrected 'agent' to 'user_agent'
+    text_features = ['request_uri_path', 'request_uri_query', 'request_body', 'user_agent']
     categorical_features = ['request_method']
     numerical_features = ['request_length', 'path_length', 'query_length']
 
     # Create a ColumnTransformer to apply different transformers to different columns
     # When .fit() or .fit_transform() is called on this preprocessor object, it will apply the specified transformers to their respective columns.
-    # TfidfVectorizer(max_features=5000): TF-IDF: Term Frequency-Inverse Document Frequency,  a numerical statistic that reflects how important a word is to a document in a collection or corpus
+    # TfidfVectorizer(max_features=5000): TF-IDF: Term Frequency-Inverse Document Frequency,  a numerical statistic that reflects how important a word is to a document in a collection or corpus
     #     analyzer='char': The vectorizer will now consider individual characters and sequences of characters (n-grams) as tokens, rather than whole words. We hope this will be useful for detecting patterns in highly obfuscated attacks, misspellings, or specific byte sequences that might not form meaningful words.
     # OneHotEncoder: learns all unique categorical values for each specified column (e.g., "GET", "POST" for RequestMethod).
     preprocessor = ColumnTransformer(
@@ -193,7 +194,7 @@ def preprocess_data(df):
             ('text_uri_path', TfidfVectorizer(max_features=5000, analyzer='char', ngram_range=(2, 4)), 'request_uri_path'),
             ('text_uri_query', TfidfVectorizer(max_features=5000, analyzer='char', ngram_range=(2, 4)), 'request_uri_query'),
             ('text_body', TfidfVectorizer(max_features=5000, analyzer='char', ngram_range=(2, 4)), 'request_body'),
-            ('text_user_agent', TfidfVectorizer(max_features=5000, analyzer='char', ngram_range=(2, 4)), 'user_agent'), # Changed to char-level as well
+            ('text_user_agent', TfidfVectorizer(max_features=5000, analyzer='char', ngram_range=(2, 4)), 'user_agent'),
             ('cat', OneHotEncoder(handle_unknown='ignore'), categorical_features),
             ('num', 'passthrough', numerical_features)
         ],
@@ -205,32 +206,73 @@ def preprocess_data(df):
 
     return preprocessor, X_processed, df['label']
 
-# --- 3. Model Training (MLPClassifier) ---
-def train_model(X_train, y_train):
-    """Trains an MLPClassifier model."""
-    print("Training MLP model...")
-    # Initializing MLPClassifier with some common parameters
-    # hidden_layer_sizes: tuple, i-th element represents the number of neurons in the i-th hidden layer.
-    # max_iter: Maximum number of iterations for the solver to converge.
-    # random_state: For reproducibility.
-    # activation: 'relu' is common.
-    # solver: 'adam' is a good default for larger datasets.
-    model = MLPClassifier(hidden_layer_sizes=(100, 50), max_iter=200, random_state=42, activation='relu', solver='adam')
-    model.fit(X_train, y_train)
-    print("MLP model training complete.")
-    return model
+# --- 3. Model Training (MLPClassifier) with Cross-Validation ---
+def train_model(X_train, y_train, n_splits=5):
+    """
+    Trains an MLPClassifier model using Stratified K-Fold Cross-Validation
+    and then trains a final model on the entire X_train dataset.
+    Cross-validation is a technique used to evaluate the performance of a machine learning model 
+    by partitioning the dataset into multiple subsets, using some for training and others for validation. 
+    This process is repeated multiple times, and the evaluation metrics are averaged, 
+    providing a more robust and less biased estimate of the model's generalization ability than a single train-test split.
+    Stratified: This is key for classification problems. It ensures that each fold maintains the same proportion of classes (e.g., 'benign' vs. 'malicious') as the overall dataset. 
+    This is crucial for imbalanced datasets to prevent a fold from having too few (or zero) examples of a minority class.
+    """
+    print(f"\nPerforming {n_splits}-fold Stratified Cross-Validation on training data...")
+
+    skf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=42)
+
+    fold_accuracies = []
+    fold_precisions = []
+    fold_recalls = []
+    fold_f1_scores = []
+
+    for fold, (train_index, val_index) in enumerate(skf.split(X_train, y_train)):
+        X_train_fold, X_val_fold = X_train[train_index], X_train[val_index]
+        y_train_fold, y_val_fold = y_train.iloc[train_index], y_train.iloc[val_index] # Use .iloc for Series
+
+        # Initialize a new model for each fold to ensure independent training
+        fold_model = MLPClassifier(hidden_layer_sizes=(100, 50), max_iter=200, random_state=42, activation='relu', solver='adam')
+        fold_model.fit(X_train_fold, y_train_fold)
+
+        y_pred_fold = fold_model.predict(X_val_fold)
+
+        fold_accuracies.append(accuracy_score(y_val_fold, y_pred_fold))
+        fold_precisions.append(precision_score(y_val_fold, y_pred_fold))
+        fold_recalls.append(recall_score(y_val_fold, y_pred_fold))
+        fold_f1_scores.append(f1_score(y_val_fold, y_pred_fold))
+
+        print(f"\n--- Fold {fold + 1} Metrics ---")
+        print(f"Accuracy: {fold_accuracies[-1]:.4f}")
+        print(f"Precision: {fold_precisions[-1]:.4f}")
+        print(f"Recall: {fold_recalls[-1]:.4f}")
+        print(f"F1-Score: {fold_f1_scores[-1]:.4f}")
+
+    print("\n--- Average Cross-Validation Metrics ---")
+    print(f"Average Accuracy: {np.mean(fold_accuracies):.4f}")
+    print(f"Average Precision: {np.mean(fold_precisions):.4f}")
+    print(f"Average Recall: {np.mean(fold_recalls):.4f}")
+    print(f"Average F1-Score: {np.mean(fold_f1_scores):.4f}")
+
+    # Train the final model on the entire X_train dataset for deployment
+    print("\nTraining final MLP model on the full training dataset...")
+    final_model = MLPClassifier(hidden_layer_sizes=(100, 50), max_iter=200, random_state=42, activation='relu', solver='adam')
+    final_model.fit(X_train, y_train)
+    print("Final MLP model training complete.")
+
+    return final_model
 
 # --- 4. Model Evaluation ---
 def evaluate_model(model, X_test, y_test):
-    """Evaluates the trained model and prints performance metrics."""
-    print("\nEvaluating model performance...")
+    """Evaluates the trained model (typically the final one) and prints performance metrics."""
+    print("\nEvaluating final model performance on the test set...")
     y_pred = model.predict(X_test)
 
     print(f"Accuracy: {accuracy_score(y_test, y_pred):.4f}")
     print(f"Precision: {precision_score(y_test, y_pred):.4f}")
     print(f"Recall: {recall_score(y_test, y_pred):.4f}")
     print(f"F1-Score: {f1_score(y_test, y_pred):.4f}")
-    print("\nClassification Report:")
+    print("\nClassification Report (Test Set):")
     print(classification_report(y_test, y_pred, target_names=['benign', 'malicious']))
 
 # --- 5. Model Export ---
@@ -254,7 +296,6 @@ def main():
     os.makedirs('../predictive_model', exist_ok=True)
 
     
-
     # 1. Load and Clean Data
     df = load_and_clean_data(LOG_FILE_PATHS, columns_to_drop=COLUMNS_TO_DROP)
 
@@ -287,10 +328,10 @@ def main():
     print(f"Training data shape: {X_train.shape}")
     print(f"Testing data shape: {X_test.shape}")
 
-    # 3. Train Model
-    model = train_model(X_train, y_train)
+    # 3. Train Model (with cross-validation)
+    model = train_model(X_train, y_train, n_splits=5)
 
-    # 4. Evaluate Model
+    # 4. Evaluate Model (final evaluation on the held-out test set)
     evaluate_model(model, X_test, y_test)
 
     # 5. Save Model and Preprocessor
