@@ -1,1 +1,4 @@
-Flask
+flask
+pandas
+joblib
+scikit-learn

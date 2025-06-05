@@ -21,8 +21,8 @@ LOG_FILE_PATHS = [
 ]
 # Path to save the trained model (moved to ai_microservice folder, one level up)
 # Changed model name to reflect MLP
-MODEL_OUTPUT_PATH = os.path.join('..', 'ai_microservice', 'mlp_malicious_traffic_model.joblib')
-PREPROCESSOR_OUTPUT_PATH = os.path.join('..', 'ai_microservice', 'mlp_malicious_traffic_preprocessor.joblib')
+MODEL_OUTPUT_PATH = os.path.join('..', 'ai-microservice', 'mlp_malicious_traffic_model.joblib')
+PREPROCESSOR_OUTPUT_PATH = os.path.join('..', 'ai-microservice', 'mlp_malicious_traffic_preprocessor.joblib')
 
 # Columns to drop during data cleaning
 COLUMNS_TO_DROP = ['Timestamp', 'TransactionID', 'ClientIP', 'ClientPort', 'ServerIP', 'ServerPort',
@@ -336,14 +336,7 @@ def main():
     # 5. Save Model and Preprocessor
     save_model_and_preprocessor(model, preprocessor, MODEL_OUTPUT_PATH, PREPROCESSOR_OUTPUT_PATH)
 
-    print("\nTo reuse the model in your AI microservice, you will need to:")
-    print(f"1. Load the preprocessor: `preprocessor = joblib.load('{PREPROCESSOR_OUTPUT_PATH}')`")
-    print(f"2. Load the model: `model = joblib.load('{MODEL_OUTPUT_PATH}')`")
-    print("3. For new data, extract raw features, then transform them using the loaded preprocessor:")
-    print("   `new_data_df = pd.DataFrame([{'RequestMethod': 'GET', 'RequestURIPath': '/some/path', 'RequestURIQuery': 'param=value', 'RequestBody': '', 'UserAgent': 'Mozilla/5.0', 'RequestLength': 100, 'PathLength': 10, 'QueryLength': 10}])`")
-    print("4. Make predictions: `prediction = model.predict(new_features_processed)`")
-    print("   `prediction_proba = model.predict_proba(new_features_processed)` (if probability=True was set)")
-
+  
 
 if __name__ == "__main__":
     main()

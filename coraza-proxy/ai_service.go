@@ -14,19 +14,35 @@ import (
 // CallAIMicroservice makes a request to the AI microservice for threat classification
 func CallAIMicroservice(r *http.Request, bodyBytes []byte, tx types.Transaction) (string, float64) {
 	aiVerdict := "Not Evaluated" // Default verdict
-	aiScore := -1.0        // Default score
+	aiScore := -1.0              // Default score
 
 	// Only send requests with body, query parameters, or specific methods to AI for efficiency.
 	if len(bodyBytes) > 0 || r.URL.RawQuery != "" || r.Method == http.MethodPost || r.Method == http.MethodPut {
-		// Prepare the request payload for the AI microservice.
-		aiReq := map[string]string{
-			"method": r.Method,
-			"path":   r.URL.Path,
-			"query":  r.URL.RawQuery,
-			"body":   string(bodyBytes),
-			// Additional request details (headers, client IP) could be added here.
-			//TODO: format data point for prediction!!!!!
+		// Calculate the required fields
+		requestURIPath := r.URL.Path
+		queryLength := len(r.URL.RawQuery)
+		userAgent := r.UserAgent()
+		requestLength := r.ContentLength // This might be -1 for GET requests or if not set by client
+		if requestLength == -1 && len(bodyBytes) > 0 {
+			requestLength = int64(len(bodyBytes)) // Use actual body length if ContentLength is -1
 		}
+		requestURIQuery := r.URL.RawQuery
+		pathLength := len(r.URL.Path)
+		requestMethod := r.Method
+		requestBody := string(bodyBytes)
+
+		// Prepare the request payload for the AI microservice.
+		aiReq := map[string]interface{}{ // Use interface{} to allow different types
+			"request_uri_path":  requestURIPath,
+			"query_length":      queryLength,
+			"user_agent":        userAgent,
+			"request_length":    requestLength,
+			"request_uri_query": requestURIQuery,
+			"path_length":       pathLength,
+			"request_method":    requestMethod,
+			"request_body":      requestBody,
+		}
+
 		aiReqJSON, err := json.Marshal(aiReq) // Marshal to JSON, ignoring error for simplicity in example
 		if err != nil {
 			log.Printf("Error marshaling AI request: %v", err)
