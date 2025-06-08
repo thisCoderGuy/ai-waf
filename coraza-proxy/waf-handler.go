@@ -13,6 +13,8 @@ import (
 	"github.com/corazawaf/coraza/v3/types"
 )
 
+
+
 // WAFHandler processes incoming HTTP requests through Coraza WAF and an AI microservice,
 // then forwards them to the target application via a reverse proxy, if not intercepted.
 
@@ -34,6 +36,9 @@ import (
 func WAFHandler(w http.ResponseWriter, r *http.Request) {
 	//log.Println(">>> WAFHandler called for "+ r.URL.Path)
 	//GetGlobalLogger().LogInfo(">>> WAFHandler called for "+ r.URL.Path)
+
+	aiVerdict := "not evaluated"
+	aiScore := -1.0
 
 	// Create a new Coraza transaction for each incoming request.
 	tx := GetWAF().NewTransaction()
@@ -86,7 +91,7 @@ func WAFHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "WAF headers check failed", http.StatusBadRequest)
 			tx.ProcessLogging()
 			if logger := GetGlobalLogger(); logger != nil {
-				logger.LogTransaction(tx, r, nil, -1, "not evaluated")
+				logger.LogTransaction(tx, r, nil, aiScore, aiVerdict)
 			}
 			return
 		}
@@ -122,9 +127,11 @@ func WAFHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "WAF headers check failed", http.StatusBadRequest)
 			tx.ProcessLogging()
 			if logger := GetGlobalLogger(); logger != nil {
-				logger.LogTransaction(tx, r, nil, -1, "not evaluated")
+				logger.LogTransaction(tx, r, nil, aiScore, aiVerdict)
 			}
-			
+			if wazuhLogger := GetWazuhLogger(); wazuhLogger != nil {
+				wazuhLogger.LogTransaction(tx, r, nil, aiScore, aiVerdict)
+			}
 			return
 		}
 	}
@@ -161,14 +168,17 @@ func WAFHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Request blocked by WAF", http.StatusForbidden)
 			tx.ProcessLogging()
 			if logger := GetGlobalLogger(); logger != nil {
-				logger.LogTransaction(tx, r, nil, -1, "not evaluated")
-			}			
+				logger.LogTransaction(tx, r, nil, aiScore, aiVerdict)
+			}	
+			if wazuhLogger := GetWazuhLogger(); wazuhLogger != nil {
+				wazuhLogger.LogTransaction(tx, r, nil, aiScore, aiVerdict)
+			}		
 			return
 		}
 
 	}
 
-	aiVerdict, aiScore := CallAIMicroservice(r, bodyBytes, tx)
+	aiVerdict, aiScore = CallAIMicroservice(r, bodyBytes, tx)
     
     // Cache the AI score and verdict in the context
         ctx = context.WithValue(ctx, aiScoreContextKey, aiScore) // Store float64
@@ -206,6 +216,9 @@ func WAFHandler(w http.ResponseWriter, r *http.Request) {
 			tx.ProcessLogging()
 			if logger := GetGlobalLogger(); logger != nil {
 				logger.LogTransaction(tx, r, nil, aiScore, aiVerdict)
+			}
+			if wazuhLogger := GetWazuhLogger(); wazuhLogger != nil {
+				wazuhLogger.LogTransaction(tx, r, nil, aiScore, aiVerdict)
 			}
 			return
 		}

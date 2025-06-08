@@ -23,6 +23,19 @@ func init() {
 	//GetGlobalLogger().LogInfo("Logger ready!")
 	//log.Println("Logger ready!")
 
+	wazuhLoggerConfig := LoggerConfig{
+		Format:   wazuhLoggerFormat,
+		Filename: wazuhLoggerPath,
+	}
+	// Create logger that saves to file
+	wazuhLoggerInstance, err := NewCorazaLogger(wazuhLoggerConfig)
+	if err != nil {
+		log.Fatalf("Failed to create Wazuh Coraza logger: %v", err)
+	}
+	SetWazuhLogger(wazuhLoggerInstance) 
+	//GetGlobalLogger().LogInfo("Logger ready!")
+	//log.Println("Logger ready!")
+
 	// Initialize WAF
 	err = InitializeWAF()
 	if err != nil {
@@ -71,5 +84,11 @@ func main() {
 		if err := GetGlobalLogger().Close(); err != nil {
 			log.Printf("Error closing CorazaLogger: %v", err)
 		}
+
+		if err := GetWazuhLogger().Close(); err != nil {
+			log.Printf("Error closing Wazuh CorazaLogger: %v", err)
+		}
 	}()
+
+	
 }

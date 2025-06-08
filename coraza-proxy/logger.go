@@ -37,6 +37,8 @@ type CorazaLogger struct {
 
 var globalLogger *CorazaLogger
 
+var wazuhLogger *CorazaLogger
+
 // NewCorazaLogger creates a new CorazaLogger based on the provided configuration.
 func NewCorazaLogger(config LoggerConfig) (*CorazaLogger, error) {
 	file, err := os.OpenFile(config.Filename, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
@@ -71,6 +73,14 @@ func SetGlobalLogger(logger *CorazaLogger) {
 
 func GetGlobalLogger() *CorazaLogger {
 	return globalLogger
+}
+
+func SetWazuhLogger(logger *CorazaLogger) {
+	wazuhLogger = logger
+}
+
+func GetWazuhLogger() *CorazaLogger {
+	return wazuhLogger
 }
 
 func (c *CorazaLogger) LogInfo(
