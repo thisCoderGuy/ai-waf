@@ -32,6 +32,11 @@ COLUMNS_TO_DROP = ['Timestamp', 'TransactionID', 'ClientIP', 'ClientPort', 'Serv
 # Path to save the cleaned dataset
 CLEANED_DATA_OUTPUT_PATH = os.path.join('training_data', 'coraza-audit-cleaned.csv')
 
+problematic_endings = [
+    "Failed to write CSV record: short write",
+    "CSV writer error: short write"
+]
+
 # --- 1. Data Loading ---
 def load_and_clean_data(log_file_paths, columns_to_drop=None):
     """
@@ -52,13 +57,23 @@ def load_and_clean_data(log_file_paths, columns_to_drop=None):
             # Identify the header line (usually the first line)
             header_line = raw_lines[0]
             data_lines = raw_lines[1:]
+            filtered_data_lines = []
 
-            # Filter data lines: keep only those that contain at least one comma
-            # This helps remove lines that are clearly not structured CSV rows
-            # (e.g., plain log messages, incomplete lines without delimiters).
-            # Note: This is a heuristic. Valid single-column CSVs or CSVs with
-            # quoted commas will be handled by pandas.read_csv.
-            filtered_data_lines = [line for line in data_lines if ',' in line]
+            for data_line in data_lines:
+                stripped_line = data_line.rstrip('\r\n') 
+                
+                # Assume we keep the line by default
+                keep_this_line = True
+                
+                # Check if the stripped line ends with any of the problematic endings
+                for ending in problematic_endings:
+                    if stripped_line.endswith(ending):
+                        keep_this_line = False
+                        break
+                
+                if keep_this_line:
+                    # Re-add the original newline character before storing
+                    filtered_data_lines.append(data_line) 
 
             # Reconstruct the content for pandas, ensuring the header is always included
             processed_content = [header_line] + filtered_data_lines
@@ -282,8 +297,6 @@ def main():
 
     # 5. Save Model and Preprocessor
     save_model_and_preprocessor(model, preprocessor, MODEL_OUTPUT_PATH, PREPROCESSOR_OUTPUT_PATH)
-
-   
 
 if __name__ == "__main__":
     main()

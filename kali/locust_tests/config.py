@@ -8,9 +8,9 @@ class AppConfig:
 
     # --- Task Weights (moved to config) ---
     USER_TASK_WEIGHTS = { # ints only
-        "LegitimateUser": 0,
-        "SQLiAttacker":0,
-        "XSSAttacker": 10,
+        "LegitimateUser": 10,
+        "SQLiAttacker":1,
+        "XSSAttacker": 0,
         "DirectoryTraversalAttacker": 0,
         "EnumerationAttacker": 0,
         "CSRFAttacker": 0,
