@@ -1,84 +1,85 @@
 Method,Name,Error,Occurrences
-GET,/rest/products/20,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/20'),32
-DELETE,/rest/cart/item/6,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/6'),22
-PUT,/rest/cart/item/2,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/2'),21
-DELETE,/rest/cart/item/11,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/11'),15
-DELETE,/rest/cart/item/9,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/9'),19
-DELETE,/rest/cart/item/16,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/16'),18
-GET,/rest/products/10,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/10'),35
-DELETE,/rest/cart/item/2,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/2'),17
-GET,/rest/products/19,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/19'),25
-PUT,/rest/cart/item/4,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/4'),13
-PUT,/rest/cart/item/6,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/6'),29
-PUT,/rest/cart/item/13,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/13'),24
-DELETE,/rest/cart/item/19,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/19'),9
-PUT,/rest/cart/item/16,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/16'),33
-POST,/rest/cart/add,HTTPError('500 Server Error: Internal Server Error for url: /rest/cart/add'),1258
-DELETE,/rest/cart/item/20,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/20'),21
-GET,/rest/products/3,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/3'),29
-GET,/rest/products/5,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/5'),34
-GET,/rest/products/7,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/7'),41
-GET,/rest/products/17,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/17'),27
-PUT,/rest/cart/item/15,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/15'),19
-PUT,/rest/cart/item/18,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/18'),15
-DELETE,/rest/cart/item/4,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/4'),14
-DELETE,/rest/cart/item/18,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/18'),25
-PUT,/rest/cart/item/17,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/17'),27
-PUT,/rest/cart/item/7,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/7'),22
-GET,product_search/[GET_SQLi_FUZZ_GET],HTTPError('403 Client Error: Forbidden for url: product_search/[GET_SQLi_FUZZ_GET]'),277
-POST,user_login/[POST_SQLi_EMAIL_POST],HTTPError('401 Client Error: Unauthorized for url: user_login/[POST_SQLi_EMAIL_POST]'),1
-GET,/rest/products/11,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/11'),35
-POST,user_login/[POST_SQLi_EMAIL_POST],HTTPError('403 Client Error: Forbidden for url: user_login/[POST_SQLi_EMAIL_POST]'),104
-GET,/rest/products/{product_id}/[GET_SQLi_FUZZ_PATH],HTTPError('403 Client Error: Forbidden for url: /rest/products/{product_id}/[GET_SQLi_FUZZ_PATH]'),4
-DELETE,/rest/cart/item/15,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/15'),17
+GET,/rest/products/20,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/20'),45
+DELETE,/rest/cart/item/6,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/6'),21
+PUT,/rest/cart/item/2,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/2'),30
+DELETE,/rest/cart/item/11,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/11'),36
+DELETE,/rest/cart/item/9,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/9'),24
+DELETE,/rest/cart/item/16,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/16'),23
+GET,/rest/products/10,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/10'),30
+DELETE,/rest/cart/item/2,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/2'),23
+GET,/rest/products/19,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/19'),46
+PUT,/rest/cart/item/4,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/4'),25
+PUT,/rest/cart/item/6,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/6'),23
+PUT,/rest/cart/item/13,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/13'),33
+DELETE,/rest/cart/item/19,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/19'),19
+PUT,/rest/cart/item/16,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/16'),28
+POST,/rest/cart/add,HTTPError('500 Server Error: Internal Server Error for url: /rest/cart/add'),1592
+DELETE,/rest/cart/item/20,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/20'),24
+GET,/rest/products/3,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/3'),39
+GET,/rest/products/5,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/5'),42
+GET,/rest/products/7,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/7'),38
+GET,/rest/products/17,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/17'),34
+PUT,/rest/cart/item/15,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/15'),35
+PUT,/rest/cart/item/18,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/18'),37
+DELETE,/rest/cart/item/4,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/4'),26
+DELETE,/rest/cart/item/18,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/18'),19
+PUT,/rest/cart/item/17,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/17'),22
+PUT,/rest/cart/item/7,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/7'),24
+GET,product_search/[GET_SQLi_FUZZ_GET],HTTPError('403 Client Error: Forbidden for url: product_search/[GET_SQLi_FUZZ_GET]'),651
+POST,user_login/[POST_SQLi_EMAIL_POST],HTTPError('401 Client Error: Unauthorized for url: user_login/[POST_SQLi_EMAIL_POST]'),9
+GET,/rest/products/11,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/11'),46
+POST,user_login/[POST_SQLi_EMAIL_POST],HTTPError('403 Client Error: Forbidden for url: user_login/[POST_SQLi_EMAIL_POST]'),223
+GET,/rest/products/{product_id}/[GET_SQLi_FUZZ_PATH],HTTPError('403 Client Error: Forbidden for url: /rest/products/{product_id}/[GET_SQLi_FUZZ_PATH]'),14
+DELETE,/rest/cart/item/15,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/15'),23
 GET,/rest/products/9,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/9'),32
-PUT,/api/Users/5,HTTPError('403 Client Error: Forbidden for url: /api/Users/5'),59
-PUT,/rest/cart/item/14,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/14'),22
-PUT,/rest/cart/item/19,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/19'),17
-POST,/rest/user/login,HTTPError('403 Client Error: Forbidden for url: /rest/user/login'),297
-PUT,/api/Users/3,HTTPError('403 Client Error: Forbidden for url: /api/Users/3'),79
-DELETE,/rest/cart/item/1,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/1'),14
-POST,/rest/user/login,HTTPError('401 Client Error: Unauthorized for url: /rest/user/login'),319
-GET,product_details/[GET_SQLi_FUZZ_QUERY_ID],HTTPError('403 Client Error: Forbidden for url: product_details/[GET_SQLi_FUZZ_QUERY_ID]'),155
-DELETE,/rest/cart/item/13,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/13'),21
-DELETE,/rest/cart/item/3,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/3'),17
-GET,/rest/products/12,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/12'),37
-DELETE,/rest/cart/item/5,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/5'),14
-GET,/rest/products/18,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/18'),26
-GET,/rest/products/6,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/6'),32
-PUT,/rest/cart/item/5,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/5'),32
-PUT,/api/Users/4,HTTPError('403 Client Error: Forbidden for url: /api/Users/4'),80
-PUT,/rest/cart/item/9,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/9'),20
-PUT,update_product/[PUT_SQLi_PRODUCT_UPDATE_PUT],HTTPError('403 Client Error: Forbidden for url: update_product/[PUT_SQLi_PRODUCT_UPDATE_PUT]'),58
-GET,/rest/products/{product_id}/[GET_SQLi_FUZZ_PATH_NO_OBF],HTTPError('403 Client Error: Forbidden for url: /rest/products/{product_id}/[GET_SQLi_FUZZ_PATH_NO_OBF]'),3
-PUT,/rest/cart/item/8,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/8'),22
-POST,user_login/[POST_SQLi_PASSWORD_POST],HTTPError('401 Client Error: Unauthorized for url: user_login/[POST_SQLi_PASSWORD_POST]'),1
-PUT,/rest/cart/item/11,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/11'),9
-DELETE,/rest/cart/item/14,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/14'),13
-GET,/rest/products/{product_id}/[GET_SQLi_FUZZ_PATH_NO_OBF],HTTPError('500 Server Error: Internal Server Error for url: /rest/products/{product_id}/[GET_SQLi_FUZZ_PATH_NO_OBF]'),53
-GET,/rest/products/{product_id}/[GET_SQLi_FUZZ_PATH],HTTPError('500 Server Error: Internal Server Error for url: /rest/products/{product_id}/[GET_SQLi_FUZZ_PATH]'),95
-GET,/rest/products/16,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/16'),35
-PUT,/rest/cart/item/20,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/20'),10
-GET,/rest/products/14,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/14'),36
-GET,/rest/products/8,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/8'),37
-GET,/rest/products/15,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/15'),26
-GET,/rest/products/13,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/13'),36
-GET,/rest/products/4,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/4'),23
-GET,/rest/products/1,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/1'),34
-PUT,/api/Users/1,HTTPError('403 Client Error: Forbidden for url: /api/Users/1'),72
-PUT,/rest/cart/item/3,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/3'),28
-DELETE,/rest/cart/item/7,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/7'),18
-GET,/rest/cart,HTTPError('500 Server Error: Internal Server Error for url: /rest/cart'),902
-GET,/rest/products/2,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/2'),33
-DELETE,/rest/cart/item/10,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/10'),14
-POST,/rest/orders/,HTTPError('500 Server Error: Internal Server Error for url: /rest/orders/'),198
-DELETE,/rest/cart/item/17,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/17'),16
-POST,/api/Users/,HTTPError('403 Client Error: Forbidden for url: /api/Users/'),402
-DELETE,/rest/cart/item/8,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/8'),16
-POST,/api/Users/,HTTPError('400 Client Error: Bad Request for url: /api/Users/'),3
-PUT,/rest/cart/item/1,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/1'),10
-POST,user_login/[POST_SQLi_PASSWORD_POST],HTTPError('403 Client Error: Forbidden for url: user_login/[POST_SQLi_PASSWORD_POST]'),104
+PUT,/api/Users/5,HTTPError('403 Client Error: Forbidden for url: /api/Users/5'),69
+PUT,/rest/cart/item/14,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/14'),32
+PUT,/rest/cart/item/19,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/19'),31
+POST,/rest/user/login,HTTPError('403 Client Error: Forbidden for url: /rest/user/login'),429
+PUT,/api/Users/3,HTTPError('403 Client Error: Forbidden for url: /api/Users/3'),81
+DELETE,/rest/cart/item/1,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/1'),24
+POST,/rest/user/login,HTTPError('401 Client Error: Unauthorized for url: /rest/user/login'),333
+GET,product_details/[GET_SQLi_FUZZ_QUERY_ID],HTTPError('403 Client Error: Forbidden for url: product_details/[GET_SQLi_FUZZ_QUERY_ID]'),382
+DELETE,/rest/cart/item/13,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/13'),25
+DELETE,/rest/cart/item/3,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/3'),21
+GET,/rest/products/12,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/12'),54
+DELETE,/rest/cart/item/5,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/5'),23
+GET,/rest/products/18,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/18'),48
+GET,/rest/products/6,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/6'),43
+PUT,/rest/cart/item/5,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/5'),34
+PUT,/api/Users/4,HTTPError('403 Client Error: Forbidden for url: /api/Users/4'),78
+PUT,/rest/cart/item/9,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/9'),26
+PUT,update_product/[PUT_SQLi_PRODUCT_UPDATE_PUT],HTTPError('403 Client Error: Forbidden for url: update_product/[PUT_SQLi_PRODUCT_UPDATE_PUT]'),140
+GET,/rest/products/{product_id}/[GET_SQLi_FUZZ_PATH_NO_OBF],HTTPError('403 Client Error: Forbidden for url: /rest/products/{product_id}/[GET_SQLi_FUZZ_PATH_NO_OBF]'),14
+PUT,/rest/cart/item/8,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/8'),32
+POST,user_login/[POST_SQLi_PASSWORD_POST],HTTPError('401 Client Error: Unauthorized for url: user_login/[POST_SQLi_PASSWORD_POST]'),11
+PUT,/rest/cart/item/11,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/11'),30
+DELETE,/rest/cart/item/14,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/14'),27
+GET,/rest/products/{product_id}/[GET_SQLi_FUZZ_PATH_NO_OBF],HTTPError('500 Server Error: Internal Server Error for url: /rest/products/{product_id}/[GET_SQLi_FUZZ_PATH_NO_OBF]'),110
+GET,/rest/products/{product_id}/[GET_SQLi_FUZZ_PATH],HTTPError('500 Server Error: Internal Server Error for url: /rest/products/{product_id}/[GET_SQLi_FUZZ_PATH]'),244
+GET,/rest/products/16,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/16'),42
+PUT,/rest/cart/item/20,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/20'),42
+GET,/rest/products/14,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/14'),43
+GET,/rest/products/8,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/8'),43
+GET,/rest/products/15,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/15'),44
+GET,/rest/products/13,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/13'),41
+GET,/rest/products/4,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/4'),39
+GET,/rest/products/1,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/1'),46
+PUT,/api/Users/1,HTTPError('403 Client Error: Forbidden for url: /api/Users/1'),89
+PUT,/rest/cart/item/3,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/3'),20
+DELETE,/rest/cart/item/7,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/7'),22
+GET,/rest/cart,HTTPError('500 Server Error: Internal Server Error for url: /rest/cart'),1158
+GET,/rest/products/2,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/2'),46
+DELETE,/rest/cart/item/10,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/10'),19
+POST,/rest/orders/,HTTPError('500 Server Error: Internal Server Error for url: /rest/orders/'),278
+DELETE,/rest/cart/item/17,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/17'),31
+POST,/api/Users/,HTTPError('403 Client Error: Forbidden for url: /api/Users/'),466
+DELETE,/rest/cart/item/8,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/8'),30
+POST,/api/Users/,HTTPError('400 Client Error: Bad Request for url: /api/Users/'),8
+PUT,/rest/cart/item/1,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/1'),26
+POST,user_login/[POST_SQLi_PASSWORD_POST],HTTPError('403 Client Error: Forbidden for url: user_login/[POST_SQLi_PASSWORD_POST]'),224
 PUT,/rest/cart/item/10,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/10'),21
-PUT,/rest/cart/item/12,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/12'),33
-PUT,/api/Users/2,HTTPError('403 Client Error: Forbidden for url: /api/Users/2'),63
-DELETE,/rest/cart/item/12,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/12'),17
+PUT,/rest/cart/item/12,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/12'),37
+POST,user_login/[POST_SQLi_EMAIL_POST],HTTPError('500 Server Error: Internal Server Error for url: user_login/[POST_SQLi_EMAIL_POST]'),3
+PUT,/api/Users/2,HTTPError('403 Client Error: Forbidden for url: /api/Users/2'),88
+DELETE,/rest/cart/item/12,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/12'),27
