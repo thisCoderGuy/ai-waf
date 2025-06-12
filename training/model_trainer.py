@@ -5,10 +5,56 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.model_selection import StratifiedKFold, GridSearchCV, RandomizedSearchCV # Import GridSearchCV and RandomizedSearchCV
 from sklearn.pipeline import Pipeline # Useful for combining preprocessor and model
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from sklearn.neural_network import MLPClassifier # <--- NEW IMPORT for scikit-learn MLP
+
+from fcnn_wrapper import PyTorchMLPClassifier 
+
 import numpy as np
 
 # Import model-specific configurations and tuning parameters
-from config import SKLEARN_MODEL_PARAMS, RANDOM_STATE, TUNING_PARAMS
+from config import SKLEARN_MODEL_PARAMS, RANDOM_STATE, TUNING_PARAMS, LOSS_PARAMS, OPTIMIZER_PARAMS
+
+def get_model(model_type, model_params, random_state=None):
+    """
+    Returns an initialized model based on the specified type and parameters.
+    """
+    ModelClass = None # Initialize ModelClass
+
+    if model_type == 'svm':
+        ModelClass = SVC
+    elif model_type == 'random_forest':
+        ModelClass = RandomForestClassifier
+    elif model_type == 'decision_tree':
+        ModelClass = DecisionTreeClassifier
+    elif model_type == 'naive_bayes':
+        # Assuming MultinomialNB for text-based features, adjust if using GaussianNB
+        ModelClass = MultinomialNB
+    elif model_type == 'mlp': 
+        ModelClass = MLPClassifier
+    elif model_type == 'fcnn':
+        ModelClass = PyTorchMLPClassifier
+    else:
+        raise ValueError(f"Unknown model type: {model_type}")
+
+
+    if model_type == 'fcnn':
+        model = ModelClass(
+            hidden_size=model_params.get('hidden_size', 64),
+            learning_rate=model_params.get('learning_rate', 0.001),
+            epochs=model_params.get('epochs', 50),
+            batch_size=model_params.get('batch_size', 32),
+            random_state=random_state, 
+            verbose=False,
+             optimizer_params=OPTIMIZER_PARAMS, 
+             loss_params=LOSS_PARAMS 
+        )
+    else:
+        if 'random_state' in ModelClass()._get_param_names(): 
+            model = ModelClass(random_state=random_state, **model_params)
+        else:
+            model = ModelClass(**model_params)
+
+    return model
 
 def train_model(X_train, y_train, model_type, n_splits=5, random_state=RANDOM_STATE, perform_tuning=False, tuning_method='grid', random_search_n_iter=10):
     """
@@ -35,21 +81,7 @@ def train_model(X_train, y_train, model_type, n_splits=5, random_state=RANDOM_ST
     if 'random_state' in model_params and model_params['random_state'] is None:
         model_params['random_state'] = random_state
 
-    if model_type == 'svm':
-        ModelClass = SVC
-    elif model_type == 'random_forest':
-        ModelClass = RandomForestClassifier
-    elif model_type == 'decision_tree':
-        ModelClass = DecisionTreeClassifier
-    elif model_type == 'naive_bayes':
-        ModelClass = MultinomialNB # Or GaussianNB depending on feature type
-    elif model_type in ['cnn', 'rnn', 'lstm', 'transformer', 'llm']:
-        raise NotImplementedError(f"Deep Learning and LLM models ({model_type}) require separate implementations "
-                                  "using frameworks like TensorFlow/Keras and different data handling. "
-                                  "This part of the code is a placeholder for future development.")
-    else:
-        raise ValueError(f"Unsupported model type: {model_type}. "
-                         "Please ensure 'MODEL_TYPE' in config.py is one of the supported types.")
+    model = get_model(model_type, model_params, random_state)
 
     if perform_tuning:
         print(f"\nStarting Hyperparameter Tuning ({tuning_method.upper()} Search) for {model_type.upper()} model...")
@@ -58,7 +90,7 @@ def train_model(X_train, y_train, model_type, n_splits=5, random_state=RANDOM_ST
         if not param_grid:
             raise ValueError(f"No tuning parameters defined for model type: {model_type} in TUNING_PARAMS.")
 
-        estimator = ModelClass(**model_params) # Initialize with default or base params
+        estimator = model
 
         # Define the cross-validation strategy for tuning
         cv_strategy = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=random_state)
@@ -94,43 +126,9 @@ def train_model(X_train, y_train, model_type, n_splits=5, random_state=RANDOM_ST
 
         final_model = search_cv.best_estimator_ # The model with the best parameters
     else:
-        # Original cross-validation logic (without tuning)
-        skf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=random_state)
-        fold_accuracies = []
-        fold_precisions = []
-        fold_recalls = []
-        fold_f1_scores = []
-
-        for fold, (train_index, val_index) in enumerate(skf.split(X_train, y_train)):
-            X_train_fold, X_val_fold = X_train[train_index], X_train[val_index]
-            y_train_fold, y_val_fold = y_train.iloc[train_index], y_train.iloc[val_index]
-
-            fold_model = ModelClass(**model_params)
-            fold_model.fit(X_train_fold, y_train_fold)
-
-            y_pred_fold = fold_model.predict(X_val_fold)
-
-            fold_accuracies.append(accuracy_score(y_val_fold, y_pred_fold))
-            fold_precisions.append(precision_score(y_val_fold, y_pred_fold))
-            fold_recalls.append(recall_score(y_val_fold, y_pred_fold))
-            fold_f1_scores.append(f1_score(y_val_fold, y_pred_fold))
-
-            print(f"\n--- Fold {fold + 1} Metrics ({model_type.upper()}) ---")
-            print(f"Accuracy: {fold_accuracies[-1]:.4f}")
-            print(f"Precision: {fold_precisions[-1]:.4f}")
-            print(f"Recall: {fold_recalls[-1]:.4f}")
-            print(f"F1-Score: {fold_f1_scores[-1]:.4f}")
-
-        print("\n--- Average Cross-Validation Metrics ---")
-        print(f"Average Accuracy: {np.mean(fold_accuracies):.4f}")
-        print(f"Average Precision: {np.mean(fold_precisions):.4f}")
-        print(f"Average Recall: {np.mean(fold_recalls):.4f}")
-        print(f"Average F1-Score: {np.mean(fold_f1_scores):.4f}")
-
-        # Train the final model on the entire X_train dataset for deployment
-        print(f"\nTraining final {model_type.upper()} model on the full training dataset...")
-        final_model = ModelClass(**model_params)
-        final_model.fit(X_train, y_train)
-        print(f"Final {model_type.upper()} model training complete.")
+        # No cross validation, nor hyperparameter tuning
+        final_model = model
+        model.fit(X_train, y_train)
+        print(f"{model_type.upper()} model training complete.")
 
     return final_model

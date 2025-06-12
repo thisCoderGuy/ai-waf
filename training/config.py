@@ -2,21 +2,24 @@ import os
 
 # --- Model Selection and Specific Parameters ---
 # Set the current model type. 
-# Possible values so far: 'svm', 'random_forest', 'decision_tree', 'naive_bayes', 'cnn', 'rnn', 'lstm', 'transformer', 'llm'
-MODEL_TYPE = 'naive_bayes'
+# Possible values so far: 'svm', 'random_forest', 'decision_tree', 'naive_bayes', 'mlp',
+#                         'fcnn', 'cnn', 'rnn', 'lstm', 'transformer', 'llm'  # For those choose N_SPLITS_CROSS_VALIDATION = small num
+MODEL_TYPE = 'fcnn'
 
 # --- General Model Training Configuration ---
-# Number of splits for Stratified K-Fold Cross-Validation (used by traditional models)
-N_SPLITS_CROSS_VALIDATION = 5
 # Test size vs training size
 TEST_SIZE = 0.2
 # Random state for reproducibility in data splitting and model training
 RANDOM_STATE = 42
 
-# Hyperparameter tuning:
+# --- Cross validation and hyperparameter tuning ---
+# Cross validation and hyperparameter tuning:
 PERFORM_TUNING = True
-TUNING_METHOD = 'grid' # 'grid' for GridSearchCV or 'random' for RandomizedSearchCV.
+TUNING_METHOD = 'random' # 'grid' for GridSearchCV or 'random' for RandomizedSearchCV.
 RANDOM_SEARCH_N_ITER = 10 # Number of parameter settings that are sampled if using RandomizedSearchCV
+# Number of splits for Stratified K-Fold Cross-Validation (used by traditional models)
+N_SPLITS_CROSS_VALIDATION = 3
+
 
 # --- Feature Extraction Parameters (for TfidfVectorizer) ---
 TFIDF_MAX_FEATURES = 5000
@@ -41,24 +44,22 @@ SKLEARN_MODEL_PARAMS = {
     },
     'naive_bayes': {
         # No specific parameters commonly tuned for MultinomialNB or GaussianNB, depending on data
-    }
-}
-
-# Parameters for hyperparameter tuning
-TUNING_PARAMS = {
-    'svm': {
-        'C': [0.1, 1, 10, 100],
-        'kernel': ['linear', 'rbf']
     },
-    'random_forest': {
-        'n_estimators': [50, 100, 200],
-        'max_depth': [None, 10, 20]
-    }
-    # Add tuning parameters for other models here
-}
-
-# Parameters for Deep Learning Models (CNN, RNN, LSTM, Transformer)
-DEEP_LEARNING_MODEL_PARAMS = {
+    'mlp': { 
+        'hidden_layer_sizes': (64,), # One hidden layer with 64 neurons
+        'activation': 'relu',
+        'solver': 'adam',
+        'alpha': 0.0001, # L2 regularization parameter
+        'learning_rate_init': 0.001,
+        'max_iter': 200, # Number of epochs
+        'verbose': False # Set to True for verbose training output
+    },
+    'fcnn': {
+         'hidden_size': 64,
+         'learning_rate': 0.001,
+         'epochs': 50,
+         'batch_size': 32
+    },
     'cnn': {
         'input_shape': (5000, 1), # Example input shape, adjust based on feature extractor output
         'num_filters': 128,
@@ -90,16 +91,66 @@ DEEP_LEARNING_MODEL_PARAMS = {
         'learning_rate': 0.001,
         'epochs': 10,
         'batch_size': 32
-    }
-}
-
-# Parameters for Large Language Models (LLM)
-LLM_MODEL_PARAMS = {
+    },
     'llm': {
         'model_name': 'gemini-2.0-flash', # Or other LLM models
         'temperature': 0.7,
         'max_tokens': 150,
         # Any other specific LLM parameters like fine-tuning settings, API keys etc.
+    }
+}
+
+# Parameters for hyperparameter tuning
+TUNING_PARAMS = {
+    'svm': {
+        'C': [0.1, 1, 10, 100],
+        'kernel': ['linear', 'rbf']
+    },
+    'random_forest': {
+        'n_estimators': [50, 100, 200],
+        'max_depth': [None, 10, 20]
+    },
+    'decision_tree': { 
+        'max_depth': [None, 5, 10, 15],
+        'min_samples_split': [2, 5, 10],
+        'min_samples_leaf': [1, 2, 4],
+        'criterion': ['gini', 'entropy']
+    },
+    'naive_bayes': { 
+        'alpha': [0.01, 0.1, 0.5, 1.0, 5.0, 10.0] 
+    },
+    'mlp': {
+        'hidden_layer_sizes': [(32,), (64,), (32, 32), (64, 32)], # Example: 1 or 2 hidden layers
+        'activation': ['relu', 'tanh'],
+        'solver': ['adam', 'sgd'],
+        'alpha': [0.0001, 0.001, 0.01], # L2 regularization strength
+        'learning_rate_init': [0.0005, 0.001, 0.005],
+        'max_iter': [100, 200, 300] # Number of epochs
+    },
+    'fcnn': {
+         'hidden_size': [32, 64],
+         'learning_rate': [0.001, 0.01],
+         'epochs': [50, 100]
+    }
+}
+
+
+
+# --- PyTorch Specific Configuration ---
+OPTIMIZER_PARAMS = {
+    'type': 'Adam', # Options: 'Adam', 'SGD', etc.
+    'hyperparameters': {
+        'lr': 0.001, # Default learning rate for Adam
+        'weight_decay': 0, # regularization
+        # Add other Adam-specific params here, e.g., 'betas': (0.9, 0.999), 'eps': 1e-08, 'weight_decay': 0
+    }
+}
+
+LOSS_PARAMS = {
+    'type': 'CrossEntropyLoss', # Options: 'CrossEntropyLoss', 'BCEWithLogitsLoss', etc.
+    'hyperparameters': {
+        # Example for CrossEntropyLoss with class weights (adjust weights based on your class distribution)
+        # 'weight': [1.0, 10.0] # Needs to be a torch.Tensor, converted inside the wrapper
     }
 }
 
