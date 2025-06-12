@@ -1,33 +1,89 @@
 import os
 
-# --- Model Selection and Specific Parameters ---
-# Set the current model type. 
-# Possible values so far: 'svm', 'random_forest', 'decision_tree', 'naive_bayes', 'mlp',
-#                         'fcnn', 'cnn', 'rnn', 'lstm', 'transformer', 'llm'  # For those choose N_SPLITS_CROSS_VALIDATION = small num
-MODEL_TYPE = 'fcnn'
+#########################################################
+# --- Logger Setup ---
+#########################################################
+# Path for the  log file
+EVALUATION_LOG_PATH = os.path.join('model-logs', 'all_models.txt')
 
+
+#########################################################
+# --- Directory Setup (created if they don't exist) ---
+#########################################################
+# Directories required for the project structure
+REQUIRED_DIRS = [
+    os.path.join('training-data', 'raw'),
+    os.path.join('training-data', 'cleaned'),
+    'model-logs', 
+    os.path.join('..', 'ai-microservice', 'trained-models')
+]
+
+#########################################################
+# --- Data Loading and Cleaning ---
+#########################################################
+# Do perform data cleaning?
+PERFORM_DATA_CLEANING = False # True or False
+
+# Path to raw dataset files (Coraza audit log files)
+LOG_FILE_PATHS = [
+    os.path.join('training-data', 'raw', 'coraza-audit-benign.csv'),
+    os.path.join('training-data', 'raw', 'coraza-audit-sqli.csv'),
+    os.path.join('training-data', 'raw', 'coraza-audit-xss.csv')
+]
+
+# Columns to drop during initial data cleaning
+COLUMNS_TO_DROP = [
+    'Timestamp', 'TransactionID', 'ClientIP', 'ClientPort', 'ServerIP', 'ServerPort',
+    'ResponseProtocol', 'ResponseHeaders', 'ResponseBody',
+    'WAFInterrupted', 'InterruptionRuleID', 'InterruptionStatus', 'InterruptionAction',
+    'MatchedRulesCount', 'MatchedRulesIDs', 'MatchedRulesMessages', 'MatchedRulesTags',
+    'AIScore', 'AIVerdict' # 'TimeOfDayHour', 'TimeOfDayDayOfWeek' if they were present
+]
+
+# Specific problematic endings to filter out from raw log lines
+PROBLEMATIC_ENDINGS = [
+    "Failed to write CSV record: short write",
+    "CSV writer error: short write"
+]
+
+# Path to save the cleaned dataset (within 'training-data' folder)
+CLEANED_DATA_OUTPUT_PATH = os.path.join('training-data', 'cleaned', 'coraza-audit-cleaned.csv')
+
+
+#########################################################
+# --- Preprocessing (Feature extraction) ---
+#########################################################
+# --- Feature Extraction Parameters (for TfidfVectorizer) for text columns ---
+TFIDF_MAX_FEATURES = 5000
+# URI_PATH column
+URI_PATH_TFIDF_ANALYZER = 'char' # 'word' or 'char'
+URI_PATH_TFIDF_NGRAM_RANGE = (1, 6) # For character n-grams
+# URI_QUERY column
+URI_QUERY_TFIDF_ANALYZER = 'char' # 'word' or 'char'
+URI_QUERY_TFIDF_NGRAM_RANGE = (1, 6) # For character n-grams
+# BODY column
+BODY_TFIDF_ANALYZER = 'char' # 'word' or 'char'
+BODY_TFIDF_NGRAM_RANGE = (1, 6) # For character n-grams
+# USER_AGENT column
+USER_AGENT_TFIDF_ANALYZER = 'word' # 'word' or 'char'
+USER_AGENT_TFIDF_NGRAM_RANGE = (1, 2) # For character n-grams
+
+#########################################################
+# --- Model Selection and Specific Parameters ---
+#########################################################
 # --- General Model Training Configuration ---
 # Test size vs training size
 TEST_SIZE = 0.2
 # Random state for reproducibility in data splitting and model training
 RANDOM_STATE = 42
-
-# --- Cross validation and hyperparameter tuning ---
-# Cross validation and hyperparameter tuning:
-PERFORM_TUNING = True
-TUNING_METHOD = 'random' # 'grid' for GridSearchCV or 'random' for RandomizedSearchCV.
-RANDOM_SEARCH_N_ITER = 10 # Number of parameter settings that are sampled if using RandomizedSearchCV
-# Number of splits for Stratified K-Fold Cross-Validation (used by traditional models)
-N_SPLITS_CROSS_VALIDATION = 3
+# Set the current model type. 
+# Possible values so far: 'svm', 'random_forest', 'decision_tree', 'naive_bayes', 'mlp',
+#                         'fcnn', 'cnn', 'rnn', 'lstm', 'transformer', 'llm'  # For those choose N_SPLITS_CROSS_VALIDATION = small num
+MODEL_TYPE = 'random_forest'
 
 
-# --- Feature Extraction Parameters (for TfidfVectorizer) ---
-TFIDF_MAX_FEATURES = 5000
-TFIDF_ANALYZER = 'char' # 'word' or 'char'
-TFIDF_NGRAM_RANGE = (2, 4) # For character n-grams
-
-# Parameters (when doing hyper parameter tuning, those are the base parameters being optimized) for traditional Scikit-learn models 
-SKLEARN_MODEL_PARAMS = {
+# --- Model Parameters  ---
+MODEL_PARAMS = {
     'svm': {
         'kernel': 'linear',
         'probability': True,
@@ -36,11 +92,9 @@ SKLEARN_MODEL_PARAMS = {
     'random_forest': {
         'n_estimators': 100,
         'max_depth': None, # None means nodes are expanded until all leaves are pure or until all leaves contain less than min_samples_split samples.
-        'random_state': RANDOM_STATE
     },
     'decision_tree': {
         'max_depth': None,
-        'random_state': RANDOM_STATE
     },
     'naive_bayes': {
         # No specific parameters commonly tuned for MultinomialNB or GaussianNB, depending on data
@@ -100,6 +154,16 @@ SKLEARN_MODEL_PARAMS = {
     }
 }
 
+#########################################################
+# --- Cross validation and hyperparameter tuning ---
+#########################################################
+# Do perform Cross validation and hyperparameter tuning?
+PERFORM_TUNING = True # True or False
+TUNING_METHOD = 'random' # 'grid' for GridSearchCV or 'random' for RandomizedSearchCV.
+RANDOM_SEARCH_N_ITER = 10 # Number of parameter settings that are sampled if using RandomizedSearchCV
+# Number of splits for Stratified K-Fold Cross-Validation 
+N_SPLITS_CROSS_VALIDATION = 3
+
 # Parameters for hyperparameter tuning
 TUNING_PARAMS = {
     'svm': {
@@ -135,8 +199,10 @@ TUNING_PARAMS = {
 }
 
 
-
+#########################################################
 # --- PyTorch Specific Configuration ---
+#########################################################
+
 OPTIMIZER_PARAMS = {
     'type': 'Adam', # Options: 'Adam', 'SGD', etc.
     'hyperparameters': {
@@ -155,47 +221,12 @@ LOSS_PARAMS = {
 }
 
 
-# Columns to drop during initial data cleaning
-COLUMNS_TO_DROP = [
-    'Timestamp', 'TransactionID', 'ClientIP', 'ClientPort', 'ServerIP', 'ServerPort',
-    'ResponseProtocol', 'ResponseHeaders', 'ResponseBody',
-    'WAFInterrupted', 'InterruptionRuleID', 'InterruptionStatus', 'InterruptionAction',
-    'MatchedRulesCount', 'MatchedRulesIDs', 'MatchedRulesMessages', 'MatchedRulesTags',
-    'AIScore', 'AIVerdict' # 'TimeOfDayHour', 'TimeOfDayDayOfWeek' if they were present
-]
 
-# Specific problematic endings to filter out from raw log lines
-PROBLEMATIC_ENDINGS = [
-    "Failed to write CSV record: short write",
-    "CSV writer error: short write"
-]
-
-# --- Configuration for Data, Model, and Log Paths ---
-# Path to raw dataset files (Coraza audit log files)
-LOG_FILE_PATHS = [
-    os.path.join('training_data', 'raw', 'coraza-audit-benign.csv'),
-    os.path.join('training_data', 'raw', 'coraza-audit-sqli.csv'),
-    os.path.join('training_data', 'raw', 'coraza-audit-xss.csv')
-]
-
-# Path to save the cleaned dataset (within 'training_data' folder)
-CLEANED_DATA_OUTPUT_PATH = os.path.join('training_data', 'cleaned', 'coraza-audit-cleaned.csv')
-
+#########################################################
+# --- Model Output Configuration ---
+#########################################################
 # Path to save the trained model.
-MODEL_BASE_OUTPUT_DIR = os.path.join('..', 'ai-microservice')
+MODEL_BASE_OUTPUT_DIR = os.path.join('..', 'ai-microservice', 'trained-models')
 # Prefix for the generated model and preprocessor filenames (e.g., 'svm_malicious_traffic_model_20250611_1330.joblib')
 MODEL_FILENAME_PREFIX = 'malicious_traffic_model'
 PREPROCESSOR_FILENAME_PREFIX = 'malicious_traffic_preprocessor'
-
-
-# Path for the evaluation log file
-EVALUATION_LOG_PATH = os.path.join('logs', 'evaluation_metrics.log')
-
-# --- Directory Setup (created if they don't exist) ---
-# Directories required for the project structure
-REQUIRED_DIRS = [
-    os.path.join('training_data', 'raw'),
-    os.path.join('training_data', 'cleaned'),
-    'logs', 
-    os.path.join('..', 'ai-microservice')
-]

@@ -4,15 +4,16 @@ import joblib
 import pandas as pd
 import os
 
+from config import (
+    MODEL_PATH, PREPROCESSOR_PATH 
+)
+
 app = Flask(__name__)
 
 # Configure logging to stdout/stderr which Docker captures
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# --- Model and Preprocessor Loading ---
-# Paths are relative to the container's /app directory, where the volumes are mounted.
-MODEL_PATH = '/app/mlp_malicious_traffic_model.joblib'
-PREPROCESSOR_PATH = '/app/mlp_malicious_traffic_preprocessor.joblib'
+
 
 # Global variables to hold the loaded model and preprocessor
 model = None

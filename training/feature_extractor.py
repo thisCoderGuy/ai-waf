@@ -3,7 +3,16 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import ColumnTransformer
 
-def preprocess_data(df, tfidf_max_features, tfidf_analyzer, tfidf_ngram_range):
+# Import model-specific configurations and tuning parameters
+from config import (
+    TFIDF_MAX_FEATURES,
+    URI_PATH_TFIDF_ANALYZER, URI_PATH_TFIDF_NGRAM_RANGE,
+    URI_QUERY_TFIDF_ANALYZER, URI_QUERY_TFIDF_NGRAM_RANGE,
+    BODY_TFIDF_ANALYZER, BODY_TFIDF_NGRAM_RANGE, 
+    USER_AGENT_TFIDF_ANALYZER, USER_AGENT_TFIDF_NGRAM_RANGE
+)
+
+def preprocess_data(df, logger):
     """
     Extracts features and creates a ColumnTransformer for preprocessing.
 
@@ -19,6 +28,17 @@ def preprocess_data(df, tfidf_max_features, tfidf_analyzer, tfidf_ngram_range):
             - X_processed (scipy.sparse.csr_matrix or numpy.ndarray): The transformed features.
             - y (pandas.Series): The target labels.
     """
+    logger.info("--- Preprocessing (Feature extraction) ---")
+    log_message = f"""\tTFIDF_MAX_FEATURES: {TFIDF_MAX_FEATURES}
+\tURI_PATH_TFIDF_ANALYZER: {URI_PATH_TFIDF_ANALYZER}
+\tURI_PATH_TFIDF_NGRAM_RANGE: {URI_PATH_TFIDF_NGRAM_RANGE}
+\tURI_QUERY_TFIDF_ANALYZER: {URI_QUERY_TFIDF_ANALYZER}
+\tURI_QUERY_TFIDF_NGRAM_RANGE: {URI_QUERY_TFIDF_NGRAM_RANGE}
+\tBODY_TFIDF_ANALYZER: {BODY_TFIDF_ANALYZER}
+\tBODY_TFIDF_NGRAM_RANGE: {BODY_TFIDF_NGRAM_RANGE}
+\tUSER_AGENT_TFIDF_ANALYZER: {USER_AGENT_TFIDF_ANALYZER}
+\tUSER_AGENT_TFIDF_NGRAM_RANGE: {USER_AGENT_TFIDF_NGRAM_RANGE}"""
+    logger.info(log_message) 
     print("\nPerforming feature extraction and preprocessing...")
 
     # We use AIVerdictLabel as the label.
@@ -59,10 +79,10 @@ def preprocess_data(df, tfidf_max_features, tfidf_analyzer, tfidf_ngram_range):
     # OneHotEncoder: learns all unique categorical values for each specified column (e.g., "GET", "POST").
     preprocessor = ColumnTransformer(
         transformers=[
-            ('text_uri_path', TfidfVectorizer(max_features=tfidf_max_features, analyzer=tfidf_analyzer, ngram_range=tfidf_ngram_range), 'request_uri_path'),
-            ('text_uri_query', TfidfVectorizer(max_features=tfidf_max_features, analyzer=tfidf_analyzer, ngram_range=tfidf_ngram_range), 'request_uri_query'),
-            ('text_body', TfidfVectorizer(max_features=tfidf_max_features, analyzer=tfidf_analyzer, ngram_range=tfidf_ngram_range), 'request_body'),
-            ('text_user_agent', TfidfVectorizer(max_features=tfidf_max_features), 'user_agent'), # User-agent might benefit from word-level TF-IDF or char-level based on nature
+            ('text_uri_path', TfidfVectorizer(max_features=TFIDF_MAX_FEATURES, analyzer=URI_PATH_TFIDF_ANALYZER, ngram_range=URI_PATH_TFIDF_NGRAM_RANGE), 'request_uri_path'),
+            ('text_uri_query', TfidfVectorizer(max_features=TFIDF_MAX_FEATURES, analyzer=URI_QUERY_TFIDF_ANALYZER, ngram_range=URI_QUERY_TFIDF_NGRAM_RANGE), 'request_uri_query'),
+            ('text_body', TfidfVectorizer(max_features=TFIDF_MAX_FEATURES, analyzer=BODY_TFIDF_ANALYZER, ngram_range=BODY_TFIDF_NGRAM_RANGE), 'request_body'),
+            ('text_user_agent', TfidfVectorizer(max_features=TFIDF_MAX_FEATURES, analyzer=USER_AGENT_TFIDF_ANALYZER, ngram_range=USER_AGENT_TFIDF_NGRAM_RANGE), 'user_agent'), 
             ('cat', OneHotEncoder(handle_unknown='ignore'), categorical_features),
             ('num', 'passthrough', numerical_features)
         ],

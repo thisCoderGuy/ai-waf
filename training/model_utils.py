@@ -1,8 +1,14 @@
 import joblib
 import os
-import logging # Import logging
+import logging 
 
-def save_model_and_preprocessor(model, preprocessor, model_path, preprocessor_path, logger=None):
+from datetime import datetime 
+
+from config import (
+    MODEL_TYPE, MODEL_FILENAME_PREFIX, PREPROCESSOR_FILENAME_PREFIX, MODEL_BASE_OUTPUT_DIR
+)
+
+def save_model_and_preprocessor(model, preprocessor, logger=None):
     """
     Saves the trained model and preprocessor to specified paths.
 
@@ -13,26 +19,29 @@ def save_model_and_preprocessor(model, preprocessor, model_path, preprocessor_pa
         preprocessor_path (str): The full file path to save the preprocessor.
         logger (logging.Logger, optional): Logger object to write messages. Defaults to None.
     """
+    current_model_type = MODEL_TYPE.lower()
+    logger.info("--- Model Saving ---")   
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    model_filename = f"{current_model_type}_{MODEL_FILENAME_PREFIX}_{timestamp}.joblib"
+    preprocessor_filename = f"{current_model_type}_{PREPROCESSOR_FILENAME_PREFIX}_{timestamp}.joblib"
+
+    model_output_path = os.path.join(MODEL_BASE_OUTPUT_DIR, model_filename)
+    preprocessor_output_path = os.path.join(MODEL_BASE_OUTPUT_DIR, preprocessor_filename)
+
     # Create directories if they don't exist
-    os.makedirs(os.path.dirname(model_path), exist_ok=True)
-    os.makedirs(os.path.dirname(preprocessor_path), exist_ok=True)
+    os.makedirs(os.path.dirname(model_output_path), exist_ok=True)
+    os.makedirs(os.path.dirname(preprocessor_output_path), exist_ok=True)
+    
+    joblib.dump(model, model_output_path)
+    joblib.dump(preprocessor, preprocessor_output_path)
+
 
     if logger:
-        logger.info(f"\nSaving trained model to {model_path}...")
+        logger.info(f"\tSaved preprocessor to {preprocessor_output_path}...")
+        logger.info(f"\tSaved trained model to {model_output_path}...")
     else:
-        print(f"\nSaving trained model to {model_path}...")
-    joblib.dump(model, model_path)
-
-    if logger:
-        logger.info(f"Saving preprocessor to {preprocessor_path}...")
-    else:
-        print(f"Saving preprocessor to {preprocessor_path}...")
-    joblib.dump(preprocessor, preprocessor_path)
-
-    if logger:
-        logger.info("Model and preprocessor saved successfully.")
-    else:
-        print("Model and preprocessor saved successfully.")
+        print(f"Saved preprocessor to {preprocessor_output_path}...")
+        print(f"Saved trained model to {model_output_path}...")
 
 def load_model_and_preprocessor(model_path, preprocessor_path, logger=None):
     """

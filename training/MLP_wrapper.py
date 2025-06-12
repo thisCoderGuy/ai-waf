@@ -6,6 +6,10 @@ from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.preprocessing import LabelEncoder 
 from scipy.sparse import issparse
 
+from config import (
+    OPTIMIZER_PARAMS, LOSS_PARAMS
+)
+
 # Fully Connected Neural Network Architecture 
 class SimpleFCNet(nn.Module):
     """
@@ -66,21 +70,26 @@ class PyTorchMLPClassifier(BaseEstimator, ClassifierMixin):
         self.verbose = verbose
         self.model = None
         self.label_encoder = LabelEncoder() # To handle potential string labels from data
-         # Store optimizer and loss parameters
+        
+        # Store optimizer and loss parameters
         # Use provided params or fall back to config.py defaults
-        self.optimizer_params = optimizer_params if optimizer_params is not None else config.MLP_OPTIMIZER_PARAMS
-        self.loss_params = loss_params if loss_params is not None else config.MLP_LOSS_PARAMS
+        self.optimizer_params = optimizer_params if optimizer_params is not None else OPTIMIZER_PARAMS
+        self.loss_params = loss_params if loss_params is not None else LOSS_PARAMS
 
+        # Determine the device (CPU or GPU)
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        if self.verbose:
+            print(f"Using device: {self.device}")
 
-        # Set random seeds for reproducibility
+       # Set random seeds for reproducibility
         if self.random_state is not None:
             torch.manual_seed(self.random_state)
             np.random.seed(self.random_state)
             # Further seeds for CUDA if available
-            if torch.cuda.is_available():
+            if self.device.type == 'cuda': # Only set CUDA seed if CUDA is being used
                 torch.cuda.manual_seed(self.random_state)
                 torch.backends.cudnn.deterministic = True
-                torch.backends.cudnn.benchmark = False
+                torch.backends.cudnn.benchmark = False # Set to False for reproducibility, True for speed
 
     def _build_model(self):
         """
@@ -90,9 +99,9 @@ class PyTorchMLPClassifier(BaseEstimator, ClassifierMixin):
         if self.input_size is None or self.num_classes is None:
             raise ValueError("input_size and num_classes must be set before building the model.")
         self.model = SimpleFCNet(self.input_size, self.hidden_size, self.num_classes)
+        self.model.to(self.device)  # <--- Move the model to the selected device
       
-      
-          # Dynamically create loss function
+        # Dynamically create loss function
         loss_type = self.loss_params.get('type', 'CrossEntropyLoss')
         loss_hyperparams = self.loss_params.get('hyperparameters', {})
         if loss_type == 'CrossEntropyLoss':
@@ -150,25 +159,26 @@ class PyTorchMLPClassifier(BaseEstimator, ClassifierMixin):
             self._build_model()
 
         # Convert numpy arrays to PyTorch tensors
-        X_tensor = torch.tensor(X_dense, dtype=torch.float32)
+        X_tensor = torch.tensor(X_dense, dtype=torch.float32).to(self.device) # <--- Move X_tensor to device
         # Encode labels to numerical values (0, 1, ...) if they are not already
         y_encoded = self.label_encoder.transform(y)
-        y_tensor = torch.tensor(y_encoded, dtype=torch.long)
+        y_tensor = torch.tensor(y_encoded, dtype=torch.long).to(self.device) # <--- Move y_tensor to device
 
         self.model.train() # Set model to training mode
 
         if self.verbose:
             print(f"Training MLP with hidden_size={self.hidden_size}, "
                   f"optimizer={self.optimizer_params['type']} (lr={self.optimizer.param_groups[0]['lr']}), "
-                  f"loss={self.loss_params['type']}, epochs={self.epochs}, batch_size={self.batch_size}")
+                  f"loss={self.loss_params['type']}, epochs={self.epochs}, batch_size={self.batch_size}, "
+                  f"device={self.device}")
+            
+        # Use DataLoader for batching
+        # Create a TensorDataset from the tensors
+        train_data = torch.utils.data.TensorDataset(X_tensor, y_tensor)
+        train_loader = torch.utils.data.DataLoader(train_data, batch_size=self.batch_size, shuffle=True)
 
         for epoch in range(self.epochs):
-            # Simple manual batching
-            for i in range(0, len(X_tensor), self.batch_size):
-                inputs = X_tensor[i:i+self.batch_size]
-                labels = y_tensor[i:i+self.batch_size]
-
-                
+            for i, (inputs, labels) in enumerate(train_loader):              
                 outputs = self.model(inputs) # Forward pass
                 loss = self.criterion(outputs, labels) # Compute loss
 
@@ -197,16 +207,17 @@ class PyTorchMLPClassifier(BaseEstimator, ClassifierMixin):
         else:
             X_dense = X
 
-        self.model.eval() # Set model to evaluation mode
-        X_tensor = torch.tensor(X_dense, dtype=torch.float32)
+        # Move input tensor to the device
+        X_tensor = torch.tensor(X_dense, dtype=torch.float32).to(self.device) # <--- Move X_tensor to device
 
+        self.model.eval() # Set model to evaluation mode
         with torch.no_grad():
             outputs = self.model(X_tensor)
             _, predicted_encoded = torch.max(outputs.data, 1)
 
-        # Decode numerical predictions back to original labels
-        return self.label_encoder.inverse_transform(predicted_encoded.numpy())
-
+        # Move predictions back to CPU for numpy conversion and decoding
+        return self.label_encoder.inverse_transform(predicted_encoded.cpu().numpy()) # <--- Move back to CPU
+    
     def predict_proba(self, X):
         """
         Predicts class probabilities for the input data.
@@ -223,13 +234,15 @@ class PyTorchMLPClassifier(BaseEstimator, ClassifierMixin):
         else:
             X_dense = X
 
-        self.model.eval() # Set model to evaluation mode
-        X_tensor = torch.tensor(X_dense, dtype=torch.float32)
+       # Move input tensor to the device
+        X_tensor = torch.tensor(X_dense, dtype=torch.float32).to(self.device) # <--- Move X_tensor to device
 
+        self.model.eval() # Set model to evaluation mode
         with torch.no_grad():
             outputs = self.model(X_tensor)
             # Apply softmax to get probabilities
             probabilities = torch.softmax(outputs, dim=1)
 
-        return probabilities.numpy()
+        # Move probabilities back to CPU for numpy conversion
+        return probabilities.cpu().numpy() # <--- Move back to CPU
 

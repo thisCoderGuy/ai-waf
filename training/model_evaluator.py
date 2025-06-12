@@ -2,7 +2,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from datetime import datetime # Import datetime for timestamps
 import pandas as pd # Import pandas for better confusion matrix display
 
-def evaluate_model(model, X_test, y_test, logger, config_info):
+def evaluate_model(model, X_test, y_test, logger):
     """
     Evaluates the trained model and prints performance metrics,
     including the confusion matrix, to console and log file.
@@ -12,8 +12,11 @@ def evaluate_model(model, X_test, y_test, logger, config_info):
         X_test (array-like): Testing features.
         y_test (pandas.Series): Testing labels.
         logger (logging.Logger): Logger object to write evaluation details.
-        config_info (dict): Dictionary containing configuration details for logging.
     """
+
+    logger.info("--- Model Evaluation ---")
+   
+
     print("\nEvaluating model performance...")
     y_pred = model.predict(X_test)
 
@@ -29,25 +32,17 @@ def evaluate_model(model, X_test, y_test, logger, config_info):
     cm_df = pd.DataFrame(cm, index=['Actual Benign', 'Actual Malicious'], columns=['Predicted Benign', 'Predicted Malicious'])
 
     # Format the evaluation details for logging
-    log_message = f"""
---- Evaluation Results ---
-Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
-Algorithm Used: {config_info.get('model_type', 'N/A')}
-Cross-Validation Splits: {config_info.get('n_splits_cv', 'N/A')}
-Random State: {config_info.get('random_state', 'N/A')}
-Test Data Points (Support): {X_test.shape[0]}
+    log_message = f"""\t--- Evaluation Results ---
+\tAccuracy: {accuracy:.4f}
+\tPrecision: {precision:.4f}
+\tRecall: {recall:.4f}
+\tF1-Score: {f1:.4f}
 
-Accuracy: {accuracy:.4f}
-Precision: {precision:.4f}
-Recall: {recall:.4f}
-F1-Score: {f1:.4f}
-
-Classification Report:
+\t--- Classification Report ---
 {report}
 
-Confusion Matrix:
+\t--- Confusion Matrix ---
 {cm_df.to_string()}
---------------------------
 """
     # Print to console
     print(log_message)
