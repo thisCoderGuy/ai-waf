@@ -5,244 +5,73 @@ import numpy as np
 from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.preprocessing import LabelEncoder 
 from scipy.sparse import issparse
-
-from config import (
-    OPTIMIZER_PARAMS, LOSS_PARAMS
-)
+from base_deep_learner import BaseDeepLearningClassifier
 
 # Fully Connected Neural Network Architecture 
-class SimpleFCNet(nn.Module):
+class MLP(nn.Module):
     """
     Defines a simple Fully Connected Neural Network (MLP) architecture.
     It consists of one hidden layer with ReLU activation and an output layer.
     """
     def __init__(self, input_size, hidden_size, num_classes):
-        super(SimpleFCNet, self).__init__()
-        # First fully connected (linear) layer
+        super(MLP, self).__init__()
         self.fc1 = nn.Linear(input_size, hidden_size)
-        # Activation function for the hidden layer
         self.relu = nn.ReLU()
-        # Second fully connected (linear) layer, outputs raw scores (logits)
         self.fc2 = nn.Linear(hidden_size, num_classes)
 
     def forward(self, x):
-        """
-        Defines the forward pass of the network.
-        """
         x = self.fc1(x)
         x = self.relu(x)
         x = self.fc2(x)
         return x
 
 # Wrapper Class for PyTorch MLP to mimic Scikit-learn API
-class PyTorchMLPClassifier(BaseEstimator, ClassifierMixin):
+class PyTorchMLPClassifier(BaseDeepLearningClassifier):
     """
     A wrapper class for a PyTorch Fully Connected Neural Network (MLP)
     to enable its use with scikit-learn's GridSearchCV or RandomizedSearchCV.
     """
-    def __init__(self, input_size=None, hidden_size=64, num_classes=None,
-                 learning_rate=0.001, epochs=50, batch_size=32,
-                 random_state=None, verbose=False,
-                 optimizer_params=None, loss_params=None):
+    
+    def __init__(self, hidden_size=64, 
+                 # Explicitly listed parameters inherited from BasePyTorchClassifier for scikit-learn's get_params()
+                 learning_rate=0.001, epochs=50, batch_size=32, random_state=None, verbose=False,
+                 optimizer_type='adam',  optimizer_params=None,
+                 loss_type='CrossEntropyLoss',  loss_params=None):
         """
         Initializes the PyTorch MLP classifier.
-
-        Args:
-            input_size (int): Number of input features. Will be inferred if None during fit.
-            hidden_size (int): Number of neurons in the hidden layer.
-            num_classes (int): Number of output classes. Will be inferred if None during fit.
-            learning_rate (float): Learning rate for the optimizer.
-            epochs (int): Number of training epochs.
-            batch_size (int): Size of training mini-batches.
-            random_state (int): Seed for reproducibility.
-            verbose (bool): Whether to print training progress.   
-            optimizer_params (dict): Dictionary with 'type' and 'hyperparameters' for the optimizer.
-            loss_params (dict): Dictionary with 'type' and 'hyperparameters' for the loss function.
-       
+        All parameters are explicitly listed for scikit-learn compatibility.
         """
-        self.input_size = input_size
+        # Pass all parameters to the superclass constructor
+        super().__init__(
+            learning_rate=learning_rate, 
+            epochs=epochs,
+            batch_size=batch_size,
+            random_state=random_state,
+            verbose=verbose,
+            optimizer_type=optimizer_type,
+            optimizer_params=optimizer_params,
+            loss_type=loss_type,
+            loss_params=loss_params
+        )
+        
         self.hidden_size = hidden_size
-        self.num_classes = num_classes
-        self.learning_rate = learning_rate
+
+
+        # It's good practice to also store the inherited parameters as attributes in the child class
+        # to ensure they are properly recognized by BaseEstimator.get_params() for tuning.
         self.epochs = epochs
         self.batch_size = batch_size
         self.random_state = random_state
         self.verbose = verbose
-        self.model = None
-        self.label_encoder = LabelEncoder() # To handle potential string labels from data
-        
-        # Store optimizer and loss parameters
-        # Use provided params or fall back to config.py defaults
-        self.optimizer_params = optimizer_params if optimizer_params is not None else OPTIMIZER_PARAMS
-        self.loss_params = loss_params if loss_params is not None else LOSS_PARAMS
+        self.optimizer_type = optimizer_type
+        self.optimizer_params = optimizer_params
+        self.loss_type = loss_type
+        self.loss_params = loss_params
 
-        # Determine the device (CPU or GPU)
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        if self.verbose:
-            print(f"Using device: {self.device}")
 
-       # Set random seeds for reproducibility
-        if self.random_state is not None:
-            torch.manual_seed(self.random_state)
-            np.random.seed(self.random_state)
-            # Further seeds for CUDA if available
-            if self.device.type == 'cuda': # Only set CUDA seed if CUDA is being used
-                torch.cuda.manual_seed(self.random_state)
-                torch.backends.cudnn.deterministic = True
-                torch.backends.cudnn.benchmark = False # Set to False for reproducibility, True for speed
-
-    def _build_model(self):
+    def _build_model_architecture(self, input_size, num_classes):
         """
-        Builds the PyTorch SimpleFCNet model.
-        Assumes input_size and num_classes are set (either during init or fit).
+        Builds the specific MLP architecture for this classifier.
         """
-        if self.input_size is None or self.num_classes is None:
-            raise ValueError("input_size and num_classes must be set before building the model.")
-        self.model = SimpleFCNet(self.input_size, self.hidden_size, self.num_classes)
-        self.model.to(self.device)  # <--- Move the model to the selected device
-      
-        # Dynamically create loss function
-        loss_type = self.loss_params.get('type', 'CrossEntropyLoss')
-        loss_hyperparams = self.loss_params.get('hyperparameters', {})
-        if loss_type == 'CrossEntropyLoss':
-            self.criterion = nn.CrossEntropyLoss(**loss_hyperparams)
-        elif loss_type == 'BCEWithLogitsLoss':
-            self.criterion = nn.BCEWithLogitsLoss(**loss_hyperparams)
-        else:
-            raise ValueError(f"Unsupported loss type: {loss_type}")
-
-        # Dynamically create optimizer
-        optimizer_type = self.optimizer_params.get('type', 'Adam')
-        optimizer_hyperparams = self.optimizer_params.get('hyperparameters', {})
-
-        # Use learning_rate from init if provided directly (for backward compatibility),
-        # otherwise use lr from optimizer_hyperparams.
-        # Priority: init's learning_rate > optimizer_params['hyperparameters']['lr']
-        if self.learning_rate is not None:
-            optimizer_hyperparams['lr'] = self.learning_rate
-        elif 'lr' not in optimizer_hyperparams:
-             # Fallback if no lr specified anywhere
-             optimizer_hyperparams['lr'] = 0.001
-
-
-        if optimizer_type == 'Adam':
-            self.optimizer = optim.Adam(self.model.parameters(), **optimizer_hyperparams)
-        elif optimizer_type == 'SGD':
-            self.optimizer = optim.SGD(self.model.parameters(), **optimizer_hyperparams)
-        else:
-            raise ValueError(f"Unsupported optimizer type: {optimizer_type}")
-
-    def fit(self, X, y):
-        """
-        Trains the PyTorch MLP model.
-
-        Args:
-            X (np.array): Training features.
-            y (np.array): Training labels.
-        Returns:
-            self: The trained classifier.
-        """
-
-        # Convert sparse matrix to dense numpy array if necessary
-        if issparse(X):
-            X_dense = X.toarray()
-        else:
-            X_dense = X
-
-        # Infer input_size and num_classes if not provided during initialization
-        self.input_size = X.shape[1]
-        self.classes_ = self.label_encoder.fit(y).classes_
-        self.num_classes = len(self.classes_)
-
-        # Build the model if not already built
-        if self.model is None:
-            self._build_model()
-
-        # Convert numpy arrays to PyTorch tensors
-        X_tensor = torch.tensor(X_dense, dtype=torch.float32).to(self.device) # <--- Move X_tensor to device
-        # Encode labels to numerical values (0, 1, ...) if they are not already
-        y_encoded = self.label_encoder.transform(y)
-        y_tensor = torch.tensor(y_encoded, dtype=torch.long).to(self.device) # <--- Move y_tensor to device
-
-        self.model.train() # Set model to training mode
-
-        if self.verbose:
-            print(f"Training MLP with hidden_size={self.hidden_size}, "
-                  f"optimizer={self.optimizer_params['type']} (lr={self.optimizer.param_groups[0]['lr']}), "
-                  f"loss={self.loss_params['type']}, epochs={self.epochs}, batch_size={self.batch_size}, "
-                  f"device={self.device}")
-            
-        # Use DataLoader for batching
-        # Create a TensorDataset from the tensors
-        train_data = torch.utils.data.TensorDataset(X_tensor, y_tensor)
-        train_loader = torch.utils.data.DataLoader(train_data, batch_size=self.batch_size, shuffle=True)
-
-        for epoch in range(self.epochs):
-            for i, (inputs, labels) in enumerate(train_loader):              
-                outputs = self.model(inputs) # Forward pass
-                loss = self.criterion(outputs, labels) # Compute loss
-
-                # Backward and optimize
-                self.optimizer.zero_grad()  # Reset gradients
-                loss.backward()             # Backpropagate gradients
-                self.optimizer.step()       # Update weights
-
-            if self.verbose and (epoch + 1) % 10 == 0:
-                print(f'  Epoch [{epoch+1}/{self.epochs}], Loss: {loss.item():.4f}')
-        return self
-
-    def predict(self, X):
-        """
-        Predicts class labels for the input data.
-
-        Args:
-            X (np.array): Features to predict on.
-        Returns:
-            np.array: Predicted class labels.
-        """
-
-         # Convert sparse matrix to dense numpy array if necessary
-        if issparse(X):
-            X_dense = X.toarray()
-        else:
-            X_dense = X
-
-        # Move input tensor to the device
-        X_tensor = torch.tensor(X_dense, dtype=torch.float32).to(self.device) # <--- Move X_tensor to device
-
-        self.model.eval() # Set model to evaluation mode
-        with torch.no_grad():
-            outputs = self.model(X_tensor)
-            _, predicted_encoded = torch.max(outputs.data, 1)
-
-        # Move predictions back to CPU for numpy conversion and decoding
-        return self.label_encoder.inverse_transform(predicted_encoded.cpu().numpy()) # <--- Move back to CPU
-    
-    def predict_proba(self, X):
-        """
-        Predicts class probabilities for the input data.
-
-        Args:
-            X (np.array): Features to predict on.
-        Returns:
-            np.array: Predicted class probabilities.
-        """
-
-         # Convert sparse matrix to dense numpy array if necessary
-        if issparse(X):
-            X_dense = X.toarray()
-        else:
-            X_dense = X
-
-       # Move input tensor to the device
-        X_tensor = torch.tensor(X_dense, dtype=torch.float32).to(self.device) # <--- Move X_tensor to device
-
-        self.model.eval() # Set model to evaluation mode
-        with torch.no_grad():
-            outputs = self.model(X_tensor)
-            # Apply softmax to get probabilities
-            probabilities = torch.softmax(outputs, dim=1)
-
-        # Move probabilities back to CPU for numpy conversion
-        return probabilities.cpu().numpy() # <--- Move back to CPU
+        return MLP(input_size, self.hidden_size, num_classes)
 

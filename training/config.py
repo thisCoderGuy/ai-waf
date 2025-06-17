@@ -53,6 +53,11 @@ CLEANED_DATA_OUTPUT_PATH = os.path.join('training-data', 'cleaned', 'coraza-audi
 #########################################################
 # --- Preprocessing (Feature extraction) ---
 #########################################################
+# Do perform Preprocessing?
+# True for traditional machine learning algorithms (generate sparse, high dimensional vectors)
+# False for deep learning algorithms because they will include their own embedding methods (that generate dense vectors in dim < vocabulary size)
+PERFORM_PREPROCESSING = False # True or False
+
 # --- Feature Extraction Parameters (for TfidfVectorizer) for text columns ---
 TFIDF_MAX_FEATURES = 5000
 # URI_PATH column
@@ -79,11 +84,12 @@ RANDOM_STATE = 42
 # Set the current model type. 
 # Possible values so far: 'svm', 'random_forest', 'decision_tree', 'naive_bayes', 'mlp',
 #                         'fcnn', 'cnn', 'rnn', 'lstm', 'transformer', 'llm'  # For those choose N_SPLITS_CROSS_VALIDATION = small num
-MODEL_TYPE = 'random_forest'
-
+MODEL_TYPE = 'cnn'
 
 # --- Model Parameters  ---
 MODEL_PARAMS = {
+    ###########################################
+    ### Traditional Machine Learning Algorithms
     'svm': {
         'kernel': 'linear',
         'probability': True,
@@ -99,7 +105,7 @@ MODEL_PARAMS = {
     'naive_bayes': {
         # No specific parameters commonly tuned for MultinomialNB or GaussianNB, depending on data
     },
-    'mlp': { 
+    'mlp': {  # mlp from scikitlearn
         'hidden_layer_sizes': (64,), # One hidden layer with 64 neurons
         'activation': 'relu',
         'solver': 'adam',
@@ -108,21 +114,44 @@ MODEL_PARAMS = {
         'max_iter': 200, # Number of epochs
         'verbose': False # Set to True for verbose training output
     },
-    'fcnn': {
-         'hidden_size': 64,
-         'learning_rate': 0.001,
-         'epochs': 50,
-         'batch_size': 32
+    ###########################################
+    ### Deep Learning Algorithms
+    'fcnn': { # mlp from pytorch
+        'hidden_size': 64,
+        'learning_rate': 0.001,
+        'epochs': 50,
+        'batch_size': 32,
+        #'activation': 'relu',
+        'optimizer_type': 'adam', # adam or sgd
+        'optimizer_params': {
+            'weight_decay': 0.0001, # regularization
+            # Add other Adam-specific params here, e.g., 'betas': (0.9, 0.999), 'eps': 1e-08, 'weight_decay': 0
+        },
+        'loss_type':  'CrossEntropyLoss', # Options: 'CrossEntropyLoss', 'BCEWithLogitsLoss', etc.
+        'loss_params': {
+            # Example for CrossEntropyLoss with class weights (adjust weights based on your class distribution)
+            # 'weight': [1.0, 10.0] # Needs to be a torch.Tensor, converted inside the wrapper
+        }
     },
     'cnn': {
-        'input_shape': (5000, 1), # Example input shape, adjust based on feature extractor output
-        'num_filters': 128,
-        'kernel_size': 5,
+        'n_filters': 128,
+        'filter_size': 5,
         'pool_size': 2,
         'dense_units': 64,
-        'learning_rate': 0.001,
-        'epochs': 10,
-        'batch_size': 32
+         'learning_rate': 0.001,
+        'epochs': 50,
+        'batch_size': 32,
+        #'activation': 'relu',
+        'optimizer_type': 'adam', # adam or sgd
+        'optimizer_params': {
+            'weight_decay': 0.0001, # regularization
+            # Add other Adam-specific params here, e.g., 'betas': (0.9, 0.999), 'eps': 1e-08, 'weight_decay': 0
+        },
+        'loss_type':  'CrossEntropyLoss', # Options: 'CrossEntropyLoss', 'BCEWithLogitsLoss', etc.
+        'loss_params': {
+            # Example for CrossEntropyLoss with class weights (adjust weights based on your class distribution)
+            # 'weight': [1.0, 10.0] # Needs to be a torch.Tensor, converted inside the wrapper
+        }
     },
     'rnn': {
         'units': 128,
@@ -198,27 +227,6 @@ TUNING_PARAMS = {
     }
 }
 
-
-#########################################################
-# --- PyTorch Specific Configuration ---
-#########################################################
-
-OPTIMIZER_PARAMS = {
-    'type': 'Adam', # Options: 'Adam', 'SGD', etc.
-    'hyperparameters': {
-        'lr': 0.001, # Default learning rate for Adam
-        'weight_decay': 0, # regularization
-        # Add other Adam-specific params here, e.g., 'betas': (0.9, 0.999), 'eps': 1e-08, 'weight_decay': 0
-    }
-}
-
-LOSS_PARAMS = {
-    'type': 'CrossEntropyLoss', # Options: 'CrossEntropyLoss', 'BCEWithLogitsLoss', etc.
-    'hyperparameters': {
-        # Example for CrossEntropyLoss with class weights (adjust weights based on your class distribution)
-        # 'weight': [1.0, 10.0] # Needs to be a torch.Tensor, converted inside the wrapper
-    }
-}
 
 
 

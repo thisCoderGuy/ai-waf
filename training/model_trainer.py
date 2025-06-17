@@ -2,12 +2,12 @@ from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.naive_bayes import MultinomialNB
-from sklearn.model_selection import StratifiedKFold, GridSearchCV, RandomizedSearchCV # Import GridSearchCV and RandomizedSearchCV
+from sklearn.model_selection import StratifiedKFold, GridSearchCV, RandomizedSearchCV
 from sklearn.pipeline import Pipeline # Useful for combining preprocessor and model
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from sklearn.neural_network import MLPClassifier # <--- NEW IMPORT for scikit-learn MLP
 
 from MLP_wrapper import PyTorchMLPClassifier 
+from CNN_wrapper import CNNClassifier
 
 import numpy as np
 
@@ -17,7 +17,7 @@ from config import (
     RANDOM_STATE,
     PERFORM_TUNING,
     TUNING_METHOD,
-    RANDOM_SEARCH_N_ITER, MODEL_PARAMS, TUNING_PARAMS, LOSS_PARAMS, OPTIMIZER_PARAMS
+    RANDOM_SEARCH_N_ITER, MODEL_PARAMS, TUNING_PARAMS
 )
 
 def get_model():
@@ -41,6 +41,8 @@ def get_model():
         ModelClass = MLPClassifier
     elif model_type == 'fcnn':
         ModelClass = PyTorchMLPClassifier
+    elif model_type == 'cnn':
+        ModelClass = CNNClassifier
     else:
         raise ValueError(f"Unknown model type: {model_type}")
 
@@ -51,22 +53,7 @@ def get_model():
     if 'random_state' in model_params and model_params['random_state'] is None:
         model_params['random_state'] = RANDOM_STATE
 
-    if model_type == 'fcnn':
-        model = ModelClass(
-            hidden_size=model_params.get('hidden_size', 64),
-            learning_rate=model_params.get('learning_rate', 0.001),
-            epochs=model_params.get('epochs', 50),
-            batch_size=model_params.get('batch_size', 32),
-            random_state=RANDOM_STATE, 
-            verbose=False,
-             optimizer_params=OPTIMIZER_PARAMS, 
-             loss_params=LOSS_PARAMS 
-        )
-    else:
-        if 'random_state' in ModelClass()._get_param_names(): 
-            model = ModelClass(random_state=RANDOM_STATE, **model_params)
-        else:
-            model = ModelClass(**model_params)
+    model = ModelClass(**model_params)
 
     return model
 
@@ -96,9 +83,7 @@ def train_model(X_train, y_train, logger):
 \tCross-Validation Splits: {N_SPLITS_CROSS_VALIDATION}
 \tNum of hyperparameter combinations in Random Search: {RANDOM_SEARCH_N_ITER}
 \tRandom State: {RANDOM_STATE}
-\tTuning Parameters: {TUNING_PARAMS[MODEL_TYPE]}
-\tLoss Parameters(PyTorch): {LOSS_PARAMS}
-\tOptimizer Parameters (PyTorch): {OPTIMIZER_PARAMS}"""
+\tTuning Parameters: {TUNING_PARAMS[MODEL_TYPE]}"""
     logger.info(log_message) 
     
     print(f"\nPerforming {N_SPLITS_CROSS_VALIDATION}-fold Stratified Cross-Validation on training data for {MODEL_TYPE.upper()} model...")
@@ -152,7 +137,7 @@ def train_model(X_train, y_train, logger):
     else:
         # No cross validation, nor hyperparameter tuning
         final_model = model
-        model.fit(X_train, y_train)
+        final_model.fit(X_train, y_train)
         print(f"{MODEL_TYPE.upper()} model training complete.")
 
     return final_model
