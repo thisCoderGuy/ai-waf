@@ -106,3 +106,250 @@ Actual Malicious                 0                   13
 	Saved trained model to ..\ai-microservice\trained-models\mlp_malicious_traffic_model_20250616_205433.joblib...
 --- Preprocessor Saving ---
 	Saved preprocessor to ..\ai-microservice\trained-models\mlp_malicious_traffic_preprocessor_20250616_205433.joblib...
+####################################################################
+Model Training Started: 2025-06-17 12:12:16
+	Loading already cleaned data from training-data\cleaned\coraza-audit-cleaned.csv
+	Successfully loaded 1743 entries from training-data\cleaned\coraza-audit-cleaned.csv
+	Training data shape: (1394, 8)
+	Testing data shape: (349, 8)
+--- Model Training ---
+	Algorithm Used: FCNN
+	Model Parameters: {'learning_rate': 0.001, 'epochs': 50, 'batch_size': 32, 'optimizer_type': 'adam', 'optimizer_params': {'weight_decay': 0.0001}, 'loss_type': 'CrossEntropyLoss', 'loss_params': {}, 'dropout_rate': 0.5, 'hidden_size': 64}
+	Hyperparameter tuning: True
+	Hyperparameter tuning method: random
+	Cross-Validation Splits: 3
+	Num of hyperparameter combinations in Random Search: 10
+	Random State: 42
+	Tuning Parameters: {'hidden_size': [32, 64], 'learning_rate': [0.001, 0.01], 'epochs': [50, 100]}
+####################################################################
+Model Training Started: 2025-06-17 12:14:46
+	Loading already cleaned data from training-data\cleaned\coraza-audit-cleaned.csv
+	Successfully loaded 1743 entries from training-data\cleaned\coraza-audit-cleaned.csv
+	Training data shape: (1394, 8)
+	Testing data shape: (349, 8)
+--- Model Training ---
+	Algorithm Used: FCNN
+	Model Parameters: {'learning_rate': 0.001, 'epochs': 50, 'batch_size': 32, 'optimizer_type': 'adam', 'optimizer_params': {'weight_decay': 0.0001}, 'loss_type': 'CrossEntropyLoss', 'loss_params': {}, 'dropout_rate': 0.5, 'hidden_size': 64}
+	Hyperparameter tuning: True
+	Hyperparameter tuning method: random
+	Cross-Validation Splits: 3
+	Num of hyperparameter combinations in Random Search: 10
+	Random State: 42
+	Tuning Parameters: {'hidden_size': [32, 64], 'learning_rate': [0.001, 0.01], 'epochs': [50, 100]}
+####################################################################
+Model Training Started: 2025-06-17 12:15:43
+	Loading already cleaned data from training-data\cleaned\coraza-audit-cleaned.csv
+	Successfully loaded 1743 entries from training-data\cleaned\coraza-audit-cleaned.csv
+--- Preprocessing (Feature extraction) ---
+	TFIDF_MAX_FEATURES: 5000
+    	URI_PATH_TFIDF_ANALYZER: char
+    	URI_PATH_TFIDF_NGRAM_RANGE: (1, 6)
+    	URI_QUERY_TFIDF_ANALYZER: char
+    	URI_QUERY_TFIDF_NGRAM_RANGE: (1, 6)
+    	BODY_TFIDF_ANALYZER: char
+    	BODY_TFIDF_NGRAM_RANGE: (1, 6)
+    	USER_AGENT_TFIDF_ANALYZER: word
+    	USER_AGENT_TFIDF_NGRAM_RANGE: (1, 2)
+	Training data shape: (1394, 10538)
+	Testing data shape: (349, 10538)
+--- Model Training ---
+	Algorithm Used: FCNN
+	Model Parameters: {'learning_rate': 0.001, 'epochs': 50, 'batch_size': 32, 'optimizer_type': 'adam', 'optimizer_params': {'weight_decay': 0.0001}, 'loss_type': 'CrossEntropyLoss', 'loss_params': {}, 'dropout_rate': 0.5, 'hidden_size': 64}
+	Hyperparameter tuning: True
+	Hyperparameter tuning method: random
+	Cross-Validation Splits: 3
+	Num of hyperparameter combinations in Random Search: 10
+	Random State: 42
+	Tuning Parameters: {'hidden_size': [32, 64], 'learning_rate': [0.001, 0.01], 'epochs': [50, 100]}
+--- Model Evaluation ---
+	--- Evaluation Results ---
+	Accuracy: 1.0000
+	Precision: 1.0000
+	Recall: 1.0000
+	F1-Score: 1.0000
+
+	--- Classification Report ---
+              precision    recall  f1-score   support
+
+      benign       1.00      1.00      1.00       336
+   malicious       1.00      1.00      1.00        13
+
+    accuracy                           1.00       349
+   macro avg       1.00      1.00      1.00       349
+weighted avg       1.00      1.00      1.00       349
+
+
+	--- Confusion Matrix ---
+                  Predicted Benign  Predicted Malicious
+Actual Benign                  336                    0
+Actual Malicious                 0                   13
+
+	---Total training and evaluation time ---
+	51.47 seconds
+--- Model Saving ---
+	Saved trained model to ..\ai-microservice\trained-models\fcnn_malicious_traffic_model_20250617_121635.joblib...
+--- Preprocessor Saving ---
+	Saved preprocessor to ..\ai-microservice\trained-models\fcnn_malicious_traffic_preprocessor_20250617_121635.joblib...
+####################################################################
+Model Training Started: 2025-06-17 12:17:35
+	Loading already cleaned data from training-data\cleaned\coraza-audit-cleaned.csv
+	Successfully loaded 1743 entries from training-data\cleaned\coraza-audit-cleaned.csv
+--- Preprocessing (Feature extraction) ---
+	TFIDF_MAX_FEATURES: 5000
+    	URI_PATH_TFIDF_ANALYZER: char
+    	URI_PATH_TFIDF_NGRAM_RANGE: (1, 6)
+    	URI_QUERY_TFIDF_ANALYZER: char
+    	URI_QUERY_TFIDF_NGRAM_RANGE: (1, 6)
+    	BODY_TFIDF_ANALYZER: char
+    	BODY_TFIDF_NGRAM_RANGE: (1, 6)
+    	USER_AGENT_TFIDF_ANALYZER: word
+    	USER_AGENT_TFIDF_NGRAM_RANGE: (1, 2)
+	Training data shape: (1394, 10538)
+	Testing data shape: (349, 10538)
+--- Model Training ---
+	Algorithm Used: FCNN
+	Model Parameters: {'learning_rate': 0.001, 'epochs': 50, 'batch_size': 32, 'optimizer_type': 'adam', 'optimizer_params': {'weight_decay': 0.0001}, 'loss_type': 'CrossEntropyLoss', 'loss_params': {}, 'dropout_rate': 0.5, 'hidden_size': 64}
+	Hyperparameter tuning: True
+	Hyperparameter tuning method: random
+	Cross-Validation Splits: 3
+	Num of hyperparameter combinations in Random Search: 10
+	Random State: 42
+	Tuning Parameters: {'hidden_size': [32, 64], 'learning_rate': [0.001, 0.01], 'epochs': [50, 100]}
+--- Model Evaluation ---
+	--- Evaluation Results ---
+	Accuracy: 1.0000
+	Precision: 1.0000
+	Recall: 1.0000
+	F1-Score: 1.0000
+
+	--- Classification Report ---
+              precision    recall  f1-score   support
+
+      benign       1.00      1.00      1.00       336
+   malicious       1.00      1.00      1.00        13
+
+    accuracy                           1.00       349
+   macro avg       1.00      1.00      1.00       349
+weighted avg       1.00      1.00      1.00       349
+
+
+	--- Confusion Matrix ---
+                  Predicted Benign  Predicted Malicious
+Actual Benign                  336                    0
+Actual Malicious                 0                   13
+
+	---Total training and evaluation time ---
+	51.74 seconds
+--- Model Saving ---
+	Saved trained model to ..\ai-microservice\trained-models\fcnn_malicious_traffic_model_20250617_121827.joblib...
+--- Preprocessor Saving ---
+	Saved preprocessor to ..\ai-microservice\trained-models\fcnn_malicious_traffic_preprocessor_20250617_121827.joblib...
+####################################################################
+Model Training Started: 2025-06-17 12:25:53
+	Loading already cleaned data from training-data\cleaned\coraza-audit-cleaned.csv
+	Successfully loaded 1743 entries from training-data\cleaned\coraza-audit-cleaned.csv
+	Training data shape: (1394, 8)
+	Testing data shape: (349, 8)
+--- Model Training ---
+	Algorithm Used: FCNN
+	Model Parameters: {'learning_rate': 0.001, 'epochs': 50, 'batch_size': 32, 'optimizer_type': 'adam', 'optimizer_params': {'weight_decay': 0.0001}, 'loss_type': 'CrossEntropyLoss', 'loss_params': {}, 'dropout_rate': 0.5, 'hidden_size': 64}
+	Hyperparameter tuning: True
+	Hyperparameter tuning method: random
+	Cross-Validation Splits: 3
+	Num of hyperparameter combinations in Random Search: 10
+	Random State: 42
+	Tuning Parameters: {'hidden_size': [32, 64], 'learning_rate': [0.001, 0.01], 'epochs': [50, 100]}
+####################################################################
+Model Training Started: 2025-06-17 12:29:58
+	Loading already cleaned data from training-data\cleaned\coraza-audit-cleaned.csv
+	Successfully loaded 1743 entries from training-data\cleaned\coraza-audit-cleaned.csv
+--- Preprocessing (Feature extraction) ---
+	TFIDF_MAX_FEATURES: 5000
+    	URI_PATH_TFIDF_ANALYZER: char
+    	URI_PATH_TFIDF_NGRAM_RANGE: (1, 6)
+    	URI_QUERY_TFIDF_ANALYZER: char
+    	URI_QUERY_TFIDF_NGRAM_RANGE: (1, 6)
+    	BODY_TFIDF_ANALYZER: char
+    	BODY_TFIDF_NGRAM_RANGE: (1, 6)
+    	USER_AGENT_TFIDF_ANALYZER: word
+    	USER_AGENT_TFIDF_NGRAM_RANGE: (1, 2)
+	Training data shape: (1394, 10538)
+	Testing data shape: (349, 10538)
+--- Model Training ---
+	Algorithm Used: FCNN
+	Model Parameters: {'learning_rate': 0.001, 'epochs': 50, 'batch_size': 32, 'optimizer_type': 'adam', 'optimizer_params': {'weight_decay': 0.0001}, 'loss_type': 'CrossEntropyLoss', 'loss_params': {}, 'dropout_rate': 0.5, 'hidden_size': 64}
+	Hyperparameter tuning: True
+	Hyperparameter tuning method: random
+	Cross-Validation Splits: 3
+	Num of hyperparameter combinations in Random Search: 10
+	Random State: 42
+	Tuning Parameters: {'hidden_size': [32, 64], 'learning_rate': [0.001, 0.01], 'epochs': [50, 100]}
+--- Model Evaluation ---
+	--- Evaluation Results ---
+	Accuracy: 1.0000
+	Precision: 1.0000
+	Recall: 1.0000
+	F1-Score: 1.0000
+
+	--- Classification Report ---
+              precision    recall  f1-score   support
+
+      benign       1.00      1.00      1.00       336
+   malicious       1.00      1.00      1.00        13
+
+    accuracy                           1.00       349
+   macro avg       1.00      1.00      1.00       349
+weighted avg       1.00      1.00      1.00       349
+
+
+	--- Confusion Matrix ---
+                  Predicted Benign  Predicted Malicious
+Actual Benign                  336                    0
+Actual Malicious                 0                   13
+
+	---Total training and evaluation time ---
+	52.83 seconds
+--- Model Saving ---
+	Saved trained model to ..\ai-microservice\trained-models\fcnn_malicious_traffic_model_20250617_123051.joblib...
+--- Preprocessor Saving ---
+	Saved preprocessor to ..\ai-microservice\trained-models\fcnn_malicious_traffic_preprocessor_20250617_123051.joblib...
+####################################################################
+Model Training Started: 2025-06-17 12:32:02
+	Loading already cleaned data from training-data\cleaned\coraza-audit-cleaned.csv
+	Successfully loaded 1743 entries from training-data\cleaned\coraza-audit-cleaned.csv
+--- Preprocessing (Feature extraction) ---
+	TFIDF_MAX_FEATURES: 5000
+    	URI_PATH_TFIDF_ANALYZER: char
+    	URI_PATH_TFIDF_NGRAM_RANGE: (1, 6)
+    	URI_QUERY_TFIDF_ANALYZER: char
+    	URI_QUERY_TFIDF_NGRAM_RANGE: (1, 6)
+    	BODY_TFIDF_ANALYZER: char
+    	BODY_TFIDF_NGRAM_RANGE: (1, 6)
+    	USER_AGENT_TFIDF_ANALYZER: word
+    	USER_AGENT_TFIDF_NGRAM_RANGE: (1, 2)
+	Training data shape: (1394, 10538)
+	Testing data shape: (349, 10538)
+--- Model Training ---
+	Algorithm Used: MLP
+	Model Parameters: {'hidden_layer_sizes': (64,), 'activation': 'relu', 'solver': 'adam', 'alpha': 0.0001, 'learning_rate_init': 0.001, 'max_iter': 200, 'verbose': False}
+	Hyperparameter tuning: True
+	Hyperparameter tuning method: random
+	Cross-Validation Splits: 3
+	Num of hyperparameter combinations in Random Search: 10
+	Random State: 42
+	Tuning Parameters: {'hidden_layer_sizes': [(32,), (64,), (32, 32), (64, 32)], 'activation': ['relu', 'tanh'], 'solver': ['adam', 'sgd'], 'alpha': [0.0001, 0.001, 0.01], 'learning_rate_init': [0.0005, 0.001, 0.005], 'max_iter': [100, 200, 300]}
+####################################################################
+Model Training Started: 2025-06-17 12:40:40
+	Loading already cleaned data from training-data\cleaned\coraza-audit-cleaned.csv
+	Successfully loaded 1743 entries from training-data\cleaned\coraza-audit-cleaned.csv
+	Training data shape: (1394, 8)
+	Testing data shape: (349, 8)
+--- Model Training ---
+	Algorithm Used: FCNN
+	Model Parameters: {'learning_rate': 0.001, 'epochs': 50, 'batch_size': 32, 'optimizer_type': 'adam', 'optimizer_params': {'weight_decay': 0.0001}, 'loss_type': 'CrossEntropyLoss', 'loss_params': {}, 'dropout_rate': 0.5, 'hidden_size': 64}
+	Hyperparameter tuning: True
+	Hyperparameter tuning method: random
+	Cross-Validation Splits: 3
+	Num of hyperparameter combinations in Random Search: 10
+	Random State: 42
+	Tuning Parameters: {'hidden_size': [32, 64], 'learning_rate': [0.001, 0.01]}

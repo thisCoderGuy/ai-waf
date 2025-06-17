@@ -140,4 +140,7 @@ def train_model(X_train, y_train, logger):
         final_model.fit(X_train, y_train)
         print(f"{MODEL_TYPE.upper()} model training complete.")
 
+    if MODEL_TYPE.lower() == 'fcnn' or MODEL_TYPE.lower() == 'cnn' or MODEL_TYPE.lower() == 'rnn'  or MODEL_TYPE.lower() == 'lstm':
+        print('####################################################')
+        print(final_model.model)
     return final_model

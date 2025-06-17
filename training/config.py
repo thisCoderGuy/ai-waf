@@ -53,10 +53,11 @@ CLEANED_DATA_OUTPUT_PATH = os.path.join('training-data', 'cleaned', 'coraza-audi
 #########################################################
 # --- Preprocessing (Feature extraction) ---
 #########################################################
-# Do perform Preprocessing?
+#################################
+# Do perform Sparse Preprocessing?
 # True for traditional machine learning algorithms (generate sparse, high dimensional vectors)
 # False for deep learning algorithms because they will include their own embedding methods (that generate dense vectors in dim < vocabulary size)
-PERFORM_PREPROCESSING = False # True or False
+PERFORM_SPARSE_PREPROCESSING = False # True or False
 
 # --- Feature Extraction Parameters (for TfidfVectorizer) for text columns ---
 TFIDF_MAX_FEATURES = 5000
@@ -73,6 +74,19 @@ BODY_TFIDF_NGRAM_RANGE = (1, 6) # For character n-grams
 USER_AGENT_TFIDF_ANALYZER = 'word' # 'word' or 'char'
 USER_AGENT_TFIDF_NGRAM_RANGE = (1, 2) # For character n-grams
 
+#################################
+# Do perform Dense Preprocessing?
+# True for  deep learning algorithms 
+PERFORM_DENSE_PREPROCESSING = True
+#Using character-level tokenization for text features
+# Max sequences
+MAX_SEQ_LENGTH_PATH = 100
+MAX_SEQ_LENGTH_QUERY = 100
+MAX_SEQ_LENGTH_BODY = 100
+MAX_SEQ_LENGTH_USER_AGENT = 100
+
+
+
 #########################################################
 # --- Model Selection and Specific Parameters ---
 #########################################################
@@ -84,12 +98,13 @@ RANDOM_STATE = 42
 # Set the current model type. 
 # Possible values so far: 'svm', 'random_forest', 'decision_tree', 'naive_bayes', 'mlp',
 #                         'fcnn', 'cnn', 'rnn', 'lstm', 'transformer', 'llm'  # For those choose N_SPLITS_CROSS_VALIDATION = small num
-MODEL_TYPE = 'cnn'
+MODEL_TYPE = 'fcnn'
 
 # --- Model Parameters  ---
 MODEL_PARAMS = {
     ###########################################
     ### Traditional Machine Learning Algorithms
+    ###########################################
     'svm': {
         'kernel': 'linear',
         'probability': True,
@@ -116,8 +131,8 @@ MODEL_PARAMS = {
     },
     ###########################################
     ### Deep Learning Algorithms
+    ###########################################
     'fcnn': { # mlp from pytorch
-        'hidden_size': 64,
         'learning_rate': 0.001,
         'epochs': 50,
         'batch_size': 32,
@@ -131,15 +146,14 @@ MODEL_PARAMS = {
         'loss_params': {
             # Example for CrossEntropyLoss with class weights (adjust weights based on your class distribution)
             # 'weight': [1.0, 10.0] # Needs to be a torch.Tensor, converted inside the wrapper
-        }
+        },
+        'dropout_rate': 0.5, 
+        'hidden_size': 64,
+        'numerical_hidden_size': 32
     },
     'cnn': {
-        'n_filters': 128,
-        'filter_size': 5,
-        'pool_size': 2,
-        'dense_units': 64,
-         'learning_rate': 0.001,
-        'epochs': 50,
+        'learning_rate': 0.001,
+        'epochs': 10,
         'batch_size': 32,
         #'activation': 'relu',
         'optimizer_type': 'adam', # adam or sgd
@@ -147,11 +161,15 @@ MODEL_PARAMS = {
             'weight_decay': 0.0001, # regularization
             # Add other Adam-specific params here, e.g., 'betas': (0.9, 0.999), 'eps': 1e-08, 'weight_decay': 0
         },
-        'loss_type':  'CrossEntropyLoss', # Options: 'CrossEntropyLoss', 'BCEWithLogitsLoss', etc.
+        'loss_type':  'CrossEntropyLoss', # Options: 'CrossEntropyLoss', 'BCEWithLogitsLoss' <=== if binary classification with 1 logit output, etc.
         'loss_params': {
             # Example for CrossEntropyLoss with class weights (adjust weights based on your class distribution)
             # 'weight': [1.0, 10.0] # Needs to be a torch.Tensor, converted inside the wrapper
-        }
+        },
+        'n_filters': 128,
+        'filter_size': 5,
+        'pool_size': 2,
+        'dense_units': 64
     },
     'rnn': {
         'units': 128,
@@ -223,7 +241,6 @@ TUNING_PARAMS = {
     'fcnn': {
          'hidden_size': [32, 64],
          'learning_rate': [0.001, 0.01],
-         'epochs': [50, 100]
     }
 }
 
