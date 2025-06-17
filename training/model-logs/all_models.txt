@@ -1,4 +1,5 @@
-Model Training Started: 2025-06-12 16:54:27
+####################################################################
+Model Training Started: 2025-06-16 16:33:48
 --- Data Cleaning ---
 	Loading already cleaned data from training-data\cleaned\coraza-audit-cleaned.csv
 	Successfully loaded 1743 entries from training-data\cleaned\coraza-audit-cleaned.csv
@@ -16,15 +17,13 @@ Model Training Started: 2025-06-12 16:54:27
 	Testing data shape: (349, 10538)
 --- Model Training ---
 	Algorithm Used: FCNN
-	Model Parameters: {'hidden_size': 64, 'learning_rate': 0.001, 'epochs': 50, 'batch_size': 32}
+	Model Parameters: {'hidden_size': 64, 'learning_rate': 0.001, 'epochs': 50, 'batch_size': 32, 'optimizer_type': 'adam', 'optimizer_params': {'weight_decay': 0.0001}, 'loss_type': 'CrossEntropyLoss', 'loss_params': {}}
 	Hyperparameter tuning: True
 	Hyperparameter tuning method: random
 	Cross-Validation Splits: 3
 	Num of hyperparameter combinations in Random Search: 10
 	Random State: 42
 	Tuning Parameters: {'hidden_size': [32, 64], 'learning_rate': [0.001, 0.01], 'epochs': [50, 100]}
-	Loss Parameters(PyTorch): {'type': 'CrossEntropyLoss', 'hyperparameters': {}}
-	Optimizer Parameters (PyTorch): {'type': 'Adam', 'hyperparameters': {'lr': 0.001, 'weight_decay': 0}}
 --- Model Evaluation ---
 	--- Evaluation Results ---
 	Accuracy: 1.0000
@@ -49,121 +48,35 @@ Actual Benign                  336                    0
 Actual Malicious                 0                   13
 
 	---Total training and evaluation time ---
-	49.76 seconds
+	166.99 seconds
 --- Model Saving ---
-	Saved preprocessor to ..\ai-microservice\trained-models\fcnn_malicious_traffic_preprocessor_20250612_165517.joblib...
-	Saved trained model to ..\ai-microservice\trained-models\fcnn_malicious_traffic_model_20250612_165517.joblib...
+	Saved preprocessor to ..\ai-microservice\trained-models\fcnn_malicious_traffic_preprocessor_20250616_163636.joblib...
+	Saved trained model to ..\ai-microservice\trained-models\fcnn_malicious_traffic_model_20250616_163636.joblib...
 ####################################################################
-Model Training Started: 2025-06-12 16:56:17
---- Data Cleaning ---
+Model Training Started: 2025-06-16 20:52:22
 	Loading already cleaned data from training-data\cleaned\coraza-audit-cleaned.csv
 	Successfully loaded 1743 entries from training-data\cleaned\coraza-audit-cleaned.csv
 --- Preprocessing (Feature extraction) ---
 	TFIDF_MAX_FEATURES: 5000
-	URI_PATH_TFIDF_ANALYZER: char
-	URI_PATH_TFIDF_NGRAM_RANGE: (1, 6)
-	URI_QUERY_TFIDF_ANALYZER: char
-	URI_QUERY_TFIDF_NGRAM_RANGE: (1, 6)
-	BODY_TFIDF_ANALYZER: char
-	BODY_TFIDF_NGRAM_RANGE: (1, 6)
-	USER_AGENT_TFIDF_ANALYZER: word
-	USER_AGENT_TFIDF_NGRAM_RANGE: (1, 2)
+    	URI_PATH_TFIDF_ANALYZER: char
+    	URI_PATH_TFIDF_NGRAM_RANGE: (1, 6)
+    	URI_QUERY_TFIDF_ANALYZER: char
+    	URI_QUERY_TFIDF_NGRAM_RANGE: (1, 6)
+    	BODY_TFIDF_ANALYZER: char
+    	BODY_TFIDF_NGRAM_RANGE: (1, 6)
+    	USER_AGENT_TFIDF_ANALYZER: word
+    	USER_AGENT_TFIDF_NGRAM_RANGE: (1, 2)
 	Training data shape: (1394, 10538)
 	Testing data shape: (349, 10538)
 --- Model Training ---
-	Algorithm Used: SVM
-	Model Parameters: {'kernel': 'linear', 'probability': True, 'C': 1.0}
+	Algorithm Used: MLP
+	Model Parameters: {'hidden_layer_sizes': (64,), 'activation': 'relu', 'solver': 'adam', 'alpha': 0.0001, 'learning_rate_init': 0.001, 'max_iter': 200, 'verbose': False}
 	Hyperparameter tuning: True
 	Hyperparameter tuning method: random
 	Cross-Validation Splits: 3
 	Num of hyperparameter combinations in Random Search: 10
 	Random State: 42
-	Tuning Parameters: {'C': [0.1, 1, 10, 100], 'kernel': ['linear', 'rbf']}
-	Loss Parameters(PyTorch): {'type': 'CrossEntropyLoss', 'hyperparameters': {}}
-	Optimizer Parameters (PyTorch): {'type': 'Adam', 'hyperparameters': {'lr': 0.001, 'weight_decay': 0}}
-Model Training Started: 2025-06-12 17:01:59
---- Data Cleaning ---
-	Loading already cleaned data from training-data\cleaned\coraza-audit-cleaned.csv
-	Successfully loaded 1743 entries from training-data\cleaned\coraza-audit-cleaned.csv
---- Preprocessing (Feature extraction) ---
-	TFIDF_MAX_FEATURES: 5000
-	URI_PATH_TFIDF_ANALYZER: char
-	URI_PATH_TFIDF_NGRAM_RANGE: (1, 6)
-	URI_QUERY_TFIDF_ANALYZER: char
-	URI_QUERY_TFIDF_NGRAM_RANGE: (1, 6)
-	BODY_TFIDF_ANALYZER: char
-	BODY_TFIDF_NGRAM_RANGE: (1, 6)
-	USER_AGENT_TFIDF_ANALYZER: word
-	USER_AGENT_TFIDF_NGRAM_RANGE: (1, 2)
-	Training data shape: (1394, 10538)
-	Testing data shape: (349, 10538)
---- Model Training ---
-	Algorithm Used: SVM
-	Model Parameters: {'kernel': 'linear', 'probability': True, 'C': 1.0}
-	Hyperparameter tuning: True
-	Hyperparameter tuning method: random
-	Cross-Validation Splits: 3
-	Num of hyperparameter combinations in Random Search: 10
-	Random State: 42
-	Tuning Parameters: {'C': [0.1, 1, 10, 100], 'kernel': ['linear', 'rbf']}
-	Loss Parameters(PyTorch): {'type': 'CrossEntropyLoss', 'hyperparameters': {}}
-	Optimizer Parameters (PyTorch): {'type': 'Adam', 'hyperparameters': {'lr': 0.001, 'weight_decay': 0}}
---- Model Evaluation ---
-	--- Evaluation Results ---
-	Accuracy: 0.9971
-	Precision: 1.0000
-	Recall: 0.9231
-	F1-Score: 0.9600
-
-	--- Classification Report ---
-              precision    recall  f1-score   support
-
-      benign       1.00      1.00      1.00       336
-   malicious       1.00      0.92      0.96        13
-
-    accuracy                           1.00       349
-   macro avg       1.00      0.96      0.98       349
-weighted avg       1.00      1.00      1.00       349
-
-
-	--- Confusion Matrix ---
-                  Predicted Benign  Predicted Malicious
-Actual Benign                  336                    0
-Actual Malicious                 1                   12
-
-	---Total training and evaluation time ---
-	6.14 seconds
---- Model Saving ---
-	Saved preprocessor to ..\ai-microservice\trained-models\svm_malicious_traffic_preprocessor_20250612_170205.joblib...
-	Saved trained model to ..\ai-microservice\trained-models\svm_malicious_traffic_model_20250612_170205.joblib...
-####################################################################
-Model Training Started: 2025-06-12 17:02:31
---- Data Cleaning ---
-	Loading already cleaned data from training-data\cleaned\coraza-audit-cleaned.csv
-	Successfully loaded 1743 entries from training-data\cleaned\coraza-audit-cleaned.csv
---- Preprocessing (Feature extraction) ---
-	TFIDF_MAX_FEATURES: 5000
-	URI_PATH_TFIDF_ANALYZER: char
-	URI_PATH_TFIDF_NGRAM_RANGE: (1, 6)
-	URI_QUERY_TFIDF_ANALYZER: char
-	URI_QUERY_TFIDF_NGRAM_RANGE: (1, 6)
-	BODY_TFIDF_ANALYZER: char
-	BODY_TFIDF_NGRAM_RANGE: (1, 6)
-	USER_AGENT_TFIDF_ANALYZER: word
-	USER_AGENT_TFIDF_NGRAM_RANGE: (1, 2)
-	Training data shape: (1394, 10538)
-	Testing data shape: (349, 10538)
---- Model Training ---
-	Algorithm Used: FCNN
-	Model Parameters: {'hidden_size': 64, 'learning_rate': 0.001, 'epochs': 50, 'batch_size': 32}
-	Hyperparameter tuning: True
-	Hyperparameter tuning method: random
-	Cross-Validation Splits: 3
-	Num of hyperparameter combinations in Random Search: 10
-	Random State: 42
-	Tuning Parameters: {'hidden_size': [32, 64], 'learning_rate': [0.001, 0.01], 'epochs': [50, 100]}
-	Loss Parameters(PyTorch): {'type': 'CrossEntropyLoss', 'hyperparameters': {}}
-	Optimizer Parameters (PyTorch): {'type': 'Adam', 'hyperparameters': {'lr': 0.001, 'weight_decay': 0}}
+	Tuning Parameters: {'hidden_layer_sizes': [(32,), (64,), (32, 32), (64, 32)], 'activation': ['relu', 'tanh'], 'solver': ['adam', 'sgd'], 'alpha': [0.0001, 0.001, 0.01], 'learning_rate_init': [0.0005, 0.001, 0.005], 'max_iter': [100, 200, 300]}
 --- Model Evaluation ---
 	--- Evaluation Results ---
 	Accuracy: 1.0000
@@ -188,64 +101,8 @@ Actual Benign                  336                    0
 Actual Malicious                 0                   13
 
 	---Total training and evaluation time ---
-	50.14 seconds
+	130.94 seconds
 --- Model Saving ---
-	Saved preprocessor to ..\ai-microservice\trained-models\fcnn_malicious_traffic_preprocessor_20250612_170321.joblib...
-	Saved trained model to ..\ai-microservice\trained-models\fcnn_malicious_traffic_model_20250612_170321.joblib...
-####################################################################
-Model Training Started: 2025-06-12 17:03:31
---- Data Cleaning ---
-	Loading already cleaned data from training-data\cleaned\coraza-audit-cleaned.csv
-	Successfully loaded 1743 entries from training-data\cleaned\coraza-audit-cleaned.csv
---- Preprocessing (Feature extraction) ---
-	TFIDF_MAX_FEATURES: 5000
-	URI_PATH_TFIDF_ANALYZER: char
-	URI_PATH_TFIDF_NGRAM_RANGE: (1, 6)
-	URI_QUERY_TFIDF_ANALYZER: char
-	URI_QUERY_TFIDF_NGRAM_RANGE: (1, 6)
-	BODY_TFIDF_ANALYZER: char
-	BODY_TFIDF_NGRAM_RANGE: (1, 6)
-	USER_AGENT_TFIDF_ANALYZER: word
-	USER_AGENT_TFIDF_NGRAM_RANGE: (1, 2)
-	Training data shape: (1394, 10538)
-	Testing data shape: (349, 10538)
---- Model Training ---
-	Algorithm Used: RANDOM_FOREST
-	Model Parameters: {'n_estimators': 100, 'max_depth': None}
-	Hyperparameter tuning: True
-	Hyperparameter tuning method: random
-	Cross-Validation Splits: 3
-	Num of hyperparameter combinations in Random Search: 10
-	Random State: 42
-	Tuning Parameters: {'n_estimators': [50, 100, 200], 'max_depth': [None, 10, 20]}
-	Loss Parameters(PyTorch): {'type': 'CrossEntropyLoss', 'hyperparameters': {}}
-	Optimizer Parameters (PyTorch): {'type': 'Adam', 'hyperparameters': {'lr': 0.001, 'weight_decay': 0}}
---- Model Evaluation ---
-	--- Evaluation Results ---
-	Accuracy: 1.0000
-	Precision: 1.0000
-	Recall: 1.0000
-	F1-Score: 1.0000
-
-	--- Classification Report ---
-              precision    recall  f1-score   support
-
-      benign       1.00      1.00      1.00       336
-   malicious       1.00      1.00      1.00        13
-
-    accuracy                           1.00       349
-   macro avg       1.00      1.00      1.00       349
-weighted avg       1.00      1.00      1.00       349
-
-
-	--- Confusion Matrix ---
-                  Predicted Benign  Predicted Malicious
-Actual Benign                  336                    0
-Actual Malicious                 0                   13
-
-	---Total training and evaluation time ---
-	5.79 seconds
---- Model Saving ---
-	Saved preprocessor to ..\ai-microservice\trained-models\random_forest_malicious_traffic_preprocessor_20250612_170337.joblib...
-	Saved trained model to ..\ai-microservice\trained-models\random_forest_malicious_traffic_model_20250612_170337.joblib...
-####################################################################
+	Saved trained model to ..\ai-microservice\trained-models\mlp_malicious_traffic_model_20250616_205433.joblib...
+--- Preprocessor Saving ---
+	Saved preprocessor to ..\ai-microservice\trained-models\mlp_malicious_traffic_preprocessor_20250616_205433.joblib...

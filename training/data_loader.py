@@ -176,11 +176,12 @@ def load_and_clean_data(logger):
     Returns:
         pandas.DataFrame: A cleaned DataFrame of log entries.
     """
-    logger.info("--- Data Cleaning ---")
     
     df = pd.DataFrame() 
 
     if PERFORM_DATA_CLEANING:
+        
+        logger.info("--- Data Cleaning ---")
         # Load lines from raw csv files, and perform cleaning
         logger.info("\tStarting Data Loading and Cleaning from Raw Files")
         df = _load_raw_log_files(logger)

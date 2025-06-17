@@ -13,7 +13,7 @@ from config import (
     RANDOM_STATE
 )
 from data_loader import load_and_clean_data
-from feature_extractor import preprocess_data
+from data_preprocessor import preprocess_data
 from model_trainer import train_model
 from model_evaluator import evaluate_model
 from model_utils import save_model_and_preprocessor
@@ -75,6 +75,7 @@ def main():
 
     # Setup logger
     logger = _setup_logger(EVALUATION_LOG_PATH)
+    logger.info(f"####################################################################")
     logger.info(f"Model Training Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
     # 1. Load and Clean Data
@@ -83,7 +84,7 @@ def main():
         logger.warning("No data remaining after cleaning. Cannot proceed with training.")
         return
 
-    # 2. Preprocess Data (Feature extraction)
+    # 2. Preprocess Data (Feature extraction) (No preprocessing necessary for deep learning as they use their own embedding layers)
     preprocessor, X, y = preprocess_data(df, logger)
 
     # Ensure there are enough samples and features after preprocessing
@@ -117,7 +118,6 @@ def main():
     # 5. Save Model and Preprocessor 
     save_model_and_preprocessor(model, preprocessor, logger)
 
-    logger.info(f"####################################################################")
-
+    
 if __name__ == "__main__":
     main()
