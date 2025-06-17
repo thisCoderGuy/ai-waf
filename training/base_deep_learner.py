@@ -5,6 +5,8 @@ import numpy as np
 from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.preprocessing import LabelEncoder 
 from scipy.sparse import issparse
+from torch.utils.data import TensorDataset, DataLoader
+
 
 class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
     """
@@ -116,27 +118,17 @@ class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
         Returns:
             self: The trained classifier.
         """
-        # Convert sparse matrix to dense numpy array if necessary
-        if issparse(X):
-            X_dense = X.toarray()
-        else:
-            X_dense = X
+        # Convert to PyTorch tensors
+        X_text_tensors = [
+            torch.tensor(X['request_uri_path'], dtype=torch.long),
+            torch.tensor(X['request_uri_query'], dtype=torch.long),
+            torch.tensor(X['request_body'], dtype=torch.long),
+            torch.tensor(X['user_agent'], dtype=torch.long)
+        ]
 
-        # Infer input_size and num_classes
-        self.input_size = X_dense.shape[1] # Num columns, ie num features
-        self.classes_ = self.label_encoder.fit(y).classes_
-        self.num_classes = len(self.classes_)
-
-        # Build the model components if not already built
-        if self.model is None:
-            self._build_model_components(self.input_size, self.num_classes)
-
-        # Convert data to PyTorch tensors and move to device
-        X_tensor = torch.tensor(X_dense, dtype=torch.float32).to(self.device)
-        y_encoded = self.label_encoder.transform(y)
-        y_tensor = torch.tensor(y_encoded, dtype=torch.long).to(self.device)
-
-        self.model.train() # Set model to training mode
+        X_categorical_tensor = torch.tensor(X['categorical'], dtype=torch.long)
+        X_numerical_tensor = torch.tensor(X['numerical'], dtype=torch.float32)
+        y_tensor = torch.tensor(y.values, dtype=torch.float32)
 
         if self.verbose:
             print(f"Starting training on device: {self.device}")
@@ -148,20 +140,81 @@ class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
 
 
         # Create DataLoader for batching
-        train_data = torch.utils.data.TensorDataset(X_tensor, y_tensor)
-        train_loader = torch.utils.data.DataLoader(train_data, batch_size=self.batch_size, shuffle=True)
+        # Combine everything into one dataset
+        train_dataset = TensorDataset(
+            X_text_tensors[0],
+            X_text_tensors[1],
+            X_text_tensors[2],
+            X_text_tensors[3],
+            X_categorical_tensor,
+            X_numerical_tensor,
+            y_tensor
+        )
+
+        train_loader = DataLoader(train_dataset, batch_size=self.batch_size, shuffle=True)
+
+        # TODO
+        # L1 regularization
+        # l1_lambda = 0.001
+        # L2 regularization , same as weight_decay param in Adam Optimizer
+        # l2_lambda = 0.001
 
         for epoch in range(self.epochs):
-            for i, (inputs, labels) in enumerate(train_loader):
-                outputs = self.model(inputs)
-                loss = self.criterion(outputs, labels)
+            self.model.train() # Set model to training mode
+            total_loss = 0
+
+            for batch in train_loader:
+                # Unpack and move inputs to device
+                path_tensor, query_tensor, body_tensor, ua_tensor, cat_tensor, num_tensor, labels = [
+                    x.to(self.device) for x in batch
+                ]
+
+                # Forward pass
+                logits = self.model(
+                    text_inputs=[path_tensor, query_tensor, body_tensor, ua_tensor],
+                    cat_inputs=cat_tensor,
+                    num_input=num_tensor
+                )  # shape: (batch_size, 2)
+
+                loss = self.criterion(logits, labels.long())  # Use CrossEntropyLoss
+                 # TODO
+                # Elastic Net: L1 + L2 regularization
+                # l1_norm = sum(p.abs().sum() for p in self.model.parameters())
+                # l2_norm = sum(p.pow(2).sum() for p in self.model.parameters())
+                # loss = loss + l1_lambda * l1_norm + l2_lambda * l2_norm
 
                 self.optimizer.zero_grad()
                 loss.backward()
                 self.optimizer.step()
 
-            if self.verbose and (epoch + 1) % 10 == 0:
-                print(f'  Epoch [{epoch+1}/{self.epochs}], Loss: {loss.item():.4f}')
+                total_loss += loss.item()
+
+            avg_loss = total_loss / len(train_loader)
+            print(f"Epoch {epoch+1}/{self.epochs} - Loss: {avg_loss:.4f}")
+
+
+
+##########################
+        # Infer input_size and num_classes
+        self.input_size = X_dense.shape[1] # Num columns, ie num features
+        self.classes_ = self.label_encoder.fit(y).classes_
+        self.num_classes = len(self.classes_)
+
+        # Build the model components if not already built
+        if self.model is None:
+            self._build_model_components(self.input_size, self.num_classes)
+
+       
+        # Convert data to PyTorch tensors and move to device
+        X_tensor = torch.tensor(X_dense, dtype=torch.float32).to(self.device)
+        y_encoded = self.label_encoder.transform(y)
+        y_tensor = torch.tensor(y_encoded, dtype=torch.long).to(self.device)
+
+    
+
+        
+
+        
         return self
 
     def predict(self, X):
@@ -211,3 +264,4 @@ class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
 
         # Move probabilities back to CPU for numpy conversion
         return probabilities.cpu().numpy()
+    

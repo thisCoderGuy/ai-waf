@@ -69,7 +69,7 @@ class CNNClassifier(BaseDeepLearningClassifier):
 
     def _build_model_architecture(self, input_size, num_classes):
         """
-        Builds the specific MLP architecture for this classifier.
+        Builds the specific CNN architecture for this classifier.
         """
-        return CNN(input_size, self.hidden_size, num_classes)
+        return CNN(input_size, num_classes)
 
