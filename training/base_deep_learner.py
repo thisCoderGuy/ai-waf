@@ -174,7 +174,7 @@ class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
                     text_inputs=[path_tensor, query_tensor, body_tensor, ua_tensor],
                     cat_inputs=cat_tensor,
                     num_input=num_tensor
-                )  # shape: (batch_size, 2)
+                )  # shape: (batch_size, 2)   # 2 output classes
 
                 loss = self.criterion(logits, labels.long())  # Use CrossEntropyLoss
                  # TODO
@@ -204,11 +204,7 @@ class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
         if self.model is None:
             self._build_model_components(self.input_size, self.num_classes)
 
-       
-        # Convert data to PyTorch tensors and move to device
-        X_tensor = torch.tensor(X_dense, dtype=torch.float32).to(self.device)
-        y_encoded = self.label_encoder.transform(y)
-        y_tensor = torch.tensor(y_encoded, dtype=torch.long).to(self.device)
+
 
     
 

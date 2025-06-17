@@ -149,7 +149,11 @@ MODEL_PARAMS = {
         },
         'dropout_rate': 0.5, 
         'hidden_size': 64,
-        'numerical_hidden_size': 32
+        'num_classes': 2,
+        'text_embed_dim': 32,
+        'numerical_hidden_size': 32,
+        'categorical_embedding_dim': 2,
+        
     },
     'cnn': {
         'learning_rate': 0.001,
