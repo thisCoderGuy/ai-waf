@@ -14,7 +14,12 @@ class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
     Handles common functionalities like device setup, random seeds, training loop,
     prediction, and dynamic creation of loss function and optimizer.
     """
-    def __init__(self, learning_rate=0.001, epochs=50, batch_size=32,
+    def __init__(self,  num_classes,
+            text_embed_dims,
+            categorical_embed_dims,
+            numerical_hidden_size,
+            preprocessor,
+                 learning_rate=0.001, epochs=50, batch_size=32,
                  random_state=None, verbose=False,
                  optimizer_type='adam',  optimizer_params=None,
                  loss_type='CrossEntropyLoss',  loss_params=None):
@@ -46,6 +51,28 @@ class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
         self.optimizer_type = optimizer_type
         self.optimizer_params = optimizer_params
 
+        self.num_classes = num_classes
+        self.numerical_hidden_size = numerical_hidden_size
+        
+        
+        categorical_embed_dims = categorical_embed_dims
+        
+        self.text_specs = {}
+        for text_feature in text_embed_dims:
+            vocab_size = preprocessor[f"{text_feature}_vocab_size"]
+            self.text_specs[text_feature] = (vocab_size, text_embed_dims[text_feature])
+        
+
+        self.categorical_specs = {}
+        for categorical_feature in categorical_embed_dims:
+            cardinality = preprocessor[f"{categorical_feature}_cardinality"] 
+            self.categorical_specs[categorical_feature] = (cardinality, categorical_embed_dims[categorical_feature])
+                
+
+        self.num_numerical_features =  preprocessor["num_numerical_features"]
+
+
+
         # Determine the device (CPU or GPU)
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         if self.verbose:
@@ -60,18 +87,18 @@ class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
                 torch.backends.cudnn.deterministic = True
                 torch.backends.cudnn.benchmark = False # Set to False for reproducibility
 
-    def _build_model_architecture(self, input_size, num_classes):
+    def _build_model_architecture(self):
         """
         Abstract method to be implemented by subclasses.
         This method should return the specific nn.Module for the classifier.
         """
         raise NotImplementedError("Subclasses must implement _build_model_architecture method.")
 
-    def _build_model_components(self, input_size, num_classes):
+    def _build_model_components(self):
         """
         Builds the PyTorch model architecture, loss function, and optimizer.
         """
-        self.model = self._build_model_architecture(input_size, num_classes)
+        self.model = self._build_model_architecture()
         self.model.to(self.device) # <--- Move the model to the selected device
 
         # Dynamically create loss function
@@ -118,6 +145,24 @@ class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
         Returns:
             self: The trained classifier.
         """
+        
+
+
+        ##########################
+        # text_vocab_sizes: Dict[str, int], # e.g., {'request_uri_path': 50}  where Key -> Vocab Size
+        # categorical_cardinalities: Dict[str,  int]  # e.g., {'request_method': 10} where Key -> Cardinality 
+        # num_numerical_features: int
+
+        text_vocab_sizes  = 
+        categorical_cardinalities =
+        num_numerical_features =
+
+        # Build the model components if not already built
+        if self.model is None:
+            self._build_model_components()
+
+
+
         # Convert to PyTorch tensors
         X_text_tensors = [
             torch.tensor(X['request_uri_path'], dtype=torch.long),
@@ -125,7 +170,6 @@ class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
             torch.tensor(X['request_body'], dtype=torch.long),
             torch.tensor(X['user_agent'], dtype=torch.long)
         ]
-
         X_categorical_tensor = torch.tensor(X['categorical'], dtype=torch.long)
         X_numerical_tensor = torch.tensor(X['numerical'], dtype=torch.float32)
         y_tensor = torch.tensor(y.values, dtype=torch.float32)
@@ -191,24 +235,7 @@ class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
 
             avg_loss = total_loss / len(train_loader)
             print(f"Epoch {epoch+1}/{self.epochs} - Loss: {avg_loss:.4f}")
-
-
-
-##########################
-        # Infer input_size and num_classes
-        self.input_size = X_dense.shape[1] # Num columns, ie num features
-        self.classes_ = self.label_encoder.fit(y).classes_
-        self.num_classes = len(self.classes_)
-
-        # Build the model components if not already built
-        if self.model is None:
-            self._build_model_components(self.input_size, self.num_classes)
-
-
-
-    
-
-        
+     
 
         
         return self

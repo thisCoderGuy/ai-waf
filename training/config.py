@@ -53,6 +53,19 @@ CLEANED_DATA_OUTPUT_PATH = os.path.join('training-data', 'cleaned', 'coraza-audi
 #########################################################
 # --- Preprocessing (Feature extraction) ---
 #########################################################
+
+# Different types of features
+TEXT_FEATURES = [
+            'request_uri_path',
+            'request_uri_query',
+            'request_body',
+            'user_agent' 
+]
+CATEGORICAL_FEATURES = ['request_method']
+NUMERICAL_FEATURES = ['request_length', 'path_length', 'query_length']
+LABEL = 'AIVerdictLabel'
+
+
 #################################
 # Do perform Sparse Preprocessing?
 # True for traditional machine learning algorithms (generate sparse, high dimensional vectors)
@@ -60,31 +73,45 @@ CLEANED_DATA_OUTPUT_PATH = os.path.join('training-data', 'cleaned', 'coraza-audi
 PERFORM_SPARSE_PREPROCESSING = False # True or False
 
 # --- Feature Extraction Parameters (for TfidfVectorizer) for text columns ---
-TFIDF_MAX_FEATURES = 5000
-# URI_PATH column
-URI_PATH_TFIDF_ANALYZER = 'char' # 'word' or 'char'
-URI_PATH_TFIDF_NGRAM_RANGE = (1, 6) # For character n-grams
-# URI_QUERY column
-URI_QUERY_TFIDF_ANALYZER = 'char' # 'word' or 'char'
-URI_QUERY_TFIDF_NGRAM_RANGE = (1, 6) # For character n-grams
-# BODY column
-BODY_TFIDF_ANALYZER = 'char' # 'word' or 'char'
-BODY_TFIDF_NGRAM_RANGE = (1, 6) # For character n-grams
-# USER_AGENT column
-USER_AGENT_TFIDF_ANALYZER = 'word' # 'word' or 'char'
-USER_AGENT_TFIDF_NGRAM_RANGE = (1, 2) # For character n-grams
+TFIDF_MAX_FEATURES = {
+            'request_uri_path': 5000,
+            'request_uri_query': 5000,
+            'request_body': 5000,
+            'user_agent': 5000,
+        }
+TFIDF_ANALYZERS = {
+            'request_uri_path': 'char', # 'word' or 'char'
+            'request_uri_query': 'char', # 'word' or 'char'
+            'request_body': 'char', # 'word' or 'char'
+            'user_agent': 'char', # 'word' or 'char'
+        }
+TFIDF_NGRAM_RANGES  = {
+            'request_uri_path': (1, 6), # For character n-grams
+            'request_uri_query':  (1, 6), # For character n-grams
+            'request_body':  (1, 6), # For character n-grams
+            'user_agent':  (1, 2), # For character n-grams
+        }
+
 
 #################################
 # Do perform Dense Preprocessing?
 # True for  deep learning algorithms 
 PERFORM_DENSE_PREPROCESSING = True
-#Using character-level tokenization for text features
-# Max sequences
-MAX_SEQ_LENGTH_PATH = 100
-MAX_SEQ_LENGTH_QUERY = 100
-MAX_SEQ_LENGTH_BODY = 100
-MAX_SEQ_LENGTH_USER_AGENT = 100
 
+#Using character-level tokenization for text features
+TOKENIZER_CONFIGS = {
+            'request_uri_path': 'char', # 'word' or 'char'
+            'request_uri_query': 'char', # 'word' or 'char'
+            'request_body': 'char', # 'word' or 'char'
+            'user_agent': 'char', # 'word' or 'char'
+        }
+# Max sequences
+MAX_SEQ_LENGTHS = {
+            'request_uri_path': 100,
+            'request_uri_query': 100,
+            'request_body': 100,
+            'user_agent': 100
+        }
 
 
 #########################################################
@@ -150,9 +177,16 @@ MODEL_PARAMS = {
         'dropout_rate': 0.5, 
         'hidden_size': 64,
         'num_classes': 2,
-        'text_embed_dim': 32,
         'numerical_hidden_size': 32,
-        'categorical_embedding_dim': 2,
+        'text_embed_dims': {
+            'request_uri_path': 32,
+            'request_uri_query': 32,
+            'request_body': 32,
+            'user_agent': 32
+        },
+        'categorical_embed_dims': {
+            'request_method': 3
+        },
         
     },
     'cnn': {
