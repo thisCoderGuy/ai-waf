@@ -20,7 +20,7 @@ from config import (
     RANDOM_SEARCH_N_ITER, MODEL_PARAMS, TUNING_PARAMS
 )
 
-def get_model():
+def get_model(preprocessor):
     """
     Returns an initialized model based on the specified type and parameters.
     """
@@ -39,6 +39,7 @@ def get_model():
         ModelClass = MultinomialNB
     elif model_type == 'mlp': 
         ModelClass = MLPClassifier
+    ## deep learning models
     elif model_type == 'fcnn':
         ModelClass = PyTorchMLPClassifier
     elif model_type == 'cnn':
@@ -50,6 +51,10 @@ def get_model():
 
     # Dynamically select model and its parameters
     model_params = MODEL_PARAMS.get(MODEL_TYPE, {})
+    
+    if  model_type == 'mlp'or  model_type == 'cnn':
+        model_params['preprocessor'] = preprocessor
+
     if 'random_state' in model_params and model_params['random_state'] is None:
         model_params['random_state'] = RANDOM_STATE
 
@@ -57,7 +62,7 @@ def get_model():
 
     return model
 
-def train_model(X_train, y_train, logger):
+def train_model(X_train, y_train, preprocessor, logger):
     """
     Trains a machine learning model using Stratified K-Fold Cross-Validation.
     Optionally performs hyperparameter tuning using GridSearchCV or RandomizedSearchCV.
@@ -90,7 +95,7 @@ def train_model(X_train, y_train, logger):
 
    
 
-    model = get_model()
+    model = get_model(preprocessor)
 
     if PERFORM_TUNING:
         print(f"\nStarting Hyperparameter Tuning ({TUNING_METHOD.upper()} Search) for {MODEL_TYPE.upper()} model...")

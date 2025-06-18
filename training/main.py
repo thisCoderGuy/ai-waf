@@ -106,7 +106,7 @@ def main():
     start_time = time.time()
 
     # 3. Train Model
-    model = train_model(X_train, y_train, logger) 
+    model = train_model(X_train, y_train, preprocessor, logger) 
     
     # 4. Evaluate Model
     evaluate_model(model, X_test, y_test, logger)
