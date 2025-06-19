@@ -284,7 +284,6 @@ class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
         Returns:
             np.array: Predicted class labels (0 or 1 for binary classification).
         """
-    def predict(self, X):
         probs = self.predict_proba(X)
         return probs.argmax(axis=1)
 
