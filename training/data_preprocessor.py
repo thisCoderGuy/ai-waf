@@ -103,8 +103,6 @@ def preprocess_data(df, logger):
             remainder='drop'
         )
 
-
-
         # Fit the preprocessor on the data to learn vocabulary, categories, etc.
         X_processed = preprocessor.fit_transform(df)       
 

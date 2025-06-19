@@ -54,14 +54,14 @@ def classify():
         return jsonify({"error": "No JSON data provided"}), 400
     
     # Extract raw features from the incoming JSON
-    requestURIPath = data.get("request_uri_path", '')
-    queryLength =data.get("query_length", '')
-    userAgent = data.get("user_agent", '')
-    requestLength = data.get("request_length", '')
-    requestURIQuery = data.get("request_uri_query", '')
-    pathLength = data.get("path_length", '')
-    requestMethod = data.get("request_method", '')
-    requestBody = data.get("request_body" , '')
+    requestURIPath = data.get("RequestURIPath", '')
+    queryLength =data.get("QueryLength", '')
+    userAgent = data.get("UserAgent", '')
+    requestLength = data.get("RequestLength", '')
+    requestURIQuery = data.get("RequestURIQuery", '')
+    pathLength = data.get("PathLength", '')
+    requestMethod = data.get("RequestMethod", '')
+    requestBody = data.get("RequestBody" , '')
 
     logging.info(f"Received request for classification: Method={requestMethod}, Path={requestURIPath}, Query={requestURIQuery}, Body={requestBody[:100]},  userAgent={userAgent}...") # Log first 100 chars of body
 
@@ -78,24 +78,24 @@ def classify():
         # Ensure column names match those expected by the preprocessor
         
         input_df = pd.DataFrame([{
-            'request_method': requestMethod, 
-            'request_uri_path': requestURIPath, 
-            'request_uri_query': requestURIQuery, 
-            'request_body': requestBody, 
-            'user_agent': userAgent, 
-            'request_length': requestLength, 
-            'path_length': pathLength, 
-            'query_length': queryLength,
+            'RequestMethod': requestMethod, 
+            'RequestURIPath': requestURIPath, 
+            'RequestURIQuery': requestURIQuery, 
+            'RequestBody': requestBody, 
+            'UserAgent': userAgent, 
+            'RequestLength': requestLength, 
+            'PathLength': pathLength, 
+            'QueryLength': queryLength,
             }])
 
         
         # Preprocess the input data using the loaded preprocessor
         # Ensure fillna is applied to text columns as in preprocess_data
-        input_df['request_method'] = input_df['request_method'].fillna('')
-        input_df['request_uri_path'] = input_df['request_uri_path'].fillna('')
-        input_df['request_uri_query'] = input_df['request_uri_query'].fillna('')
-        input_df['request_body'] = input_df['request_body'].fillna('')
-        input_df['user_agent'] = input_df['user_agent'].fillna('')
+        input_df['RequestMethod'] = input_df['RequestMethod'].fillna('')
+        input_df['RequestURIPath'] = input_df['RequestURIPath'].fillna('')
+        input_df['RequestURIQuery'] = input_df['RequestURIQuery'].fillna('')
+        input_df['RequestBody'] = input_df['RequestBody'].fillna('')
+        input_df['UserAgent'] = input_df['UserAgent'].fillna('')
 
 
         # Transform the DataFrame into numerical features

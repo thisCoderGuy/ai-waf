@@ -353,3 +353,11 @@ Model Training Started: 2025-06-17 12:40:40
 	Num of hyperparameter combinations in Random Search: 10
 	Random State: 42
 	Tuning Parameters: {'hidden_size': [32, 64], 'learning_rate': [0.001, 0.01]}
+####################################################################
+Model Training Started: 2025-06-19 00:20:16
+	Loading already cleaned data from training-data\cleaned\coraza-audit-cleaned.csv
+	Successfully loaded 1743 entries from training-data\cleaned\coraza-audit-cleaned.csv
+--- Preprocessing (Dense Feature extraction) ---
+	Using character-level tokenization for text features.
+    	TOKENIZER_CONFIGS: {'RequestURIPath': 'char', 'RequestURIQuery': 'char', 'RequestBody': 'char', 'UserAgent': 'char'}
+    	MAX_SEQ_LENGTHS: {'RequestURIPath': 100, 'RequestURIQuery': 100, 'RequestBody': 100, 'UserAgent': 100}

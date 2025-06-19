@@ -7,6 +7,9 @@ from sklearn.preprocessing import LabelEncoder
 from scipy.sparse import issparse
 from torch.utils.data import TensorDataset, DataLoader
 
+from config import (
+    TEXT_FEATURES, CATEGORICAL_FEATURES,  NUMERICAL_FEATURES
+)
 
 class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
     """
@@ -146,32 +149,24 @@ class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
             self: The trained classifier.
         """
         
-
-
-        ##########################
-        # text_vocab_sizes: Dict[str, int], # e.g., {'request_uri_path': 50}  where Key -> Vocab Size
-        # categorical_cardinalities: Dict[str,  int]  # e.g., {'request_method': 10} where Key -> Cardinality 
-        # num_numerical_features: int
-
-        text_vocab_sizes  = 
-        categorical_cardinalities =
-        num_numerical_features =
-
         # Build the model components if not already built
         if self.model is None:
             self._build_model_components()
 
-
-
         # Convert to PyTorch tensors
-        X_text_tensors = [
-            torch.tensor(X['request_uri_path'], dtype=torch.long),
-            torch.tensor(X['request_uri_query'], dtype=torch.long),
-            torch.tensor(X['request_body'], dtype=torch.long),
-            torch.tensor(X['user_agent'], dtype=torch.long)
-        ]
-        X_categorical_tensor = torch.tensor(X['categorical'], dtype=torch.long)
-        X_numerical_tensor = torch.tensor(X['numerical'], dtype=torch.float32)
+        X_text_tensors = []        
+        for text_feature in TEXT_FEATURES:
+            X_text_tensors.append(torch.tensor(X[text_feature], dtype=torch.long))
+            
+
+        X_categorical_tensors = []
+        for categorical_feature in CATEGORICAL_FEATURES:
+            X_categorical_tensors.append(torch.tensor(X[categorical_feature], dtype=torch.long))
+        
+        X_numerical_tensors = []
+        for numerical_feature in NUMERICAL_FEATURES:
+            X_numerical_tensors.append(torch.tensor(X[numerical_feature], dtype=torch.float32))
+
         y_tensor = torch.tensor(y.values, dtype=torch.float32)
 
         if self.verbose:
@@ -186,16 +181,15 @@ class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
         # Create DataLoader for batching
         # Combine everything into one dataset
         train_dataset = TensorDataset(
-            X_text_tensors[0],
-            X_text_tensors[1],
-            X_text_tensors[2],
-            X_text_tensors[3],
-            X_categorical_tensor,
-            X_numerical_tensor,
+            *X_text_tensors,
+            *X_categorical_tensors,
+            *X_numerical_tensors,
             y_tensor
         )
 
-        train_loader = DataLoader(train_dataset, batch_size=self.batch_size, shuffle=True)
+        train_loader = DataLoader(train_dataset, 
+                                  batch_size=self.batch_size,
+                                    shuffle=True)
 
         # TODO
         # L1 regularization
@@ -209,16 +203,32 @@ class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
 
             for batch in train_loader:
                 # Unpack and move inputs to device
-                path_tensor, query_tensor, body_tensor, ua_tensor, cat_tensor, num_tensor, labels = [
-                    x.to(self.device) for x in batch
-                ]
+                # The order here must match the order in train_dataset
+                # and the expected order by your model's forward method.
+                # Assuming TEXT_FEATURES, CATEGORICAL_FEATURES, NUMERICAL_FEATURES, then labels
+                num_text_features = len(TEXT_FEATURES)
+                num_cat_features = len(CATEGORICAL_FEATURES)
+                num_num_features = len(NUMERICAL_FEATURES)
+
+                # Dynamically unpack based on the number of feature types
+                current_idx = 0
+                batch_text_tensors = [x.to(self.device) for x in batch[current_idx : current_idx + num_text_features]]
+                current_idx += num_text_features
+
+                batch_cat_tensors = [x.to(self.device) for x in batch[current_idx : current_idx + num_cat_features]]
+                current_idx += num_cat_features
+
+                batch_num_tensors = [x.to(self.device) for x in batch[current_idx : current_idx + num_num_features]]
+                current_idx += num_num_features
+
+                labels = batch[current_idx].to(self.device)
 
                 # Forward pass
                 logits = self.model(
-                    text_inputs=[path_tensor, query_tensor, body_tensor, ua_tensor],
-                    cat_inputs=cat_tensor,
-                    num_input=num_tensor
-                )  # shape: (batch_size, 2)   # 2 output classes
+                    text_inputs=batch_text_tensors,
+                    cat_inputs=batch_cat_tensors,
+                    num_inputs=batch_num_tensors
+                ) # shape: (batch_size, num_classes) 
 
                 loss = self.criterion(logits, labels.long())  # Use CrossEntropyLoss
                  # TODO
@@ -234,57 +244,134 @@ class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
                 total_loss += loss.item()
 
             avg_loss = total_loss / len(train_loader)
-            print(f"Epoch {epoch+1}/{self.epochs} - Loss: {avg_loss:.4f}")
-     
+            if self.verbose:
+                print(f"Epoch {epoch+1}/{self.epochs} - Loss: {avg_loss:.4f}")
 
         
         return self
 
     def predict(self, X):
         """
-        Predicts class labels for the input data.
+        Predicts the class labels for the given input features.
 
         Args:
-            X (np.array or sparse matrix): Features to predict on.
+            X (np.array or sparse matrix): Input features for prediction.
+
         Returns:
-            np.array: Predicted class labels.
+            np.array: Predicted class labels (0 or 1 for binary classification).
         """
-        if issparse(X):
-            X_dense = X.toarray()
-        else:
-            X_dense = X
+        if self.model is None:
+            raise RuntimeError("Model has not been trained. Call .fit() first.")
 
         self.model.eval() # Set model to evaluation mode
-        X_tensor = torch.tensor(X_dense, dtype=torch.float32).to(self.device)
 
-        with torch.no_grad():
-            outputs = self.model(X_tensor)
-            _, predicted_encoded = torch.max(outputs.data, 1)
+        # Convert to PyTorch tensors - similar preprocessing as in fit
+        X_text_tensors = []
+        for text_feature in TEXT_FEATURES:
+            X_text_tensors.append(torch.tensor(X[text_feature], dtype=torch.long))
 
-        # Move predictions back to CPU for numpy conversion and decoding
-        return self.label_encoder.inverse_transform(predicted_encoded.cpu().numpy())
+        X_categorical_tensors = []
+        for categorical_feature in CATEGORICAL_FEATURES:
+            X_categorical_tensors.append(torch.tensor(X[categorical_feature], dtype=torch.long))
+
+        X_numerical_tensors = []
+        for numerical_feature in NUMERICAL_FEATURES:
+            X_numerical_tensors.append(torch.tensor(X[numerical_feature], dtype=torch.float32))
+
+        # Create DataLoader for batching inference
+        predict_dataset = TensorDataset(
+            *X_text_tensors,
+            *X_categorical_tensors,
+            *X_numerical_tensors
+        )
+        predict_loader = DataLoader(predict_dataset, batch_size=self.batch_size, shuffle=False)
+
+        all_predictions = []
+        with torch.no_grad(): # Disable gradient calculation for inference
+            for batch in predict_loader:
+                # Unpack and move inputs to device, similar to fit
+                num_text_features = len(TEXT_FEATURES)
+                num_cat_features = len(CATEGORICAL_FEATURES)
+
+                current_idx = 0
+                batch_text_tensors = [x.to(self.device) for x in batch[current_idx : current_idx + num_text_features]]
+                current_idx += num_text_features
+
+                batch_cat_tensors = [x.to(self.device) for x in batch[current_idx : current_idx + num_cat_features]]
+                current_idx += num_cat_features
+
+                batch_num_tensor = batch[current_idx].to(self.device)
+
+
+                logits = self.model(
+                    text_inputs=batch_text_tensors,
+                    cat_inputs=batch_cat_tensors,
+                    num_input=batch_num_tensor
+                )
+                predictions = torch.argmax(logits, dim=1) # Get the class with the highest logit
+                all_predictions.append(predictions.cpu().numpy()) # Move to CPU and convert to NumPy
+
+        return np.concatenate(all_predictions)
+
 
     def predict_proba(self, X):
         """
-        Predicts class probabilities for the input data.
+        Predicts the class probabilities for the given input features.
 
         Args:
-            X (np.array or sparse matrix): Features to predict on.
+            X (np.array or sparse matrix): Input features for probability prediction.
+
         Returns:
-            np.array: Predicted class probabilities.
+            np.array: Predicted class probabilities (e.g., shape (n_samples, n_classes)).
         """
-        if issparse(X):
-            X_dense = X.toarray()
-        else:
-            X_dense = X
+        if self.model is None:
+            raise RuntimeError("Model has not been trained. Call .fit() first.")
 
         self.model.eval() # Set model to evaluation mode
-        X_tensor = torch.tensor(X_dense, dtype=torch.float32).to(self.device)
 
-        with torch.no_grad():
-            outputs = self.model(X_tensor)
-            probabilities = torch.softmax(outputs, dim=1)
+        # Convert to PyTorch tensors - similar preprocessing as in fit
+        X_text_tensors = []
+        for text_feature in TEXT_FEATURES:
+            X_text_tensors.append(torch.tensor(X[text_feature], dtype=torch.long))
 
-        # Move probabilities back to CPU for numpy conversion
-        return probabilities.cpu().numpy()
-    
+        X_categorical_tensors = []
+        for categorical_feature in CATEGORICAL_FEATURES:
+            X_categorical_tensors.append(torch.tensor(X[categorical_feature], dtype=torch.long))
+
+        X_numerical_tensors = []
+        for numerical_feature in NUMERICAL_FEATURES:
+            X_numerical_tensors.append(torch.tensor(X[numerical_feature], dtype=torch.float32))
+
+        # Create DataLoader for batching inference
+        predict_dataset = TensorDataset(
+            *X_text_tensors,
+            *X_categorical_tensors,
+            *X_numerical_tensors
+        )
+        predict_loader = DataLoader(predict_dataset, batch_size=self.batch_size, shuffle=False)
+
+        all_probabilities = []
+        with torch.no_grad(): # Disable gradient calculation for inference
+            for batch in predict_loader:
+                # Unpack and move inputs to device, similar to fit
+                num_text_features = len(TEXT_FEATURES)
+                num_cat_features = len(CATEGORICAL_FEATURES)
+
+                current_idx = 0
+                batch_text_tensors = [x.to(self.device) for x in batch[current_idx : current_idx + num_text_features]]
+                current_idx += num_text_features
+
+                batch_cat_tensors = [x.to(self.device) for x in batch[current_idx : current_idx + num_cat_features]]
+                current_idx += num_cat_features
+
+                batch_num_tensor = batch[current_idx].to(self.device)
+
+                logits = self.model(
+                    text_inputs=batch_text_tensors,
+                    cat_inputs=batch_cat_tensors,
+                    num_input=batch_num_tensor
+                )
+                probabilities = torch.softmax(logits, dim=1) # Apply softmax to get probabilities
+                all_probabilities.append(probabilities.cpu().numpy()) # Move to CPU and convert to NumPy
+
+        return np.concatenate(all_probabilities)

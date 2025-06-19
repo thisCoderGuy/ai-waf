@@ -261,7 +261,7 @@ type ParsedHeaders struct {
 type CalculatedFields struct {
 	RequestLength                 int     `json:"request_length"`
 	PathLength                    int     `json:"path_length"`
-	QueryLength                   int     `json:"query_length"`
+	QueryLength                   int     `json:"query_ength"`
 	BodyLength                    int     `json:"body_length"`
 	NumParams                     int     `json:"num_params"`
 	LongestParamValueLength       int     `json:"longest_param_value_length"`

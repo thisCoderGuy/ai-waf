@@ -31,6 +31,9 @@ LOG_FILE_PATHS = [
     os.path.join('training-data', 'raw', 'coraza-audit-xss.csv')
 ]
 
+
+CRITICAL_FEATURES = ['RequestURI', 'RequestMethod']
+
 # Columns to drop during initial data cleaning
 COLUMNS_TO_DROP = [
     'Timestamp', 'TransactionID', 'ClientIP', 'ClientPort', 'ServerIP', 'ServerPort',
@@ -39,6 +42,8 @@ COLUMNS_TO_DROP = [
     'MatchedRulesCount', 'MatchedRulesIDs', 'MatchedRulesMessages', 'MatchedRulesTags',
     'AIScore', 'AIVerdict' # 'TimeOfDayHour', 'TimeOfDayDayOfWeek' if they were present
 ]
+
+COLUMNS_TO_UPPERCASE = ['RequestMethod']
 
 # Specific problematic endings to filter out from raw log lines
 PROBLEMATIC_ENDINGS = [
@@ -56,14 +61,15 @@ CLEANED_DATA_OUTPUT_PATH = os.path.join('training-data', 'cleaned', 'coraza-audi
 
 # Different types of features
 TEXT_FEATURES = [
-            'request_uri_path',
-            'request_uri_query',
-            'request_body',
-            'user_agent' 
+            'RequestURIPath',
+            'RequestURIQuery',
+            'RequestBody',
+            'UserAgent' 
 ]
-CATEGORICAL_FEATURES = ['request_method']
-NUMERICAL_FEATURES = ['request_length', 'path_length', 'query_length']
+CATEGORICAL_FEATURES = ['RequestMethod']
+NUMERICAL_FEATURES = ['RequestLength', 'PathLength', 'QueryLength']
 LABEL = 'AIVerdictLabel'
+LABEL_VALUES = ['benign', 'malicious']
 
 
 #################################
@@ -74,22 +80,22 @@ PERFORM_SPARSE_PREPROCESSING = False # True or False
 
 # --- Feature Extraction Parameters (for TfidfVectorizer) for text columns ---
 TFIDF_MAX_FEATURES = {
-            'request_uri_path': 5000,
-            'request_uri_query': 5000,
-            'request_body': 5000,
-            'user_agent': 5000,
+            'RequestURIPath': 5000,
+            'RequestURIQuery': 5000,
+            'RequestBody': 5000,
+            'UserAgent': 5000,
         }
 TFIDF_ANALYZERS = {
-            'request_uri_path': 'char', # 'word' or 'char'
-            'request_uri_query': 'char', # 'word' or 'char'
-            'request_body': 'char', # 'word' or 'char'
-            'user_agent': 'char', # 'word' or 'char'
+            'RequestURIPath': 'char', # 'word' or 'char'
+            'RequestURIQuery': 'char', # 'word' or 'char'
+            'RequestBody': 'char', # 'word' or 'char'
+            'UserAgent': 'char', # 'word' or 'char'
         }
 TFIDF_NGRAM_RANGES  = {
-            'request_uri_path': (1, 6), # For character n-grams
-            'request_uri_query':  (1, 6), # For character n-grams
-            'request_body':  (1, 6), # For character n-grams
-            'user_agent':  (1, 2), # For character n-grams
+            'RequestURIPath': (1, 6), # For character n-grams
+            'RequestURIQuery':  (1, 6), # For character n-grams
+            'RequestBody':  (1, 6), # For character n-grams
+            'UserAgent':  (1, 2), # For character n-grams
         }
 
 
@@ -100,17 +106,17 @@ PERFORM_DENSE_PREPROCESSING = True
 
 #Using character-level tokenization for text features
 TOKENIZER_CONFIGS = {
-            'request_uri_path': 'char', # 'word' or 'char'
-            'request_uri_query': 'char', # 'word' or 'char'
-            'request_body': 'char', # 'word' or 'char'
-            'user_agent': 'char', # 'word' or 'char'
+            'RequestURIPath': 'char', # 'word' or 'char'
+            'RequestURIQuery': 'char', # 'word' or 'char'
+            'RequestBody': 'char', # 'word' or 'char'
+            'UserAgent': 'char', # 'word' or 'char'
         }
 # Max sequences
 MAX_SEQ_LENGTHS = {
-            'request_uri_path': 100,
-            'request_uri_query': 100,
-            'request_body': 100,
-            'user_agent': 100
+            'RequestURIPath': 100,
+            'RequestURIQuery': 100,
+            'RequestBody': 100,
+            'UserAgent': 100
         }
 
 
@@ -179,13 +185,13 @@ MODEL_PARAMS = {
         'num_classes': 2,
         'numerical_hidden_size': 32,
         'text_embed_dims': {
-            'request_uri_path': 32,
-            'request_uri_query': 32,
-            'request_body': 32,
-            'user_agent': 32
+            'RequestURIPath': 32,
+            'RequestURIQuery': 32,
+            'RequestBody': 32,
+            'UserAgent': 32
         },
         'categorical_embed_dims': {
-            'request_method': 3
+            'RequestMethod': 3
         },
         
     },

@@ -70,13 +70,7 @@ def train_model(X_train, y_train, preprocessor, logger):
     Args:
         X_train (array-like): Training features.
         y_train (pandas.Series): Training labels.
-        model_type (str): Type of model to train (e.g., 'svm', 'random_forest').
-        n_splits (int): Number of folds for cross-validation.
-        random_state (int): Random seed for reproducibility.
-        perform_tuning (bool): If True, performs hyperparameter tuning.
-        tuning_method (str): 'grid' for GridSearchCV or 'random' for RandomizedSearchCV.
-        random_search_n_iter (int): Number of parameter settings that are sampled if using RandomizedSearchCV.
-
+      
     Returns:
         object: The trained final model (or the best estimator from tuning).
     """

@@ -54,7 +54,7 @@ class MultiInputMLPClassifier(nn.Module):
             nn.Linear(hidden_size, num_classes)
         )
 
-    def forward(self, text_inputs: dict, categorical_inputs: torch.Tensor, numerical_inputs: torch.Tensor):
+    def forward(self, text_inputs: dict, categorical_inputs: dict, numerical_inputs: dict):
        
         # Text: embed and mean-pool each feature
         text_outputs = []
@@ -86,19 +86,19 @@ class PyTorchMLPClassifier(BaseDeepLearningClassifier):
     to enable its use with scikit-learn's GridSearchCV or RandomizedSearchCV.
     """
     
-    def __init__(self, 
-                 text_embed_dims, # e.g., {'request_uri_path': 50}
+    def __init__(self, num_classes,
+                 text_embed_dims, # e.g., {'RequestURIPath': 50}
                                                   # where Key ->  Embedding Dim
-                 categorical_embed_dims,  # e.g., {'request_method': 3}
+                 categorical_embed_dims,  # e.g., {'RequestMethod': 3}
                                                                  # where Key -> Embedding Dim):
+                 
+                 numerical_hidden_size,
                  preprocessor,
-                 numerical_hidden_size=32,
-                 hidden_size=64, dropout_rate=0.6,
                  # Explicitly listed parameters inherited from BasePyTorchClassifier for scikit-learn's get_params()
                  learning_rate=0.001, epochs=50, batch_size=32, random_state=None, verbose=False,
                  optimizer_type='adam',  optimizer_params=None,
-                 loss_type='CrossEntropyLoss',  loss_params=None, num_classes=2,
-                  
+                 loss_type='CrossEntropyLoss',  loss_params=None,                   
+                 hidden_size=64, dropout_rate=0.6,
                   
                  ):
         """
@@ -116,8 +116,11 @@ class PyTorchMLPClassifier(BaseDeepLearningClassifier):
             optimizer_params=optimizer_params,
             loss_type=loss_type,
             loss_params=loss_params,
-           
-           
+            num_classes=num_classes,
+            preprocessor=preprocessor,
+            text_embed_dims=text_embed_dims,
+           categorical_embed_dims=categorical_embed_dims,
+           numerical_hidden_size=numerical_hidden_size
         )
         self.dropout_rate = dropout_rate
         self.hidden_size = hidden_size
