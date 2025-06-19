@@ -179,22 +179,22 @@ def preprocess_data(df):
 
     # Ensure required columns exist, or provide default empty strings/values
     # .fillna('') method  ensures that any NaN (Not a Number) values in these text columns are explicitly converted to empty strings ('')
-    df['request_method'] = df.get('RequestMethod', 'UNKNOWN').fillna('')
-    df['request_uri_path'] = df.get('RequestURIPath', '').fillna('')
-    df['request_uri_query'] = df.get('RequestURIQuery', '').fillna('')
-    df['request_body'] = df.get('RequestBody', '').fillna('')
-    df['user_agent'] = df.get('UserAgent', '').fillna('') # Ensure user_agent is handled
+    df['RequestMethod'] = df.get('RequestMethod', 'UNKNOWN').fillna('')
+    df['RequestURIPath'] = df.get('RequestURIPath', '').fillna('')
+    df['RequestURIQuery'] = df.get('RequestURIQuery', '').fillna('')
+    df['RequestBody'] = df.get('RequestBody', '').fillna('')
+    df['UserAgent'] = df.get('UserAgent', '').fillna('') # Ensure UserAgent is handled
 
     # Numerical features (e.g., lengths)
-    df['request_length'] = df.get('RequestLength', 0)
-    df['path_length'] = df.get('PathLength', 0)
-    df['query_length'] = df.get('QueryLength', 0)
+    df['RequestLength'] = df.get('RequestLength', 0)
+    df['PathLength'] = df.get('PathLength', 0)
+    df['QueryLength'] = df.get('QueryLength', 0)
 
     # Purpose of Preprocessing: To convert raw, heterogeneous data into a consistent, numerical format that machine learning algorithms can understand and process.
     # Define preprocessing steps for different types of features
-    text_features = ['request_uri_path', 'request_uri_query', 'request_body', 'user_agent']
-    categorical_features = ['request_method']
-    numerical_features = ['request_length', 'path_length', 'query_length']
+    text_features = ['RequestURIPath', 'RequestURIQuery', 'RequestBody', 'UserAgent']
+    categorical_features = ['RequestMethod']
+    numerical_features = ['RequestLength', 'PathLength', 'QueryLength']
 
     # Create a ColumnTransformer to apply different transformers to different columns
     # When .fit() or .fit_transform() is called on this preprocessor object, it will apply the specified transformers to their respective columns.
@@ -203,10 +203,10 @@ def preprocess_data(df):
     # OneHotEncoder: learns all unique categorical values for each specified column (e.g., "GET", "POST" for RequestMethod).
     preprocessor = ColumnTransformer(
         transformers=[
-            ('text_uri_path', TfidfVectorizer(max_features=5000, analyzer='char', ngram_range=(2, 4)), 'request_uri_path'),
-            ('text_uri_query', TfidfVectorizer(max_features=5000, analyzer='char', ngram_range=(2, 4)), 'request_uri_query'),
-            ('text_body', TfidfVectorizer(max_features=5000, analyzer='char', ngram_range=(2, 4)), 'request_body'),
-            ('text_user_agent', TfidfVectorizer(max_features=5000, analyzer='char', ngram_range=(2, 4)), 'user_agent'),
+            ('text_uri_path', TfidfVectorizer(max_features=5000, analyzer='char', ngram_range=(2, 4)), 'RequestURIPath'),
+            ('text_uri_query', TfidfVectorizer(max_features=5000, analyzer='char', ngram_range=(2, 4)), 'RequestURIQuery'),
+            ('text_body', TfidfVectorizer(max_features=5000, analyzer='char', ngram_range=(2, 4)), 'RequestBody'),
+            ('text_user_agent', TfidfVectorizer(max_features=5000, analyzer='char', ngram_range=(2, 4)), 'UserAgent'),
             ('cat', OneHotEncoder(handle_unknown='ignore'), categorical_features),
             ('num', 'passthrough', numerical_features)
         ],

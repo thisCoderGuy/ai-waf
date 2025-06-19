@@ -5,7 +5,7 @@ import io # Import io for StringIO
 from config import (
     LOG_FILE_PATHS,  CLEANED_DATA_OUTPUT_PATH,
     PERFORM_DATA_CLEANING, COLUMNS_TO_DROP, PROBLEMATIC_ENDINGS,
-
+    LABEL, LABEL_VALUES, CRITICAL_FEATURES,COLUMNS_TO_UPPERCASE
     )
 
 def _load_raw_log_files(logger):
@@ -98,29 +98,29 @@ def _remove_exact_duplicates(df, logger):
         logger.info("\tNo duplicate rows found.")
     return df
 
-def _filter_ai_verdict_label(df, logger):
+def _filter_label(df, logger):
     """
-    Removes rows where 'AIVerdictLabel' is missing or not 'benign'/'malicious'.
+    Removes rows where LABEL is missing or not 'benign'/'malicious'.
     """
-    if 'AIVerdictLabel' not in df.columns:
-        logger.warning("'AIVerdictLabel' column not found for cleaning. Skipping label-based row removal.")
+    if LABEL not in df.columns:
+        logger.warning(f"'{LABEL}' column not found for cleaning. Skipping label-based row removal.")
         return df
 
     initial_rows = len(df)
-    df = df[df['AIVerdictLabel'].isin(['benign', 'malicious'])]
+    df = df[df[LABEL].isin(LABEL_VALUES)]
     rows_removed = initial_rows - len(df)
     if rows_removed > 0:
-        logger.info(f"\tRemoved {rows_removed} rows with invalid 'AIVerdictLabel'.")
+        logger.info(f"\tRemoved {rows_removed} rows with invalid '{LABEL}'.")
     else:
-        logger.info("\tNo rows removed based on 'AIVerdictLabel' validity.")
+        logger.info(f"\tNo rows removed based on '{LABEL}' validity.")
     return df
 
 def _handle_missing_critical_features(df, logger):
     """
     Removes rows with missing values in specified critical feature columns.
     """
-    critical_columns = ['RequestURI', 'RequestMethod']
-    existing_critical_columns = [col for col in critical_columns if col in df.columns]
+    
+    existing_critical_columns = [col for col in CRITICAL_FEATURES if col in df.columns]
 
     if not existing_critical_columns:
         logger.warning("\tNo critical feature columns found for missing value cleaning.")
@@ -135,14 +135,16 @@ def _handle_missing_critical_features(df, logger):
         logger.info("\tNo rows removed due to missing critical features.")
     return df
 
-def _standardize_request_method(df, logger):
-    """Standardizes 'RequestMethod' to uppercase."""
-    if 'RequestMethod' not in df.columns:
-        logger.warning("\t'RequestMethod' column not found for standardization.")
-        return df
+def _uppercase_columns(df, logger):
+    """Standardizes some to uppercase."""
 
-    df['RequestMethod'] = df['RequestMethod'].astype(str).str.upper()
-    logger.info("\tStandardized 'RequestMethod' to uppercase.")
+    for col in COLUMNS_TO_UPPERCASE:
+        if col not in df.columns:
+            logger.warning(f"\t'{col}' column not found for standardization.")
+            return df
+
+        df[col] = df[col].astype(str).str.upper()
+        logger.info(f"\tStandardized '{col}' to uppercase.")
     return df
 
 def _drop_specified_columns(df, logger):
@@ -196,9 +198,9 @@ def load_and_clean_data(logger):
 
         df = _remove_first_field_errors(df, logger)
         df = _remove_exact_duplicates(df, logger)
-        df = _filter_ai_verdict_label(df, logger)
+        df = _filter_label(df, logger)
         df = _handle_missing_critical_features(df, logger)
-        df = _standardize_request_method(df, logger)
+        df = _uppercase_columns(df, logger)
         df = _drop_specified_columns(df, logger)
 
         logger.info(f"\tTotal rows removed during cleaning: {initial_rows_before_cleaning - len(df)}")

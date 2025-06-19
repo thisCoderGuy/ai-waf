@@ -1838,7 +1838,7 @@ Bug Fixes:
 Improvements:
 * Updated converted PHPIDS signatures (https://svn.php-ids.org/svn/trunk/lib/IDS/default_filter.xml)
 * Updated PHPIDS rules logic to first search for payloads in ARGS and then if there is no match found
-  then search more generically in request_body|request_uri_raw
+  then search more generically in RequestBody|request_uri_raw
 * Updated PHPIDS rules logic to only set TX variables and to not log.  This allows for more clean
   exceptions in the 48 file which can then expire/delete false positive TX matches and adjust the
   anomaly scores.  These rules will then inspect for any TX variables in phase:5 and create appropriate

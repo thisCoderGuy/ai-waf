@@ -2,6 +2,12 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from datetime import datetime # Import datetime for timestamps
 import pandas as pd # Import pandas for better confusion matrix display
 
+from config import (
+    LABEL_VALUES
+    )
+
+
+
 def evaluate_model(model, X_test, y_test, logger):
     """
     Evaluates the trained model and prints performance metrics,
@@ -24,7 +30,7 @@ def evaluate_model(model, X_test, y_test, logger):
     precision = precision_score(y_test, y_pred)
     recall = recall_score(y_test, y_pred)
     f1 = f1_score(y_test, y_pred)
-    report = classification_report(y_test, y_pred, target_names=['benign', 'malicious'], output_dict=False) # Use output_dict=False for formatted string
+    report = classification_report(y_test, y_pred, target_names=LABEL_VALUES, output_dict=False) # Use output_dict=False for formatted string
     
     # Calculate Confusion Matrix
     cm = confusion_matrix(y_test, y_pred)

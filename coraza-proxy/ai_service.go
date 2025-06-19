@@ -33,14 +33,14 @@ func CallAIMicroservice(r *http.Request, bodyBytes []byte, tx types.Transaction)
 
 		// Prepare the request payload for the AI microservice.
 		aiReq := map[string]interface{}{ // Use interface{} to allow different types
-			"request_uri_path":  requestURIPath,
-			"query_length":      queryLength,
-			"user_agent":        userAgent,
-			"request_length":    requestLength,
-			"request_uri_query": requestURIQuery,
-			"path_length":       pathLength,
-			"request_method":    requestMethod,
-			"request_body":      requestBody,
+			"RequestURIPath":  requestURIPath,
+			"QueryLength":      queryLength,
+			"UserAgent":        userAgent,
+			"RequestLength":    requestLength,
+			"RequestURIQuery": requestURIQuery,
+			"PathLength":       pathLength,
+			"RequestMethod":    requestMethod,
+			"RequestBody":      requestBody,
 		}
 
 		aiReqJSON, err := json.Marshal(aiReq) // Marshal to JSON, ignoring error for simplicity in example
