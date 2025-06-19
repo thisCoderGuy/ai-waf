@@ -9,6 +9,9 @@ from sklearn.neural_network import MLPClassifier # <--- NEW IMPORT for scikit-le
 from MLP_wrapper import PyTorchMLPClassifier 
 from CNN_wrapper import CNNClassifier
 
+from loggers import global_logger, evaluation_logger
+
+
 import numpy as np
 
 from config import (
@@ -52,7 +55,7 @@ def get_model(preprocessor):
     # Dynamically select model and its parameters
     model_params = MODEL_PARAMS.get(MODEL_TYPE, {})
     
-    if  model_type == 'mlp'or  model_type == 'cnn':
+    if  model_type == 'fcnn'or  model_type == 'cnn':
         model_params['preprocessor'] = preprocessor
 
     if 'random_state' in model_params and model_params['random_state'] is None:
@@ -62,7 +65,7 @@ def get_model(preprocessor):
 
     return model
 
-def train_model(X_train, y_train, preprocessor, logger):
+def train_model(X_train, y_train, preprocessor):
     """
     Trains a machine learning model using Stratified K-Fold Cross-Validation.
     Optionally performs hyperparameter tuning using GridSearchCV or RandomizedSearchCV.
@@ -74,7 +77,7 @@ def train_model(X_train, y_train, preprocessor, logger):
     Returns:
         object: The trained final model (or the best estimator from tuning).
     """
-    logger.info("--- Model Training ---")
+    evaluation_logger.info("--- Model Training ---")
     log_message = f"""\tAlgorithm Used: {MODEL_TYPE.upper()}
 \tModel Parameters: {MODEL_PARAMS[MODEL_TYPE]}
 \tHyperparameter tuning: {PERFORM_TUNING}
@@ -83,16 +86,16 @@ def train_model(X_train, y_train, preprocessor, logger):
 \tNum of hyperparameter combinations in Random Search: {RANDOM_SEARCH_N_ITER}
 \tRandom State: {RANDOM_STATE}
 \tTuning Parameters: {TUNING_PARAMS[MODEL_TYPE]}"""
-    logger.info(log_message) 
+    evaluation_logger.info(log_message) 
     
-    print(f"\nPerforming {N_SPLITS_CROSS_VALIDATION}-fold Stratified Cross-Validation on training data for {MODEL_TYPE.upper()} model...")
+    global_logger.info(f"Performing {N_SPLITS_CROSS_VALIDATION}-fold Stratified Cross-Validation on training data for {MODEL_TYPE.upper()} model...")
 
    
 
     model = get_model(preprocessor)
 
     if PERFORM_TUNING:
-        print(f"\nStarting Hyperparameter Tuning ({TUNING_METHOD.upper()} Search) for {MODEL_TYPE.upper()} model...")
+        global_logger.info(f"Starting Hyperparameter Tuning ({TUNING_METHOD.upper()} Search) for {MODEL_TYPE.upper()} model...")
         param_grid = TUNING_PARAMS.get(MODEL_TYPE)
 
         if not param_grid:
@@ -128,18 +131,18 @@ def train_model(X_train, y_train, preprocessor, logger):
 
         search_cv.fit(X_train, y_train)
 
-        print("\nHyperparameter Tuning Complete.")
-        print(f"Best parameters for {MODEL_TYPE.upper()}: {search_cv.best_params_}")
-        print(f"Best cross-validation F1-score: {search_cv.best_score_:.4f}")
+        global_logger.info("\nHyperparameter Tuning Complete.")
+        global_logger.info(f"Best parameters for {MODEL_TYPE.upper()}: {search_cv.best_params_}")
+        global_logger.info(f"Best cross-validation F1-score: {search_cv.best_score_:.4f}")
 
         final_model = search_cv.best_estimator_ # The model with the best parameters
     else:
         # No cross validation, nor hyperparameter tuning
         final_model = model
         final_model.fit(X_train, y_train)
-        print(f"{MODEL_TYPE.upper()} model training complete.")
+        global_logger.info(f"{MODEL_TYPE.upper()} model training complete.")
 
     if MODEL_TYPE.lower() == 'fcnn' or MODEL_TYPE.lower() == 'cnn' or MODEL_TYPE.lower() == 'rnn'  or MODEL_TYPE.lower() == 'lstm':
-        print('####################################################')
-        print(final_model.model)
+        evaluation_logger.info('####################################################')
+        evaluation_logger.info(final_model.model)
     return final_model
