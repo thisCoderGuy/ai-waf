@@ -1,14 +1,14 @@
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, classification_report, confusion_matrix
-from datetime import datetime # Import datetime for timestamps
-import pandas as pd # Import pandas for better confusion matrix display
+import pandas as pd 
 
 from config import (
     LABEL_VALUES
     )
 
+from loggers import global_logger, evaluation_logger
 
 
-def evaluate_model(model, X_test, y_test, logger):
+def evaluate_model(model, X_test, y_test):
     """
     Evaluates the trained model and prints performance metrics,
     including the confusion matrix, to console and log file.
@@ -20,10 +20,8 @@ def evaluate_model(model, X_test, y_test, logger):
         logger (logging.Logger): Logger object to write evaluation details.
     """
 
-    logger.info("--- Model Evaluation ---")
+    evaluation_logger.info("--- Model Evaluation ---")
    
-
-    print("\nEvaluating model performance...")
     y_pred = model.predict(X_test)
 
     accuracy = accuracy_score(y_test, y_pred)
@@ -50,9 +48,6 @@ def evaluate_model(model, X_test, y_test, logger):
 \t--- Confusion Matrix ---
 {cm_df.to_string()}
 """
-    # Print to console
-    print(log_message)
 
     # Log to file
-    logger.info(log_message)
-    print("Evaluation results logged.")
+    evaluation_logger.info(log_message)

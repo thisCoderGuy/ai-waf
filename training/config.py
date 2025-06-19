@@ -1,11 +1,44 @@
 import os
 
 #########################################################
-# --- Logger Setup ---
+# --- Loggers Setup ---
 #########################################################
-# Path for the  log file
-EVALUATION_LOG_PATH = os.path.join('model-logs', 'all_models.txt')
+LOGGING_CONFIG = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'standard': {
+            'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'level': 'INFO',                       # <-- Log LEvel # DEBUG, INFO, WARNING, ERROR, and CRITICAL.
+            'formatter': 'standard',
+        },
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': os.path.join('model-logs', 'all_models.txt'),  # <-- Log file
+            'mode': 'a',
+            'level': 'INFO',                        # <-- Log LEvel # DEBUG, INFO, WARNING, ERROR, and CRITICAL.
+            'formatter': 'standard',
+        },
+    },
 
+    'loggers': {
+        'evaluation_logger': {
+            'level': 'INFO',                            # <-- Log LEvel # DEBUG, INFO, WARNING, ERROR, and CRITICAL.
+            'handlers': ['console', 'file'],
+            'propagate': False
+        },
+        'global_logger': {
+            'level': 'DEBUG',                            # <-- Log LEvel # DEBUG, INFO, WARNING, ERROR, and CRITICAL.
+            'handlers': ['console'],
+            'propagate': False
+        }
+    }
+}
 
 #########################################################
 # --- Directory Setup (created if they don't exist) ---
@@ -25,7 +58,7 @@ REQUIRED_DIRS = [
 PERFORM_DATA_CLEANING = False # True or False
 
 # Path to raw dataset files (Coraza audit log files)
-LOG_FILE_PATHS = [
+RAW_DATA_FILE_PATHS = [
     os.path.join('training-data', 'raw', 'coraza-audit-benign.csv'),
     os.path.join('training-data', 'raw', 'coraza-audit-sqli.csv'),
     os.path.join('training-data', 'raw', 'coraza-audit-xss.csv')
@@ -113,9 +146,9 @@ TOKENIZER_CONFIGS = {
         }
 # Max sequences
 MAX_SEQ_LENGTHS = {
-            'RequestURIPath': 100,
-            'RequestURIQuery': 100,
-            'RequestBody': 100,
+            'RequestURIPath': 50,
+            'RequestURIQuery': 50,
+            'RequestBody': 50,
             'UserAgent': 100
         }
 
@@ -249,7 +282,7 @@ MODEL_PARAMS = {
 # --- Cross validation and hyperparameter tuning ---
 #########################################################
 # Do perform Cross validation and hyperparameter tuning?
-PERFORM_TUNING = True # True or False
+PERFORM_TUNING = False # True or False
 TUNING_METHOD = 'random' # 'grid' for GridSearchCV or 'random' for RandomizedSearchCV.
 RANDOM_SEARCH_N_ITER = 10 # Number of parameter settings that are sampled if using RandomizedSearchCV
 # Number of splits for Stratified K-Fold Cross-Validation 
@@ -283,8 +316,8 @@ TUNING_PARAMS = {
         'max_iter': [100, 200, 300] # Number of epochs
     },
     'fcnn': {
-         'hidden_size': [32, 64],
-         'learning_rate': [0.001, 0.01],
+         'hidden_size': [32], # [32, 64],
+         'learning_rate': [0.01], #0.001, 0.01],
     }
 }
 

@@ -2,8 +2,10 @@ import pandas as pd
 import os
 import io # Import io for StringIO
 
+from loggers import global_logger, evaluation_logger
+
 from config import (
-    LOG_FILE_PATHS,  CLEANED_DATA_OUTPUT_PATH,
+    RAW_DATA_FILE_PATHS,  CLEANED_DATA_OUTPUT_PATH,
     PERFORM_DATA_CLEANING, COLUMNS_TO_DROP, PROBLEMATIC_ENDINGS,
     LABEL, LABEL_VALUES, CRITICAL_FEATURES,COLUMNS_TO_UPPERCASE
     )
@@ -23,13 +25,13 @@ def _load_raw_log_files(logger):
     """
     all_dfs = []
     logger.info("\dLoading raw log files and applying initial line filtering...")
-    for log_file in LOG_FILE_PATHS:
+    for raw_data_file in RAW_DATA_FILE_PATHS:
         try:
-            with open(log_file, 'r', encoding='utf-8', errors='ignore') as f:
+            with open(raw_data_file, 'r', encoding='utf-8', errors='ignore') as f:
                 raw_lines = f.readlines()
 
             if not raw_lines:
-                logger.warning(f"Warning: {log_file} is empty. Skipping.")
+                logger.warning(f"Warning: {raw_data_file} is empty. Skipping.")
                 continue
 
             header_line = raw_lines[0]
@@ -49,19 +51,19 @@ def _load_raw_log_files(logger):
             processed_content = [header_line] + filtered_data_lines
 
             if len(processed_content) <= 1: # Only header or no valid data lines
-                logger.warning(f"Warning: No valid CSV-like data lines found in {log_file} after initial filtering. Skipping.")
+                logger.warning(f"Warning: No valid CSV-like data lines found in {raw_data_file} after initial filtering. Skipping.")
                 continue
 
             data_io = io.StringIO("".join(processed_content))
             df = pd.read_csv(data_io, on_bad_lines='skip')
             all_dfs.append(df)
-            logger.info(f"\tSuccessfully loaded and pre-filtered {log_file}")
+            logger.info(f"\tSuccessfully loaded and pre-filtered {raw_data_file}")
             logger.info(f"  (Original lines: {len(raw_lines)}, Filtered lines for CSV parsing: {len(processed_content)})")
 
         except FileNotFoundError:
-            logger.warning(f"Warning: Log file not found at {log_file}. Skipping.")
+            logger.warning(f"Warning: Log file not found at {raw_data_file}. Skipping.")
         except Exception as e:
-            logger.error(f"Error processing CSV file {log_file}: {e}. Skipping.")
+            logger.error(f"Error processing CSV file {raw_data_file}: {e}. Skipping.")
 
     if not all_dfs:
         logger.warning("No data loaded from any specified files.")
@@ -163,71 +165,64 @@ def _drop_specified_columns(df, logger):
 
 
 
-def load_and_clean_data(logger):
+def load_and_clean_data():
     """
     Orchestrates loading data (either raw and cleaning or from a cleaned file).
 
     Args:
-        log_file_paths (list): A list of file paths to the raw CSV log files.
-        cleaned_data_output_path (str): Path to save/load the cleaned data CSV.
-        perform_data_cleaning (bool): If True, loads raw and cleans; otherwise, loads from cleaned_data_output_path.
-        logger (logging.Logger): The logger instance for logging messages.
-        columns_to_drop (list): A list of column names to be removed from the DataFrame.
-        problematic_endings (list): A list of string endings to filter out problematic lines during raw loading.
-
+       
     Returns:
         pandas.DataFrame: A cleaned DataFrame of log entries.
     """
     
     df = pd.DataFrame() 
+    evaluation_logger.info("--- Data Cleaning ---")
 
     if PERFORM_DATA_CLEANING:
-        
-        logger.info("--- Data Cleaning ---")
         # Load lines from raw csv files, and perform cleaning
-        logger.info("\tStarting Data Loading and Cleaning from Raw Files")
-        df = _load_raw_log_files(logger)
+        global_logger.info("\tLoading data from Raw Files")
+        df = _load_raw_log_files()
 
         if df.empty:
-            logger.warning("No data to clean after initial loading. Returning empty DataFrame.")
+            evaluation_logger.error("No data to clean after initial loading. Returning empty DataFrame.")
             return pd.DataFrame()
         
 
-        logger.info("\tApplying Data Cleaning Steps")
+        global_logger.info("\tApplying Data Cleaning Steps")
         initial_rows_before_cleaning = len(df)
 
-        df = _remove_first_field_errors(df, logger)
-        df = _remove_exact_duplicates(df, logger)
-        df = _filter_label(df, logger)
-        df = _handle_missing_critical_features(df, logger)
-        df = _uppercase_columns(df, logger)
-        df = _drop_specified_columns(df, logger)
+        df = _remove_first_field_errors(df)
+        df = _remove_exact_duplicates(df)
+        df = _filter_label(df)
+        df = _handle_missing_critical_features(df)
+        df = _uppercase_columns(df)
+        df = _drop_specified_columns(df)
 
-        logger.info(f"\tTotal rows removed during cleaning: {initial_rows_before_cleaning - len(df)}")
-        logger.info(f"\tRemaining {len(df)} entries after cleaning.")
+        evaluation_logger.info(f"\tTotal rows removed during cleaning: {initial_rows_before_cleaning - len(df)}")
+        evaluation_logger.info(f"\tRemaining {len(df)} entries after cleaning.")
 
         # Save the newly cleaned data
         if not df.empty:
             try:
                 df.to_csv(CLEANED_DATA_OUTPUT_PATH, index=False)
-                logger.info(f"\tCleaned data saved to {CLEANED_DATA_OUTPUT_PATH}")
+                evaluation_logger.info(f"\tCleaned data saved to {CLEANED_DATA_OUTPUT_PATH}")
             except Exception as e:
-                logger.error(f"Error saving cleaned data to CSV: {e}")
+                evaluation_logger.error(f"Error saving cleaned data to CSV: {e}")
         else:
-            logger.warning("Cleaned DataFrame is empty. Not saving an empty file.")
+            evaluation_logger.warning("Cleaned DataFrame is empty. Not saving an empty file.")
 
         
     else:
-        logger.info(f"\tLoading already cleaned data from {CLEANED_DATA_OUTPUT_PATH}")
+        global_logger.info(f"\tLoading already cleaned data from {CLEANED_DATA_OUTPUT_PATH}")
         try:
             # Load the single cleaned CSV file directly
             df = pd.read_csv(CLEANED_DATA_OUTPUT_PATH)
-            logger.info(f"\tSuccessfully loaded {len(df)} entries from {CLEANED_DATA_OUTPUT_PATH}")
+            evaluation_logger.info(f"\tSuccessfully loaded {len(df)} entries from {CLEANED_DATA_OUTPUT_PATH}")
         except FileNotFoundError:
-            logger.error(f"Error: Cleaned data file not found at {CLEANED_DATA_OUTPUT_PATH}. Set 'perform_data_cleaning=True' if you want to clean from raw data.")
+            evaluation_logger.error(f"Error: Cleaned data file not found at {CLEANED_DATA_OUTPUT_PATH}. Set 'perform_data_cleaning=True' if you want to clean from raw data.")
             return pd.DataFrame()
         except Exception as e:
-            logger.error(f"Error loading cleaned data from {CLEANED_DATA_OUTPUT_PATH}: {e}")
+            evaluation_logger.error(f"Error loading cleaned data from {CLEANED_DATA_OUTPUT_PATH}: {e}")
             return pd.DataFrame()
    
         
