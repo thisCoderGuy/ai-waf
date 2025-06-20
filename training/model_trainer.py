@@ -143,6 +143,5 @@ def train_model(X_train, y_train, preprocessor):
         global_logger.info(f"{MODEL_TYPE.upper()} model training complete.")
 
     if MODEL_TYPE.lower() == 'fcnn' or MODEL_TYPE.lower() == 'cnn' or MODEL_TYPE.lower() == 'rnn'  or MODEL_TYPE.lower() == 'lstm':
-        evaluation_logger.info('####################################################')
         evaluation_logger.info(final_model.model)
     return final_model
