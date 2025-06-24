@@ -14,12 +14,12 @@ LOGGING_CONFIG = {
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
-            'level': 'INFO',                       # <-- Log LEvel # DEBUG, INFO, WARNING, ERROR, and CRITICAL.
+            'level': 'DEBUG',                       # <------------- Log LEvel # DEBUG, INFO, WARNING, ERROR, and CRITICAL.
             'formatter': 'standard',
         },
         'file': {
             'class': 'logging.FileHandler',
-            'filename': os.path.join('model-logs', 'all_models.txt'),  # <-- Log file
+            'filename': os.path.join('training', 'model-logs', 'all_models.txt'),  # <-- Log file
             'mode': 'a',
             'level': 'INFO',                        # <-- Log LEvel # DEBUG, INFO, WARNING, ERROR, and CRITICAL.
             'formatter': 'standard',
@@ -45,10 +45,10 @@ LOGGING_CONFIG = {
 #########################################################
 # Directories required for the project structure
 REQUIRED_DIRS = [
-    os.path.join('training-data', 'raw'),
-    os.path.join('training-data', 'cleaned'),
-    'model-logs', 
-    os.path.join('..', 'ai-microservice', 'trained-models')
+    os.path.join('training', 'training-data', 'raw'),
+    os.path.join('training', 'training-data', 'cleaned'),    
+    os.path.join('training', 'model-logs'),     
+    os.path.join('ai-microservice', 'trained-models')
 ]
 
 #########################################################
@@ -59,9 +59,9 @@ PERFORM_DATA_CLEANING = False # True or False
 
 # Path to raw dataset files (Coraza audit log files)
 RAW_DATA_FILE_PATHS = [
-    os.path.join('training-data', 'raw', 'coraza-audit-benign.csv'),
-    os.path.join('training-data', 'raw', 'coraza-audit-sqli.csv'),
-    os.path.join('training-data', 'raw', 'coraza-audit-xss.csv')
+    os.path.join('training', 'training-data', 'raw', 'coraza-audit-benign.csv'),
+    os.path.join('training', 'training-data', 'raw', 'coraza-audit-sqli.csv'),
+    os.path.join('training', 'training-data', 'raw', 'coraza-audit-xss.csv')
 ]
 
 
@@ -85,7 +85,7 @@ PROBLEMATIC_ENDINGS = [
 ]
 
 # Path to save the cleaned dataset (within 'training-data' folder)
-CLEANED_DATA_OUTPUT_PATH = os.path.join('training-data', 'cleaned', 'coraza-audit-cleaned.csv')
+CLEANED_DATA_OUTPUT_PATH = os.path.join('training', 'training-data', 'cleaned', 'coraza-audit-cleaned.csv')
 
 
 #########################################################
@@ -164,7 +164,7 @@ RANDOM_STATE = 42
 # Set the current model type. 
 # Possible values so far: 'svm', 'random_forest', 'decision_tree', 'naive_bayes', 'mlp',
 #                         'fcnn', 'cnn', 'rnn', 'lstm', 'transformer', 'llm'  # For those choose N_SPLITS_CROSS_VALIDATION = small num
-MODEL_TYPE = 'fcnn'
+MODEL_TYPE = 'cnn'
 
 # --- Model Parameters  ---
 MODEL_PARAMS = {
@@ -227,10 +227,10 @@ MODEL_PARAMS = {
             'RequestMethod': 3
         },
         
-    },
-    'cnn': {
+    },    
+    'cnn': { 
         'learning_rate': 0.001,
-        'epochs': 10,
+        'epochs': 50,
         'batch_size': 32,
         #'activation': 'relu',
         'optimizer_type': 'adam', # adam or sgd
@@ -238,15 +238,31 @@ MODEL_PARAMS = {
             'weight_decay': 0.0001, # regularization
             # Add other Adam-specific params here, e.g., 'betas': (0.9, 0.999), 'eps': 1e-08, 'weight_decay': 0
         },
-        'loss_type':  'CrossEntropyLoss', # Options: 'CrossEntropyLoss', 'BCEWithLogitsLoss' <=== if binary classification with 1 logit output, etc.
+        'loss_type':  'CrossEntropyLoss', # Options: 'CrossEntropyLoss', 'BCEWithLogitsLoss', etc.
         'loss_params': {
             # Example for CrossEntropyLoss with class weights (adjust weights based on your class distribution)
             # 'weight': [1.0, 10.0] # Needs to be a torch.Tensor, converted inside the wrapper
         },
-        'n_filters': 128,
-        'filter_size': 5,
-        'pool_size': 2,
-        'dense_units': 64
+        'dropout_rate': 0.5, 
+        'hidden_size': 64,
+        'num_classes': 2,
+        'numerical_hidden_size': 32,
+        'text_embed_dims': {
+            'RequestURIPath': 32,
+            'RequestURIQuery': 32,
+            'RequestBody': 32,
+            'UserAgent': 32
+        },
+        'categorical_embed_dims': {
+            'RequestMethod': 3
+        },
+        'text_cnn_configs': {
+            'RequestURIPath': {'n_filters': 32, 'filter_size': 3},
+            'RequestURIQuery': {'n_filters': 48, 'filter_size': 5},
+            'RequestBody': {'n_filters': 96, 'filter_size': 5},
+            'UserAgent': {'n_filters': 64, 'filter_size': 4}
+        },
+        
     },
     'rnn': {
         'units': 128,
@@ -316,6 +332,10 @@ TUNING_PARAMS = {
         'max_iter': [100, 200, 300] # Number of epochs
     },
     'fcnn': {
+         'hidden_size': [32], # [32, 64],
+         'learning_rate': [0.01], #0.001, 0.01],
+    },
+    'cnn': {
          'hidden_size': [32], # [32, 64],
          'learning_rate': [0.01], #0.001, 0.01],
     }

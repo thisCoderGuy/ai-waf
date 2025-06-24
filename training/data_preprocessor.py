@@ -177,19 +177,24 @@ def preprocess_data(df):
             global_logger.debug(f"{char_tokenizer.word_index=}")
             
             # Convert text to sequences of integers 
+            # takes a list of text strings and replaces each character (or word) in those strings with its corresponding integer ID from the tokenizer's vocabulary.
             sequences = char_tokenizer.texts_to_sequences(df[text_feature])
             # Pad sequences to ensure they all have the same length
             padded_sequences = pad_sequences(sequences, maxlen=max_len, padding='post', truncating='post')
             
-            global_logger.debug(f"{type(padded_sequences )=} {len(padded_sequences )=}")
+            global_logger.debug(f"{type(padded_sequences)=} {len(padded_sequences)=} {padded_sequences.shape=}")
             global_logger.debug(f"{padded_sequences[0]=}")
             global_logger.debug(f"{padded_sequences[1]=}")
             global_logger.debug(f"{padded_sequences[2]=}")
             
             # Store the processed data and the fitted tokenizer
-            processed_df = pd.DataFrame(padded_sequences, index=df.index )      
+            # Creates a new DataFrame from the padded_sequences array. 
+            # Each column in this DataFrame will represent a position in the sequence, 
+            # and the values will be the integer IDs.
+            processed_df = pd.DataFrame(padded_sequences, index=df.index )  # index=df.index: ensures that the newly created df retains the original row index from df.     
+            # make the column names of the new DataFrame more descriptive
             processed_df = processed_df.add_prefix(f"{text_feature}_")   
-            X_processed = pd.concat([X_processed, processed_df], axis=1)
+            X_processed = pd.concat([X_processed, processed_df], axis=1) # axis=1: column-wise
 
     
             preprocessor[text_feature] = char_tokenizer

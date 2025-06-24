@@ -160,18 +160,24 @@ class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
             prefix = f"{text_feature}_"
             text_columns = [col for col in X.columns if col.startswith(prefix)]
             feature_tensor = torch.tensor(X[text_columns].values, dtype=torch.long)            
-            global_logger.debug(f"{feature_tensor.shape=} {feature_tensor.dtype=} {feature_tensor.ndim=}")
+            global_logger.debug(f"  {feature_tensor.shape=} {feature_tensor.dtype=} {feature_tensor.ndim=}")
             X_text_tensors.append(feature_tensor)
             
-
+        global_logger.debug("Converting categorical columns to PyTorch tensors")
         X_categorical_tensors = []
         for categorical_feature in CATEGORICAL_FEATURES:
-            X_categorical_tensors.append(torch.tensor(X[categorical_feature], dtype=torch.long))
+            categorical_tensor = torch.tensor(X[categorical_feature], dtype=torch.long)
+            X_categorical_tensors.append(categorical_tensor)
+            global_logger.debug(f"  {categorical_tensor.shape=} {categorical_tensor.dtype=} {categorical_tensor.ndim=}")
             
-        
+            
+        global_logger.debug("Converting numerical columns to PyTorch tensors")
         X_numerical_tensors = []
         for numerical_feature in NUMERICAL_FEATURES:
-            X_numerical_tensors.append(torch.tensor(X[numerical_feature], dtype=torch.float32))
+            numerical_tensor = torch.tensor(X[numerical_feature], dtype=torch.float32)
+            X_numerical_tensors.append(numerical_tensor)
+            global_logger.debug(f"  {numerical_tensor.shape=} {numerical_tensor.dtype=} {numerical_tensor.ndim=}")
+            
 
         num_text_features = len(X_text_tensors)
         num_cat_features = len(X_categorical_tensors)
@@ -180,7 +186,10 @@ class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
         global_logger.debug(f"{num_cat_features=}")
         global_logger.debug(f"{num_num_features=}")
 
+        global_logger.debug("Converting labels to PyTorch tensors")
         y_tensor = torch.tensor(y.values, dtype=torch.float32)
+        global_logger.debug(f"  {y_tensor.shape=} {y_tensor.dtype=} {y_tensor.ndim=}")
+            
 
         global_logger.info(f"Starting training:")
         evaluation_logger.info(f"  Model type: {self.__class__.__name__}")
@@ -203,7 +212,7 @@ class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
         #for idx, sample in enumerate(train_dataset): # Sample = row. Each sample is a tuple of tensors (One tensor for each feature)
         #    for i, part in enumerate(sample):  # PArt = a tensor for each of the features of a sample (row)
         for part in train_dataset[0]:
-            global_logger.debug(f"{part.shape=} {part.dtype=} {part.ndim=} {part.device.type=}")
+            global_logger.debug(f" Sample 0 parts: {part.shape=} {part.dtype=} {part.ndim=} {part.device.type=}")
         
         train_loader = DataLoader(train_dataset, batch_size=self.batch_size, shuffle=True)
 
@@ -222,30 +231,34 @@ class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
                 # The order here must match the order in train_dataset
                 # and the expected order by your model's forward method.
                 # Assuming TEXT_FEATURES, CATEGORICAL_FEATURES, NUMERICAL_FEATURES, then labels
-                for i, part in enumerate(batch):
-                    global_logger.debug(f"Batch part: {part.shape=} {part.dtype=} {part.ndim=} {part.device.type=}")
+                #for i, part in enumerate(batch):
+                #    global_logger.debug(f"Batch part: {part.shape=} {part.dtype=} {part.ndim=} {part.device.type=}")
     
                 
 
                 # Dynamically unpack based on the number of feature types
                 current_feature = 0
                 batch_text_tensors = [x.to(self.device) for x in batch[current_feature : current_feature + num_text_features]]
+                global_logger.debug(f"batch_text_tensors: {type(batch_text_tensors)=}")
                 for batch_text_tensor in batch_text_tensors:
-                    global_logger.debug(f"batch_text_tensors: {batch_text_tensor.shape=} {batch_text_tensor.dtype=} {batch_text_tensor.ndim=} {batch_text_tensor.device.type=}")
+                    global_logger.debug(f" batch_text_tensor: {batch_text_tensor.shape=} {batch_text_tensor.dtype=} {batch_text_tensor.ndim=} {batch_text_tensor.device.type=}")
                 current_feature += num_text_features
+                
 
                 batch_cat_tensors = [x.to(self.device) for x in batch[current_feature : current_feature + num_cat_features]]
+                global_logger.debug(f"batch_cat_tensors: {type(batch_cat_tensors)=}")
                 for batch_cat_tensor in batch_cat_tensors:
-                    global_logger.debug(f"batch_cat_tensors: {batch_cat_tensor.shape=} {batch_cat_tensor.dtype=} {batch_cat_tensor.ndim=} {batch_cat_tensor.device.type=}")
+                    global_logger.debug(f" batch_cat_tensor: {batch_cat_tensor.shape=} {batch_cat_tensor.dtype=} {batch_cat_tensor.ndim=} {batch_cat_tensor.device.type=}")
                 current_feature += num_cat_features
 
                 batch_num_tensors = [x.to(self.device) for x in batch[current_feature : current_feature + num_num_features]]
+                global_logger.debug(f"batch_num_tensors: {type(batch_num_tensors)=}")
                 for batch_num_tensor in batch_num_tensors:
-                    global_logger.debug(f"batch_num_tensors: {batch_num_tensor.shape=} {batch_num_tensor.dtype=} {batch_num_tensor.ndim=} {batch_num_tensor.device.type=}")
+                    global_logger.debug(f" batch_num_tensor: {batch_num_tensor.shape=} {batch_num_tensor.dtype=} {batch_num_tensor.ndim=} {batch_num_tensor.device.type=}")
                 current_feature += num_num_features
 
                 labels = batch[current_feature].to(self.device)
-                global_logger.debug(f"labels: {labels.shape=} {labels.dtype=} {labels.ndim=} {labels.device.type=}")
+                global_logger.debug(f"batch labels: {labels.shape=} {labels.dtype=} {labels.ndim=} {labels.device.type=}")
                 
                 # Forward pass
                 logits = self.model( 
