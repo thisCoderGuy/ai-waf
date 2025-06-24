@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F 
 
-from typing import List, Dict, Tuple
+from typing import Dict, Tuple
 
 from loggers import global_logger, evaluation_logger
 
@@ -51,12 +51,32 @@ class MultiInputMLPClassifier(nn.Module):
                 
         self.fusion = nn.Sequential(
             nn.Linear(fusion_dim, hidden_size),
-            nn.ReLU(),
+            nn.ReLU(), # activation
             nn.Dropout(dropout_rate),
             nn.Linear(hidden_size, num_classes)
         )
 
-    def forward(self, text_inputs, categorical_inputs, numerical_inputs):
+    def forward(self, text_inputs: List[torch.Tensor],
+                categorical_inputs: List[torch.Tensor],
+                numerical_inputs: List[torch.Tensor]):
+        """
+        Forward pass for the MultiInputCNNClassifier.
+
+        Args:
+            text_inputs (List[torch.Tensor]): A list of tensors, where each tensor corresponds to a text feature.
+                                              The order of tensors in the list should match the order of keys
+                                              in `text_specs` during initialization.
+                                              Each tensor has shape (batch_size, sequence_length).
+            categorical_inputs (List[torch.Tensor]): A list of tensors, where each tensor corresponds to a
+                                                     categorical feature. The order should match `categorical_specs`.
+                                                     Each tensor has shape (batch_size,).
+            numerical_inputs (List[torch.Tensor]): A list of tensors, where each tensor corresponds to a
+                                                   single numerical feature.
+                                                   Each tensor has shape (batch_size,).
+
+        Returns:
+            torch.Tensor: The output logits (batch_size, num_classes).
+        """
         # --- Text Embeddings ---
         global_logger.debug(f"--- Text Embeddings ---")
         # Text: embed and mean-pool each feature
@@ -77,7 +97,7 @@ class MultiInputMLPClassifier(nn.Module):
             cat_outputs.append(embed)
         
         # --- Numerical Inputs ---
-        global_logger.debug(f"--- Numerical Embeddings ---")
+        global_logger.debug(f"--- Numerical Features Linear Layer---")
         # Each numerical_inputs[i]: (batch_size,)
         # Stack them to shape: (batch_size, num_numerical_features)
         num_tensor = torch.stack(numerical_inputs, dim=1).float()  # shape: (batch_size, num_numerical_features)
@@ -168,12 +188,12 @@ class PyTorchMLPClassifier(BaseDeepLearningClassifier):
 
 
         return MultiInputMLPClassifier( 
-                 self.text_specs,
-                 self.categorical_specs,
-                 self.num_numerical_features,
-                 self.numerical_hidden_size,
-                 self.hidden_size, 
-                 self.num_classes,
-                 self.dropout_rate
+                text_specs=self.text_specs,
+                categorical_specs=self.categorical_specs,
+                num_numerical_features=self.num_numerical_features,
+                numerical_hidden_size=self.numerical_hidden_size,
+                hidden_size=self.hidden_size,
+                num_classes=self.num_classes,
+                dropout_rate=self.dropout_rate
                    )
 

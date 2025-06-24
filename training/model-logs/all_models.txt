@@ -1344,3 +1344,90 @@ Actual Malicious                 1                   12
 
 2025-06-19 19:54:17,496 - evaluation_logger - INFO - 	---Total training and evaluation time ---
 	12.00 seconds
+2025-06-24 16:02:54,547 - evaluation_logger - INFO - ####################################################################
+2025-06-24 16:02:54,547 - evaluation_logger - INFO - Model Training Started: 2025-06-24 16:02:54
+2025-06-24 16:02:54,550 - evaluation_logger - INFO - --- Data Cleaning ---
+2025-06-24 16:02:54,564 - evaluation_logger - INFO - 	Successfully loaded 1743 entries from training\training-data\cleaned\coraza-audit-cleaned.csv
+2025-06-24 16:02:54,565 - evaluation_logger - INFO - --- Data Preprocessing ---
+2025-06-24 16:02:54,565 - evaluation_logger - INFO - NUMERICAL_FEATURES=['RequestLength', 'PathLength', 'QueryLength']
+2025-06-24 16:02:54,566 - evaluation_logger - INFO - TEXT_FEATURES=['RequestURIPath', 'RequestURIQuery', 'RequestBody', 'UserAgent']
+2025-06-24 16:02:54,566 - evaluation_logger - INFO - CATEGORICAL_FEATURES=['RequestMethod']
+2025-06-24 16:02:54,566 - evaluation_logger - INFO - LABEL='AIVerdictLabel'
+2025-06-24 16:02:54,573 - evaluation_logger - INFO - > Dense Feature extraction
+2025-06-24 16:02:54,574 - evaluation_logger - INFO - 	Using :
+    	TOKENIZER_CONFIGS: {'RequestURIPath': 'char', 'RequestURIQuery': 'char', 'RequestBody': 'char', 'UserAgent': 'char'}
+    	MAX_SEQ_LENGTHS: {'RequestURIPath': 50, 'RequestURIQuery': 50, 'RequestBody': 50, 'UserAgent': 100}
+2025-06-24 16:02:54,867 - evaluation_logger - INFO - Dense feature extraction and preprocessing complete.
+2025-06-24 16:02:54,871 - evaluation_logger - INFO - --- Model Training ---
+2025-06-24 16:02:54,872 - evaluation_logger - INFO - 	Algorithm Used: CNN
+	Model Parameters: {'learning_rate': 0.001, 'epochs': 50, 'batch_size': 32, 'optimizer_type': 'adam', 'optimizer_params': {'weight_decay': 0.0001}, 'loss_type': 'CrossEntropyLoss', 'loss_params': {}, 'dropout_rate': 0.5, 'hidden_size': 64, 'num_classes': 2, 'numerical_hidden_size': 32, 'text_embed_dims': {'RequestURIPath': 32, 'RequestURIQuery': 32, 'RequestBody': 32, 'UserAgent': 32}, 'categorical_embed_dims': {'RequestMethod': 3}, 'text_cnn_configs': {'RequestURIPath': {'n_filters': 32, 'filter_size': 3}, 'RequestURIQuery': {'n_filters': 48, 'filter_size': 5}, 'RequestBody': {'n_filters': 96, 'filter_size': 5}, 'UserAgent': {'n_filters': 64, 'filter_size': 4}}}
+	Hyperparameter tuning: False
+	Hyperparameter tuning method: random
+	Cross-Validation Splits: 3
+	Num of hyperparameter combinations in Random Search: 10
+	Random State: 42
+	Tuning Parameters: {'hidden_size': [32], 'learning_rate': [0.01]}
+2025-06-24 16:02:54,887 - evaluation_logger - INFO - Device: cuda
+2025-06-24 16:02:56,644 - evaluation_logger - INFO -   Model type: CNNClassifier
+2025-06-24 16:02:56,645 - evaluation_logger - INFO -   Optimizer: adam ({'weight_decay': 0.0001, 'lr': 0.001})
+2025-06-24 16:02:56,645 - evaluation_logger - INFO -   Loss: CrossEntropyLoss ({})
+2025-06-24 16:02:56,645 - evaluation_logger - INFO -   Epochs: 50, Batch Size: 32
+2025-06-24 16:02:56,645 - evaluation_logger - INFO -   Device: cuda
+2025-06-24 16:05:34,404 - evaluation_logger - INFO - ####################################################################
+2025-06-24 16:05:34,405 - evaluation_logger - INFO - Model Training Started: 2025-06-24 16:05:34
+2025-06-24 16:05:34,407 - evaluation_logger - INFO - --- Data Cleaning ---
+2025-06-24 16:05:34,421 - evaluation_logger - INFO - 	Successfully loaded 1743 entries from training\training-data\cleaned\coraza-audit-cleaned.csv
+2025-06-24 16:05:34,422 - evaluation_logger - INFO - --- Data Preprocessing ---
+2025-06-24 16:05:34,422 - evaluation_logger - INFO - NUMERICAL_FEATURES=['RequestLength', 'PathLength', 'QueryLength']
+2025-06-24 16:05:34,423 - evaluation_logger - INFO - TEXT_FEATURES=['RequestURIPath', 'RequestURIQuery', 'RequestBody', 'UserAgent']
+2025-06-24 16:05:34,423 - evaluation_logger - INFO - CATEGORICAL_FEATURES=['RequestMethod']
+2025-06-24 16:05:34,423 - evaluation_logger - INFO - LABEL='AIVerdictLabel'
+2025-06-24 16:05:34,428 - evaluation_logger - INFO - > Dense Feature extraction
+2025-06-24 16:05:34,428 - evaluation_logger - INFO - 	Using :
+    	TOKENIZER_CONFIGS: {'RequestURIPath': 'char', 'RequestURIQuery': 'char', 'RequestBody': 'char', 'UserAgent': 'char'}
+    	MAX_SEQ_LENGTHS: {'RequestURIPath': 50, 'RequestURIQuery': 50, 'RequestBody': 50, 'UserAgent': 100}
+2025-06-24 16:05:34,732 - evaluation_logger - INFO - Dense feature extraction and preprocessing complete.
+2025-06-24 16:05:34,738 - evaluation_logger - INFO - --- Model Training ---
+2025-06-24 16:05:34,738 - evaluation_logger - INFO - 	Algorithm Used: CNN
+	Model Parameters: {'learning_rate': 0.001, 'epochs': 50, 'batch_size': 32, 'optimizer_type': 'adam', 'optimizer_params': {'weight_decay': 0.0001}, 'loss_type': 'CrossEntropyLoss', 'loss_params': {}, 'dropout_rate': 0.5, 'hidden_size': 64, 'num_classes': 2, 'numerical_hidden_size': 32, 'text_embed_dims': {'RequestURIPath': 32, 'RequestURIQuery': 32, 'RequestBody': 32, 'UserAgent': 32}, 'categorical_embed_dims': {'RequestMethod': 3}, 'text_cnn_configs': {'RequestURIPath': {'n_filters': 32, 'filter_size': 3}, 'RequestURIQuery': {'n_filters': 48, 'filter_size': 5}, 'RequestBody': {'n_filters': 96, 'filter_size': 5}, 'UserAgent': {'n_filters': 64, 'filter_size': 4}}}
+	Hyperparameter tuning: False
+	Hyperparameter tuning method: random
+	Cross-Validation Splits: 3
+	Num of hyperparameter combinations in Random Search: 10
+	Random State: 42
+	Tuning Parameters: {'hidden_size': [32], 'learning_rate': [0.01]}
+2025-06-24 16:05:34,756 - evaluation_logger - INFO - Device: cuda
+2025-06-24 16:05:36,779 - evaluation_logger - INFO -   Model type: CNNClassifier
+2025-06-24 16:05:36,779 - evaluation_logger - INFO -   Optimizer: adam ({'weight_decay': 0.0001, 'lr': 0.001})
+2025-06-24 16:05:36,779 - evaluation_logger - INFO -   Loss: CrossEntropyLoss ({})
+2025-06-24 16:05:36,779 - evaluation_logger - INFO -   Epochs: 50, Batch Size: 32
+2025-06-24 16:05:36,780 - evaluation_logger - INFO -   Device: cuda
+2025-06-24 16:05:53,046 - evaluation_logger - INFO - ####################################################################
+2025-06-24 16:05:53,046 - evaluation_logger - INFO - Model Training Started: 2025-06-24 16:05:53
+2025-06-24 16:05:53,049 - evaluation_logger - INFO - --- Data Cleaning ---
+2025-06-24 16:05:53,062 - evaluation_logger - INFO - 	Successfully loaded 1743 entries from training\training-data\cleaned\coraza-audit-cleaned.csv
+2025-06-24 16:05:53,062 - evaluation_logger - INFO - --- Data Preprocessing ---
+2025-06-24 16:05:53,062 - evaluation_logger - INFO - NUMERICAL_FEATURES=['RequestLength', 'PathLength', 'QueryLength']
+2025-06-24 16:05:53,063 - evaluation_logger - INFO - TEXT_FEATURES=['RequestURIPath', 'RequestURIQuery', 'RequestBody', 'UserAgent']
+2025-06-24 16:05:53,063 - evaluation_logger - INFO - CATEGORICAL_FEATURES=['RequestMethod']
+2025-06-24 16:05:53,064 - evaluation_logger - INFO - LABEL='AIVerdictLabel'
+2025-06-24 16:05:53,069 - evaluation_logger - INFO - > Dense Feature extraction
+2025-06-24 16:05:53,069 - evaluation_logger - INFO - 	Using :
+    	TOKENIZER_CONFIGS: {'RequestURIPath': 'char', 'RequestURIQuery': 'char', 'RequestBody': 'char', 'UserAgent': 'char'}
+    	MAX_SEQ_LENGTHS: {'RequestURIPath': 50, 'RequestURIQuery': 50, 'RequestBody': 50, 'UserAgent': 100}
+2025-06-24 16:05:53,343 - evaluation_logger - INFO - Dense feature extraction and preprocessing complete.
+2025-06-24 16:05:53,348 - evaluation_logger - INFO - --- Model Training ---
+2025-06-24 16:05:53,348 - evaluation_logger - INFO - 	Algorithm Used: CNN
+	Model Parameters: {'learning_rate': 0.001, 'epochs': 50, 'batch_size': 32, 'optimizer_type': 'adam', 'optimizer_params': {'weight_decay': 0.0001}, 'loss_type': 'CrossEntropyLoss', 'loss_params': {}, 'dropout_rate': 0.5, 'hidden_size': 64, 'num_classes': 2, 'numerical_hidden_size': 32, 'text_embed_dims': {'RequestURIPath': 32, 'RequestURIQuery': 32, 'RequestBody': 32, 'UserAgent': 32}, 'categorical_embed_dims': {'RequestMethod': 3}, 'text_cnn_configs': {'RequestURIPath': {'n_filters': 32, 'filter_size': 3}, 'RequestURIQuery': {'n_filters': 48, 'filter_size': 5}, 'RequestBody': {'n_filters': 96, 'filter_size': 5}, 'UserAgent': {'n_filters': 64, 'filter_size': 4}}}
+	Hyperparameter tuning: False
+	Hyperparameter tuning method: random
+	Cross-Validation Splits: 3
+	Num of hyperparameter combinations in Random Search: 10
+	Random State: 42
+	Tuning Parameters: {'hidden_size': [32], 'learning_rate': [0.01]}
+2025-06-24 16:05:53,363 - evaluation_logger - INFO - Device: cuda
+2025-06-24 16:05:55,068 - evaluation_logger - INFO -   Model type: CNNClassifier
+2025-06-24 16:05:55,068 - evaluation_logger - INFO -   Optimizer: adam ({'weight_decay': 0.0001, 'lr': 0.001})
+2025-06-24 16:05:55,069 - evaluation_logger - INFO -   Loss: CrossEntropyLoss ({})
+2025-06-24 16:05:55,069 - evaluation_logger - INFO -   Epochs: 50, Batch Size: 32
+2025-06-24 16:05:55,069 - evaluation_logger - INFO -   Device: cuda

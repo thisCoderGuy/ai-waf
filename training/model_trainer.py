@@ -88,14 +88,13 @@ def train_model(X_train, y_train, preprocessor):
 \tTuning Parameters: {TUNING_PARAMS[MODEL_TYPE]}"""
     evaluation_logger.info(log_message) 
     
-    global_logger.info(f"Performing {N_SPLITS_CROSS_VALIDATION}-fold Stratified Cross-Validation on training data for {MODEL_TYPE.upper()} model...")
-
-   
-
+    
     model = get_model(preprocessor)
 
+    
+
     if PERFORM_TUNING:
-        global_logger.info(f"Starting Hyperparameter Tuning ({TUNING_METHOD.upper()} Search) for {MODEL_TYPE.upper()} model...")
+        global_logger.info(f"Starting Hyperparameter Tuning ({TUNING_METHOD.upper()} Search) using {N_SPLITS_CROSS_VALIDATION}-fold Stratified Cross-Validation  for {MODEL_TYPE.upper()} model...")
         param_grid = TUNING_PARAMS.get(MODEL_TYPE)
 
         if not param_grid:
