@@ -8,6 +8,7 @@ from sklearn.neural_network import MLPClassifier # <--- NEW IMPORT for scikit-le
 
 from MLP_wrapper import PyTorchMLPClassifier 
 from CNN_wrapper import CNNClassifier
+from RNN_wrapper import RNNClassifier
 
 from loggers import global_logger, evaluation_logger
 
@@ -47,6 +48,8 @@ def get_model(preprocessor):
         ModelClass = PyTorchMLPClassifier
     elif model_type == 'cnn':
         ModelClass = CNNClassifier
+    elif model_type == 'rnn':
+        ModelClass = RNNClassifier
     else:
         raise ValueError(f"Unknown model type: {model_type}")
 
@@ -55,7 +58,7 @@ def get_model(preprocessor):
     # Dynamically select model and its parameters
     model_params = MODEL_PARAMS.get(MODEL_TYPE, {})
     
-    if  model_type == 'fcnn'or  model_type == 'cnn':
+    if  model_type == 'fcnn' or  model_type == 'cnn' or  model_type == 'rnn':
         model_params['preprocessor'] = preprocessor
 
     if 'random_state' in model_params and model_params['random_state'] is None:

@@ -164,7 +164,7 @@ RANDOM_STATE = 42
 # Set the current model type. 
 # Possible values so far: 'svm', 'random_forest', 'decision_tree', 'naive_bayes', 'mlp',
 #                         'fcnn', 'cnn', 'rnn', 'lstm', 'transformer', 'llm'  # For those choose N_SPLITS_CROSS_VALIDATION = small num
-MODEL_TYPE = 'cnn'
+MODEL_TYPE = 'rnn'
 
 # --- Model Parameters  ---
 MODEL_PARAMS = {
@@ -265,18 +265,40 @@ MODEL_PARAMS = {
         
     },
     'rnn': {
-        'units': 128,
-        'return_sequences': False,
         'learning_rate': 0.001,
-        'epochs': 10,
-        'batch_size': 32
-    },
-    'lstm': {
-        'units': 128,
-        'return_sequences': False,
-        'learning_rate': 0.001,
-        'epochs': 10,
-        'batch_size': 32
+        'epochs': 50,
+        'batch_size': 32,
+        #'activation': 'relu',
+        'optimizer_type': 'adam', # adam or sgd
+        'optimizer_params': {
+            'weight_decay': 0.0001, # regularization
+            # Add other Adam-specific params here, e.g., 'betas': (0.9, 0.999), 'eps': 1e-08, 'weight_decay': 0
+        },
+        'loss_type':  'CrossEntropyLoss', # Options: 'CrossEntropyLoss', 'BCEWithLogitsLoss', etc.
+        'loss_params': {
+            # Example for CrossEntropyLoss with class weights (adjust weights based on your class distribution)
+            # 'weight': [1.0, 10.0] # Needs to be a torch.Tensor, converted inside the wrapper
+        },
+        'dropout_rate': 0.5, 
+        'hidden_size': 64,
+        'num_classes': 2,
+        'numerical_hidden_size': 32,
+        'text_embed_dims': {
+            'RequestURIPath': 32,
+            'RequestURIQuery': 32,
+            'RequestBody': 32,
+            'UserAgent': 32
+        },
+        'categorical_embed_dims': {
+            'RequestMethod': 3
+        },
+        'text_rnn_configs': {
+            'RequestURIPath': {'hidden_size': 128, 'num_layers': 1, 'bidirectional': False},
+            'RequestURIQuery': {'hidden_size': 128, 'num_layers': 1, 'bidirectional': False},
+            'RequestBody': {'hidden_size': 128, 'num_layers': 1, 'bidirectional': False},
+            'UserAgent': {'hidden_size': 128, 'num_layers': 1, 'bidirectional': False}
+        },
+        'rnn_type': 'GRU',  # LSTM or GRU
     },
     'transformer': {
         'num_heads': 4,
@@ -336,6 +358,10 @@ TUNING_PARAMS = {
          'learning_rate': [0.01], #0.001, 0.01],
     },
     'cnn': {
+         'hidden_size': [32], # [32, 64],
+         'learning_rate': [0.01], #0.001, 0.01],
+    },
+    'rnn': {
          'hidden_size': [32], # [32, 64],
          'learning_rate': [0.01], #0.001, 0.01],
     }
