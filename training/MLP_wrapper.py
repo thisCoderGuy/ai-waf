@@ -56,27 +56,25 @@ class MultiInputMLPClassifier(nn.Module):
             nn.Linear(hidden_size, num_classes)
         )
 
-    def forward(self, text_inputs: List[torch.Tensor],
-                categorical_inputs: List[torch.Tensor],
-                numerical_inputs: List[torch.Tensor]):
+    def forward(self, text_inputs: Dict[str, torch.Tensor],
+                categorical_inputs: Dict[str, torch.Tensor],
+                numerical_inputs: torch.Tensor):
         """
-        Forward pass for the MultiInputCNNClassifier.
+        Forward pass for the MultiInputMLPClassifier.
 
         Args:
-            text_inputs (List[torch.Tensor]): A list of tensors, where each tensor corresponds to a text feature.
-                                              The order of tensors in the list should match the order of keys
-                                              in `text_specs` during initialization.
-                                              Each tensor has shape (batch_size, sequence_length).
-            categorical_inputs (List[torch.Tensor]): A list of tensors, where each tensor corresponds to a
-                                                     categorical feature. The order should match `categorical_specs`.
-                                                     Each tensor has shape (batch_size,).
-            numerical_inputs (List[torch.Tensor]): A list of tensors, where each tensor corresponds to a
-                                                   single numerical feature.
-                                                   Each tensor has shape (batch_size,).
+            text_inputs (Dict[str, torch.Tensor]): A dictionary where keys are text feature names
+                                                  and values are their corresponding input tensors
+                                                  (batch_size, sequence_length).
+            categorical_inputs (Dict[str, torch.Tensor]): A dictionary where keys are categorical feature names
+                                                          and values are their corresponding input tensors
+                                                          (batch_size,).
+            numerical_inputs (torch.Tensor): A tensor containing numerical features (batch_size, num_numerical_features).
 
         Returns:
             torch.Tensor: The output logits (batch_size, num_classes).
         """
+
         # --- Text Embeddings ---
         global_logger.debug(f"--- Text Embeddings ---")
         # Text: embed and mean-pool each feature
@@ -114,6 +112,9 @@ class MultiInputMLPClassifier(nn.Module):
         logits = self.fusion(all_features)
         global_logger.debug(f"Logits:{logits.shape=} ")
         return logits
+
+
+
 
 # Wrapper Class for PyTorch MLP to mimic Scikit-learn API
 class PyTorchMLPClassifier(BaseDeepLearningClassifier):

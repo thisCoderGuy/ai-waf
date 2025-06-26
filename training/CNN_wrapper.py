@@ -9,6 +9,9 @@ from loggers import global_logger, evaluation_logger
 
 from base_deep_learner import BaseDeepLearningClassifier
 class MultiInputCNNClassifier(nn.Module):
+    """
+    Defines a multi-input CNN architecture.
+    """
     def __init__(self,
                  text_specs: Dict[str, Tuple[int, int]],         # e.g., {'RequestURIQuery': (10000, 50)}
                                                                  # where Key -> (Vocab Size, Embedding Dim)
@@ -69,8 +72,8 @@ class MultiInputCNNClassifier(nn.Module):
         # --- Fusion block (standard MLP) ---
         self.fusion = nn.Sequential(
             nn.Linear(fusion_dim, hidden_size),
-            nn.ReLU(),
-            nn.Dropout(dropout_rate),
+            nn.ReLU(),  # activation
+            nn.Dropout(dropout_rate), # regularization
             nn.Linear(hidden_size, num_classes)
         )
 
@@ -97,103 +100,51 @@ class MultiInputCNNClassifier(nn.Module):
         Returns:
             torch.Tensor: The output logits (batch_size, num_classes).
         """
-        processed_text_features = []
-        # Process each text input
-        for name, input_tensor in text_inputs.items():
-            # Get embeddings: (batch_size, sequence_length, embed_dim)
-            embedded_text = self.text_embedding_branches[name](input_tensor)
-            # Transpose for Conv1d: (batch_size, embed_dim, sequence_length)
-            embedded_text = embedded_text.permute(0, 2, 1)
-            # Apply convolution
-            conv_output = self.text_conv_layers[name](embedded_text)
-            # Apply ReLU activation
-            conv_output = F.relu(conv_output)
-            # Apply max pooling over the sequence dimension
-            # Max pooling output will be (batch_size, n_filters, 1), squeeze to remove last dim
-            pooled_output = F.max_pool1d(conv_output, conv_output.size(2)).squeeze(2)
-            processed_text_features.append(pooled_output)
-
-
-
-
-
-
-            
-        # --- Text Embeddings ---
-        global_logger.debug(f"--- Text Embeddings and Convolution---")
-        # Text: embed convolve and mean-pool each feature
-        processed_text_features = []
-        # Process each text input
-        # We iterate over the keys of text_embedding_branches to maintain the correct mapping
-        # between feature names and the list of input tensors.
+                    
+        # --- Text Embeddings  and Convolutions ---
+        global_logger.debug(f"--- Text Embeddings and Convolutions ---")
+        # Text: embed, convolve and mean-pool each feature
+        text_outputs = []
         for i, name in enumerate(self.text_embedding_branches.keys()):
-            input_tensor = text_inputs[i] # Get the tensor from the list based on index
-            # Get embeddings: (batch_size, sequence_length, embed_dim)
-            embedded_text = self.text_embedding_branches[name](input_tensor)
+            input_tensor = text_inputs[i] # Get the correct  tensor from the list based on index
+            embedded_text = self.text_embedding_branches[name](input_tensor)  # (batch_size, sequence_length, embed_dim)
             # Transpose for Conv1d: (batch_size, embed_dim, sequence_length)
             embedded_text = embedded_text.permute(0, 2, 1)
-            # Apply convolution
             conv_output = self.text_conv_layers[name](embedded_text)
             # Apply ReLU activation
             conv_output = F.relu(conv_output)
             # Apply max pooling over the sequence dimension
             # Max pooling output will be (batch_size, n_filters, 1), squeeze to remove last dim
             pooled_output = F.max_pool1d(conv_output, conv_output.size(2)).squeeze(2)
-            processed_text_features.append(pooled_output)
+            text_outputs.append(pooled_output)
 
-
-
-        # Process each text input
-        for name, input_tensor in text_inputs:
-            # Get embeddings: (batch_size, sequence_length, embed_dim)
-            embedded_text = self.text_embedding_branches[name](input_tensor)
-            # Transpose for Conv1d: (batch_size, embed_dim, sequence_length)
-            embedded_text = embedded_text.permute(0, 2, 1)
-            # Apply convolution
-            conv_output = self.text_conv_layers[name](embedded_text)
-            # Apply ReLU activation
-            conv_output = F.relu(conv_output)
-            # Apply max pooling over the sequence dimension
-            # Max pooling output will be (batch_size, n_filters, 1), squeeze to remove last dim
-            pooled_output = F.max_pool1d(conv_output, conv_output.size(2)).squeeze(2)
-            processed_text_features.append(pooled_output)
-
-        
+       
         
         # --- Categorical Embeddings ---
         global_logger.debug(f"--- Categorical Embeddings ---")
-        processed_categorical_features = []
-        for name, input_tensor in categorical_inputs.items():
-            # Get embeddings: (batch_size, embed_dim)
-            embedded_cat = self.cat_embedding_branches[name](input_tensor)
+        cat_outputs = []
+        for i, (name, embedding_layer) in enumerate(self.cat_embedding_branches.items()):
             # categorical_inputs[i]: (batch_size, 1) or (batch_size,)
-            #embed = embedding_layer(categorical_inputs[i])  # (batch_size, embed_dim)
-            global_logger.debug(f"{name=}, in: {input_tensor.shape=} out: {embedded_cat.shape=}")
-            processed_categorical_features.append(embedded_cat)
+            embed = embedding_layer(categorical_inputs[i])  # (batch_size, embed_dim)
+            global_logger.debug(f"{name=}, in: {categorical_inputs[i].shape=} out: {embed.shape=}")
+            cat_outputs.append(embed)
         
         # --- Numerical Inputs ---
         global_logger.debug(f"--- Numerical Linear layer ---")
         # Each numerical_inputs[i]: (batch_size,)
         # Stack them to shape: (batch_size, num_numerical_features)
         num_tensor = torch.stack(numerical_inputs, dim=1).float()  # shape: (batch_size, num_numerical_features)
-        numerical_branch_output = F.relu(self.num_linear_branch(num_tensor))  # (batch_size, numerical_hidden_size)
-        global_logger.debug(f"Numerical, in: {num_tensor.shape=} out: {numerical_branch_output.shape=}")
+        num_output = F.relu(self.num_linear_branch(num_tensor))  # (batch_size, numerical_hidden_size)
+        global_logger.debug(f"Numerical, in: {num_tensor.shape=} out: {num_output.shape=}")
 
-        # Combine all features by concatenating
-        global_logger.debug(f"--- Combined Embeddings by concatenating ---")
-        # Ensure that if any list is empty, it doesn't cause concatenation issues
-        all_features = []
-        if processed_text_features:
-            all_features.append(torch.cat(processed_text_features, dim=1))
-        if processed_categorical_features:
-            all_features.append(torch.cat(processed_categorical_features, dim=1))
-        all_features.append(numerical_branch_output)
-        fused_features = torch.cat(all_features, dim=1)
+        # Combine all features
+        global_logger.debug(f"--- Combined Embeddings ---")
+        all_features = torch.cat(text_outputs + cat_outputs + [num_output], dim=1)
         global_logger.debug(f"Combined:{all_features.shape=} ")
 
         # Final layers (fusion block)
         global_logger.debug(f"--- Final Layers ---")
-        logits = self.fusion(fused_features)
+        logits = self.fusion(all_features)
         global_logger.debug(f"Logits:{logits.shape=} ")
         return logits
 
