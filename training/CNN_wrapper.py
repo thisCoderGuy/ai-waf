@@ -6,8 +6,8 @@ from typing import Dict, Tuple
 
 from loggers import global_logger, evaluation_logger
 
-
 from base_deep_learner import BaseDeepLearningClassifier
+
 class MultiInputCNNClassifier(nn.Module):
     """
     Defines a multi-input CNN architecture.
@@ -150,6 +150,10 @@ class MultiInputCNNClassifier(nn.Module):
 
 # Wrapper Class for PyTorch  to mimic Scikit-learn API
 class CNNClassifier(BaseDeepLearningClassifier):
+    """
+    A wrapper class for a PyTorch CNN (Convoluted Neural Network)
+    to enable its use with scikit-learn's GridSearchCV or RandomizedSearchCV.
+    """
     
     def __init__(self, num_classes,
                  text_embed_dims, # e.g., {'RequestURIPath': 50}
