@@ -176,6 +176,16 @@ TUNING_PARAMS = {
 
 ---
 
+## Further Reading
+
+To understand how to build custom neural network models in PyTorch, refer to:
+
+- [Learn the Basics: Build Models with nn.Module](https://pytorch.org/tutorials/beginner/basics/buildmodel_tutorial.html)
+- [Deep Learning with PyTorch: A 60 Minute Blitz](https://pytorch.org/tutorials/beginner/deep_learning_60min_blitz.html) 
+- [PyTorch nn.Module documentation](https://pytorch.org/docs/stable/generated/torch.nn.Module.html)
+
+---
+
 ## Summary: What You Must Do
 
 | Requirement                                   | Your Responsibility  |
