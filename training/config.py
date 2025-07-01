@@ -3,6 +3,7 @@ import os
 #########################################################
 # --- Loggers Setup ---
 #########################################################
+# Possible Log LEvels: DEBUG, INFO, WARNING, ERROR, and CRITICAL.
 LOGGING_CONFIG = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -14,26 +15,26 @@ LOGGING_CONFIG = {
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
-            'level': 'DEBUG',                       # <------------- Log LEvel # DEBUG, INFO, WARNING, ERROR, and CRITICAL.
+            'level': 'INFO',                       # Choose DEBUG or INFO to see appropriate messages in the console
             'formatter': 'standard',
         },
         'file': {
             'class': 'logging.FileHandler',
             'filename': os.path.join('training', 'model-logs', 'all_models.txt'),  # <-- Log file
             'mode': 'a',
-            'level': 'INFO',                        # <-- Log LEvel # DEBUG, INFO, WARNING, ERROR, and CRITICAL.
+            'level': 'INFO',                        #  Keep level to INFO to log only important info to the file  
             'formatter': 'standard',
         },
     },
 
     'loggers': {
         'evaluation_logger': {
-            'level': 'INFO',                            # <-- Log LEvel # DEBUG, INFO, WARNING, ERROR, and CRITICAL.
+            'level': 'INFO',                            
             'handlers': ['console', 'file'],
             'propagate': False
         },
         'global_logger': {
-            'level': 'DEBUG',                            # <-- Log LEvel # DEBUG, INFO, WARNING, ERROR, and CRITICAL.
+            'level': 'DEBUG',                            
             'handlers': ['console'],
             'propagate': False
         }
@@ -164,7 +165,18 @@ RANDOM_STATE = 42
 # Set the current model type. 
 # Possible values so far: 'svm', 'random_forest', 'decision_tree', 'naive_bayes', 'mlp',
 #                         'fcnn', 'cnn', 'rnn', 'lstm', 'transformer', 'llm'  # For those choose N_SPLITS_CROSS_VALIDATION = small num
-MODEL_TYPE = 'rnn'
+MODEL_TYPE = 'cnn'
+
+MODEL_CLASSES = {
+    'svm': 'SVC',
+    'random_forest': 'RandomForestClassifier',
+    'decision_tree': 'DecisionTreeClassifier',
+    'naive_bayes': 'MultinomialNB',
+    'mlp': 'MLPClassifier',
+    'fcnn': 'PyTorchMLPClassifier',
+    'cnn': 'CNNClassifier',
+    'rnn': 'RNNClassifier'
+}
 
 # --- Model Parameters  ---
 MODEL_PARAMS = {
@@ -374,7 +386,7 @@ TUNING_PARAMS = {
 # --- Model Output Configuration ---
 #########################################################
 # Path to save the trained model.
-MODEL_BASE_OUTPUT_DIR = os.path.join('..', 'ai-microservice', 'trained-models')
+MODEL_BASE_OUTPUT_DIR = os.path.join('ai-microservice', 'trained-models')
 # Prefix for the generated model and preprocessor filenames (e.g., 'svm_malicious_traffic_model_20250611_1330.joblib')
 MODEL_FILENAME_PREFIX = 'malicious_traffic_model'
 PREPROCESSOR_FILENAME_PREFIX = 'malicious_traffic_preprocessor'

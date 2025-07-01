@@ -17,6 +17,8 @@ import numpy as np
 
 from config import (
     MODEL_TYPE,
+    MODEL_CLASSES,
+    PERFORM_DENSE_PREPROCESSING,
     N_SPLITS_CROSS_VALIDATION,
     RANDOM_STATE,
     PERFORM_TUNING,
@@ -30,35 +32,22 @@ def get_model(preprocessor):
     """
 
     model_type = MODEL_TYPE.lower()
-    ModelClass = None # Initialize ModelClass
+    model_class_name = MODEL_CLASSES.get(model_type)
+    if model_class_name is None:
+        raise ValueError(f"Unknown model type: {model_type}. Not found in MODEL_CLASSES.")
 
-    if model_type == 'svm':
-        ModelClass = SVC
-    elif model_type == 'random_forest':
-        ModelClass = RandomForestClassifier
-    elif model_type == 'decision_tree':
-        ModelClass = DecisionTreeClassifier
-    elif model_type == 'naive_bayes':
-        # Assuming MultinomialNB for text-based features, adjust if using GaussianNB
-        ModelClass = MultinomialNB
-    elif model_type == 'mlp': 
-        ModelClass = MLPClassifier
-    ## deep learning models
-    elif model_type == 'fcnn':
-        ModelClass = PyTorchMLPClassifier
-    elif model_type == 'cnn':
-        ModelClass = CNNClassifier
-    elif model_type == 'rnn':
-        ModelClass = RNNClassifier
-    else:
-        raise ValueError(f"Unknown model type: {model_type}")
-
+    # Dynamically get the class object from its name
+    # This requires all model classes to be imported in the current scope
+    try:
+        ModelClass = globals()[model_class_name]
+    except KeyError:
+        raise ImportError(f"Model class '{model_class_name}' for model type '{model_type}' is not imported or defined in the current scope.")
 
 
     # Dynamically select model and its parameters
     model_params = MODEL_PARAMS.get(MODEL_TYPE, {})
     
-    if  model_type == 'fcnn' or  model_type == 'cnn' or  model_type == 'rnn':
+    if  PERFORM_DENSE_PREPROCESSING:
         model_params['preprocessor'] = preprocessor
 
     if 'random_state' in model_params and model_params['random_state'] is None:
@@ -81,7 +70,7 @@ def train_model(X_train, y_train, preprocessor):
         object: The trained final model (or the best estimator from tuning).
     """
     evaluation_logger.info("--- Model Training ---")
-    log_message = f"""\tAlgorithm Used: {MODEL_TYPE.upper()}
+    log_message = f"""\tArchitecture Used: {MODEL_TYPE.upper()}
 \tModel Parameters: {MODEL_PARAMS[MODEL_TYPE]}
 \tHyperparameter tuning: {PERFORM_TUNING}
 \tHyperparameter tuning method: {TUNING_METHOD}
