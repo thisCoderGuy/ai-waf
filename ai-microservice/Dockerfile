@@ -9,7 +9,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 
 COPY app.py ./
-COPY trained_models/*.joblib ./
+COPY trained-models/*.joblib ./
 
 EXPOSE 5000
 
