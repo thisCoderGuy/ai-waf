@@ -1,0 +1,78 @@
+2025-07-03 10:04:16,983 - evaluation_logger - INFO - ####################################################################
+2025-07-03 10:04:16,983 - evaluation_logger - INFO - Model Training Started: 2025-07-03 10:04:16
+2025-07-03 10:04:16,984 - evaluation_logger - INFO - --- Data Cleaning ---
+2025-07-03 10:04:16,991 - evaluation_logger - INFO - 	Successfully loaded 1743 entries from training/training-data/cleaned/coraza-audit-cleaned.csv
+2025-07-03 10:04:16,991 - evaluation_logger - INFO - --- Data Preprocessing ---
+2025-07-03 10:04:16,991 - evaluation_logger - INFO - NUMERICAL_FEATURES=['RequestLength', 'PathLength', 'QueryLength']
+2025-07-03 10:04:16,991 - evaluation_logger - INFO - TEXT_FEATURES=['RequestURIPath', 'RequestURIQuery', 'RequestBody', 'UserAgent']
+2025-07-03 10:04:16,991 - evaluation_logger - INFO - CATEGORICAL_FEATURES=['RequestMethod']
+2025-07-03 10:04:16,991 - evaluation_logger - INFO - LABEL='AIVerdictLabel'
+2025-07-03 10:04:16,993 - evaluation_logger - INFO - > Dense Feature extraction
+2025-07-03 10:04:16,993 - evaluation_logger - INFO - 	Using :
+    	TOKENIZER_CONFIGS: {'RequestURIPath': 'char', 'RequestURIQuery': 'char', 'RequestBody': 'char', 'UserAgent': 'char'}
+    	MAX_SEQ_LENGTHS: {'RequestURIPath': 50, 'RequestURIQuery': 50, 'RequestBody': 50, 'UserAgent': 100}
+2025-07-03 10:04:17,046 - evaluation_logger - INFO - Dense feature extraction and preprocessing complete.
+2025-07-03 10:04:17,048 - evaluation_logger - INFO - --- Model Training ---
+2025-07-03 10:04:17,048 - evaluation_logger - INFO - 	Architecture Used: CNN
+	Model Parameters: {'learning_rate': 0.001, 'epochs': 50, 'batch_size': 32, 'optimizer_type': 'adam', 'optimizer_params': {'weight_decay': 0.0001}, 'loss_type': 'CrossEntropyLoss', 'loss_params': {}, 'dropout_rate': 0.5, 'hidden_size': 64, 'num_classes': 2, 'numerical_hidden_size': 32, 'text_embed_dims': {'RequestURIPath': 32, 'RequestURIQuery': 32, 'RequestBody': 32, 'UserAgent': 32}, 'categorical_embed_dims': {'RequestMethod': 3}, 'text_cnn_configs': {'RequestURIPath': {'n_filters': 32, 'filter_size': 3}, 'RequestURIQuery': {'n_filters': 48, 'filter_size': 5}, 'RequestBody': {'n_filters': 96, 'filter_size': 5}, 'UserAgent': {'n_filters': 64, 'filter_size': 4}}}
+	Hyperparameter tuning: False
+	Hyperparameter tuning method: random
+	Cross-Validation Splits: 3
+	Num of hyperparameter combinations in Random Search: 10
+	Random State: 42
+	Tuning Parameters: {'hidden_size': [32], 'learning_rate': [0.01]}
+2025-07-03 10:04:17,145 - evaluation_logger - INFO - Device: cuda
+2025-07-03 10:04:17,868 - evaluation_logger - INFO -   Model type: CNNClassifier
+2025-07-03 10:04:17,868 - evaluation_logger - INFO -   Optimizer: adam ({'weight_decay': 0.0001, 'lr': 0.001})
+2025-07-03 10:04:17,868 - evaluation_logger - INFO -   Loss: CrossEntropyLoss ({})
+2025-07-03 10:04:17,868 - evaluation_logger - INFO -   Epochs: 50, Batch Size: 32
+2025-07-03 10:04:17,868 - evaluation_logger - INFO -   Device: cuda
+2025-07-03 10:04:23,986 - evaluation_logger - INFO - MultiInputCNNClassifier(
+  (text_embedding_branches): ModuleDict(
+    (RequestURIPath): Embedding(29, 32)
+    (RequestURIQuery): Embedding(43, 32)
+    (RequestBody): Embedding(60, 32)
+    (UserAgent): Embedding(45, 32)
+  )
+  (cat_embedding_branches): ModuleDict(
+    (RequestMethod): Embedding(4, 3)
+  )
+  (num_linear_branch): Linear(in_features=3, out_features=32, bias=True)
+  (text_conv_layers): ModuleDict(
+    (RequestURIPath): Conv1d(32, 32, kernel_size=(3,), stride=(1,))
+    (RequestURIQuery): Conv1d(32, 48, kernel_size=(5,), stride=(1,))
+    (RequestBody): Conv1d(32, 96, kernel_size=(5,), stride=(1,))
+    (UserAgent): Conv1d(32, 64, kernel_size=(4,), stride=(1,))
+  )
+  (fusion): Sequential(
+    (0): Linear(in_features=275, out_features=64, bias=True)
+    (1): ReLU()
+    (2): Dropout(p=0.5, inplace=False)
+    (3): Linear(in_features=64, out_features=2, bias=True)
+  )
+)
+2025-07-03 10:04:23,986 - evaluation_logger - INFO - --- Model Evaluation ---
+2025-07-03 10:04:24,011 - evaluation_logger - INFO - 	--- Evaluation Results ---
+	Accuracy: 1.0000
+	Precision: 1.0000
+	Recall: 1.0000
+	F1-Score: 1.0000
+
+	--- Classification Report ---
+              precision    recall  f1-score   support
+
+      benign       1.00      1.00      1.00       336
+   malicious       1.00      1.00      1.00        13
+
+    accuracy                           1.00       349
+   macro avg       1.00      1.00      1.00       349
+weighted avg       1.00      1.00      1.00       349
+
+
+	--- Confusion Matrix ---
+                  Predicted Benign  Predicted Malicious
+Actual Benign                  336                    0
+Actual Malicious                 0                   13
+
+2025-07-03 10:04:24,011 - evaluation_logger - INFO - 	---Total training and evaluation time ---
+	6.96 seconds

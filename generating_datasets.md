@@ -30,7 +30,7 @@ In ./coraza-proxy/config.go
 - Change the **log file name** `loggerPath` (e.g. “/var/log/coraza/coraza-audit-benign.csv”)
 - Change the **labels** `DefaultAIVerdictLabel` and `DefaultAIVulnerabilityTypeLabel` for the type of datasets being generated
 
-`DefaultAIVerdictLabel (E.g. “benign”, malicious)
+```DefaultAIVerdictLabel (E.g. “benign”, malicious)
 DefaultAIVulnerabilityTypeLabel (E.g. “none”, sqli, xss, etc)
 
 const loggerFormat = "csv"
@@ -41,6 +41,9 @@ const (
 	DefaultAIVerdictLabel         = "benign" # benign or malicious
 	DefaultAIVulnerabilityTypeLabel = "none"  #none, sqli, xss, etc.
 )
-`
+```
 
 
+## Run the testbed
+
+`sudo docker compose up`
