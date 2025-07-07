@@ -1,10 +1,9 @@
 import random
-import random
 from locust import task
 
 from ..base_attacker import BaseAttacker
 from ..payload_generators.xss  import XSSPayloadGenerator
-from ..config import AppConfig # Needed for common query params
+from ..config import AppConfig 
 
 class XSSAttacker(BaseAttacker):
     """
@@ -29,7 +28,7 @@ class XSSAttacker(BaseAttacker):
         obfuscation_choice = random.choice(["single", "double", "none"])
         self._send_request(
             "post",
-            "feedback",
+            "feedbacks",
             data={"comment": f"This is a test feedback with {payload}", "rating": random.randint(1, 5)},
             name_suffix="XSS_POST_COMMENT",
             obfuscation_type=obfuscation_choice

