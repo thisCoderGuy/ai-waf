@@ -129,7 +129,8 @@ services:
       - TARGET_APP_URL=http://juice-shop:3000
     volumes:
       - ./coraza-proxy/wazuh_agent_config/ossec.conf:/var/ossec/etc/ossec.conf # Mount agent config
-      - coraza_logs:/var/log/coraza # Persistent logs for inspection/Filebeat
+      #- coraza_logs:/var/log/coraza # Persistent logs for inspection/Filebeat
+      - ./training/training-data/raw:/var/log/coraza # Persistent logs for inspection/Filebeat
     networks:
       - app-net
       - wazuh-net # For Wazuh agent to communicate with manager
@@ -211,6 +212,6 @@ volumes:
   wazuh-indexer-data:
   wazuh-dashboard-config:
   wazuh-dashboard-custom:
-  coraza_logs: # Volume for Coraza logs to be persistent and accessible by Filebeat if needed
+ # coraza_logs: # Volume for Coraza logs to be persistent and accessible by Filebeat if needed
 
 
