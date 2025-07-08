@@ -11,7 +11,7 @@ class AppConfig:
         "LegitimateUser": 10,
         "SQLiAttacker":0,
         "XSSAttacker": 0,
-        "DirectoryTraversalAttacker": 0,
+        "DirectoryTraversalAttacker": 10,
         "EnumerationAttacker": 0,
         "CSRFAttacker": 0,
     }
@@ -138,7 +138,7 @@ class AppConfig:
         "quantity": "/api/Quantitys/{quantity_id}",
 
         # Authentication
-        "login": "/rest/user/login",
+        "user_login": "/rest/user/login",
         "registration": "/rest/user/registration",
         "authentication": "/rest/user/authentication",
         "change_password": "/rest/user/change-password",

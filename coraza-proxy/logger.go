@@ -10,13 +10,15 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
 	"unicode/utf8"
 
-	"bytes" 
+	"bytes"
+
 	"github.com/corazawaf/coraza/v3/types"
 )
 
@@ -41,15 +43,28 @@ var wazuhLogger *CorazaLogger
 
 // NewCorazaLogger creates a new CorazaLogger based on the provided configuration.
 func NewCorazaLogger(config LoggerConfig) (*CorazaLogger, error) {
-	file, err := os.OpenFile(config.Filename, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+
+	dir := filepath.Dir(config.Filename)
+	filenameWithExt := filepath.Base(config.Filename)
+	baseName := filenameWithExt[:len(filenameWithExt)-len(filepath.Ext(filenameWithExt))]
+	extension := filepath.Ext(filenameWithExt)
+
+	timestamp := time.Now().Format("20060102_150405") //In Go, you don't use arbitrary placeholders like YYYY or MM. Instead, use a specific reference time: Mon Jan 2 15:04:05 MST 2006
+
+	//    Example: /var/log/coraza/coraza-audit-benign-20250708_123456.csv
+	newFilename := fmt.Sprintf("%s_%s%s", baseName, timestamp, extension)
+
+	finalPath := filepath.Join(dir, newFilename)
+
+	file, err := os.OpenFile(finalPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		return nil, err
 	}
 
 	logger := &CorazaLogger{
-		file:      file,
-		logger:    log.New(file, "", log.LstdFlags),
-		config:    config,
+		file:   file,
+		logger: log.New(file, "", log.LstdFlags),
+		config: config,
 	}
 
 	if config.Format == "csv" {
@@ -129,7 +144,7 @@ func (c *CorazaLogger) writeCSVHeader() error {
 		"MatchedRulesTags",
 		"AIScore",
 		"AIVerdict",
-		"AIVerdictLabel",         // New field for AI verdict label
+		"AIVerdictLabel",           // New field for AI verdict label
 		"AIVulnerabilityTypeLabel", // New field for AI vulnerability type label
 		// Calculated fields
 		"RequestLength",
@@ -172,7 +187,7 @@ func (c *CorazaLogger) LogTransaction(
 	aiScore float64,
 	aiVerdict string,
 ) {
-	
+
 	// Initialize new fields with default values from the same package (main)
 	// No explicit import needed, just use the constant name directly.
 	aiVerdictLabel := DefaultAIVerdictLabel
@@ -189,46 +204,46 @@ func (c *CorazaLogger) LogTransaction(
 
 // CorazaLogEntry defines the structure for JSON log entries.
 type CorazaLogEntry struct {
-	Timestamp     time.Time          `json:"timestamp"`
-	TransactionID string             `json:"transaction_id"`
-	ClientIP      string             `json:"client_ip"`
-	ClientPort    int                `json:"client_port"`
-	ServerIP      string             `json:"server_ip"`
-	ServerPort    int                `json:"server_port"`
-	Request       RequestLogData     `json:"request"`
-	Response      *ResponseLogData   `json:"response,omitempty"`
+	Timestamp     time.Time            `json:"timestamp"`
+	TransactionID string               `json:"transaction_id"`
+	ClientIP      string               `json:"client_ip"`
+	ClientPort    int                  `json:"client_port"`
+	ServerIP      string               `json:"server_ip"`
+	ServerPort    int                  `json:"server_port"`
+	Request       RequestLogData       `json:"request"`
+	Response      *ResponseLogData     `json:"response,omitempty"`
 	WAFProcessing WAFProcessingLogData `json:"waf_processing"`
-	Calculated    CalculatedFields   `json:"calculated_fields"`
+	Calculated    CalculatedFields     `json:"calculated_fields"`
 }
 
 // RequestLogData holds details about the HTTP request.
 type RequestLogData struct {
-	Method   string            `json:"method"`
-	URI      string            `json:"uri"`
-	Path     string            `json:"path"`
-	Query    string            `json:"query"`
-	Protocol string            `json:"protocol"`
-	Headers  ParsedHeaders     `json:"headers"`
-	Body     string            `json:"body"`
+	Method   string        `json:"method"`
+	URI      string        `json:"uri"`
+	Path     string        `json:"path"`
+	Query    string        `json:"query"`
+	Protocol string        `json:"protocol"`
+	Headers  ParsedHeaders `json:"headers"`
+	Body     string        `json:"body"`
 }
 
 // ResponseLogData holds details about the HTTP response.
 type ResponseLogData struct {
-	StatusCode int               `json:"status_code"`
-	Protocol   string            `json:"protocol"`
-	Headers    http.Header       `json:"headers"`
-	Body       string            `json:"body"` // Response body might be empty if not captured
+	StatusCode int         `json:"status_code"`
+	Protocol   string      `json:"protocol"`
+	Headers    http.Header `json:"headers"`
+	Body       string      `json:"body"` // Response body might be empty if not captured
 }
 
 // WAFProcessingLogData holds details about WAF processing and AI analysis.
 type WAFProcessingLogData struct {
-	Interrupted       bool                  `json:"interrupted"`
-	InterruptionDetails *InterruptionLogData  `json:"interruption_details,omitempty"`
-	MatchedRules      []MatchedRuleLogData  `json:"matched_rules"`
-	AIScore           float64               `json:"ai_score"`
-	AIVerdict         string                `json:"ai_verdict"`
-	AIVerdictLabel    string                `json:"ai_verdict_label"`       // New field
-	AIVulnerabilityTypeLabel string         `json:"ai_vulnerability_type_label"` // New field
+	Interrupted              bool                 `json:"interrupted"`
+	InterruptionDetails      *InterruptionLogData `json:"interruption_details,omitempty"`
+	MatchedRules             []MatchedRuleLogData `json:"matched_rules"`
+	AIScore                  float64              `json:"ai_score"`
+	AIVerdict                string               `json:"ai_verdict"`
+	AIVerdictLabel           string               `json:"ai_verdict_label"`            // New field
+	AIVulnerabilityTypeLabel string               `json:"ai_vulnerability_type_label"` // New field
 }
 
 // InterruptionLogData holds details about a WAF interruption.
@@ -292,7 +307,7 @@ func (c *CorazaLogger) logTransactionJSON(
 	res *http.Response,
 	aiScore float64,
 	aiVerdict string,
-	aiVerdictLabel string,           // New parameter
+	aiVerdictLabel string, // New parameter
 	aiVulnerabilityTypeLabel string, // New parameter
 ) {
 	clientIP, clientPortStr, _ := net.SplitHostPort(req.RemoteAddr)
@@ -366,7 +381,7 @@ func (c *CorazaLogger) logTransactionJSON(
 	entry.WAFProcessing.MatchedRules = matchedRules
 	entry.WAFProcessing.AIScore = aiScore
 	entry.WAFProcessing.AIVerdict = aiVerdict
-	entry.WAFProcessing.AIVerdictLabel = aiVerdictLabel             // Set new field
+	entry.WAFProcessing.AIVerdictLabel = aiVerdictLabel                     // Set new field
 	entry.WAFProcessing.AIVulnerabilityTypeLabel = aiVulnerabilityTypeLabel // Set new field
 
 	entry.Calculated = calculateFields(req, string(reqBodyBytes), uriPath, uriQuery)
@@ -386,7 +401,7 @@ func (c *CorazaLogger) logTransactionCSV(
 	res *http.Response,
 	aiScore float64,
 	aiVerdict string,
-	aiVerdictLabel string,           // New parameter
+	aiVerdictLabel string, // New parameter
 	aiVulnerabilityTypeLabel string, // New parameter
 ) {
 	clientIP, clientPortStr, _ := net.SplitHostPort(req.RemoteAddr)
@@ -472,8 +487,8 @@ func (c *CorazaLogger) logTransactionCSV(
 		strings.Join(matchedRuleTags, ";"),
 		fmt.Sprintf("%.2f", aiScore),
 		aiVerdict,
-		aiVerdictLabel,             // Append new field
-		aiVulnerabilityTypeLabel,   // Append new field
+		aiVerdictLabel,           // Append new field
+		aiVulnerabilityTypeLabel, // Append new field
 		// Append calculated fields
 		strconv.Itoa(calculated.RequestLength),
 		strconv.Itoa(calculated.PathLength),

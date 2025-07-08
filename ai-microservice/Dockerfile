@@ -8,8 +8,8 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 
-COPY app.py ./
-COPY trained-models/*.joblib ./
+COPY *.py ./
+COPY trained-models/*.joblib ./trained-models/
 
 EXPOSE 5000
 
