@@ -8,6 +8,7 @@ import time
 from loggers import global_logger, evaluation_logger
 
 from config import (
+    PERFORM_DATA_CLEANING_ONLY,
     TEST_SIZE,
     REQUIRED_DIRS, 
     RANDOM_STATE
@@ -49,6 +50,8 @@ def main():
 
     # 1. Load and Clean Data
     df = load_and_clean_data()
+    if PERFORM_DATA_CLEANING_ONLY:
+        return
     if df.empty:
         evaluation_logger.error("No data remaining after cleaning. Cannot proceed with training.")
         return

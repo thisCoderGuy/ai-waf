@@ -76,3 +76,27 @@ Actual Malicious                 0                   13
 
 2025-07-03 10:04:24,011 - evaluation_logger - INFO - 	---Total training and evaluation time ---
 	6.96 seconds
+2025-07-09 17:54:43,186 - evaluation_logger - INFO - ####################################################################
+2025-07-09 17:54:43,186 - evaluation_logger - INFO - Model Training Started: 2025-07-09 17:54:43
+2025-07-09 17:54:43,186 - evaluation_logger - INFO - --- Data Cleaning ---
+2025-07-09 17:58:21,920 - evaluation_logger - INFO - ####################################################################
+2025-07-09 17:58:21,920 - evaluation_logger - INFO - Model Training Started: 2025-07-09 17:58:21
+2025-07-09 17:58:21,920 - evaluation_logger - INFO - --- Data Cleaning ---
+2025-07-09 18:00:04,828 - evaluation_logger - INFO - ####################################################################
+2025-07-09 18:00:04,828 - evaluation_logger - INFO - Model Training Started: 2025-07-09 18:00:04
+2025-07-09 18:00:04,843 - evaluation_logger - INFO - --- Data Cleaning ---
+2025-07-09 18:00:04,883 - evaluation_logger - INFO - 	Total rows removed during cleaning: 1
+2025-07-09 18:00:04,883 - evaluation_logger - INFO - 	Remaining 66 entries after cleaning.
+2025-07-09 18:00:04,884 - evaluation_logger - INFO - 	Cleaned data saved to training\training-data\cleaned\coraza-audit-cleaned.csv
+2025-07-09 18:12:46,348 - evaluation_logger - INFO - ####################################################################
+2025-07-09 18:12:46,348 - evaluation_logger - INFO - Model Training Started: 2025-07-09 18:12:46
+2025-07-09 18:12:46,348 - evaluation_logger - INFO - --- Data Cleaning ---
+2025-07-09 18:12:46,376 - evaluation_logger - INFO - 	Total rows removed during cleaning: 1
+2025-07-09 18:12:46,376 - evaluation_logger - INFO - 	Remaining 66 entries after cleaning.
+2025-07-09 18:12:46,382 - evaluation_logger - INFO - 	Cleaned data saved to training\training-data\cleaned\coraza-audit-cleaned.csv
+2025-07-09 18:15:24,229 - evaluation_logger - INFO - ####################################################################
+2025-07-09 18:15:24,229 - evaluation_logger - INFO - Model Training Started: 2025-07-09 18:15:24
+2025-07-09 18:15:24,244 - evaluation_logger - INFO - --- Data Cleaning ---
+2025-07-09 18:15:24,608 - evaluation_logger - INFO - 	Total rows removed during cleaning: 0
+2025-07-09 18:15:24,608 - evaluation_logger - INFO - 	Remaining 8159 entries after cleaning.
+2025-07-09 18:15:24,744 - evaluation_logger - INFO - 	Cleaned data saved to training\training-data\cleaned\coraza-audit-cleaned.csv
