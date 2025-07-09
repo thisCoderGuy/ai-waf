@@ -56,13 +56,15 @@ REQUIRED_DIRS = [
 # --- Data Loading and Cleaning ---
 #########################################################
 # Do perform data cleaning?
-PERFORM_DATA_CLEANING = False # True or False
+PERFORM_DATA_CLEANING = True # True or False
+PERFORM_DATA_CLEANING_ONLY = True
 
 # Path to raw dataset files (Coraza audit log files)
 RAW_DATA_FILE_PATHS = [
-    os.path.join('training', 'training-data', 'raw', 'coraza-audit-benign.csv'),
-    os.path.join('training', 'training-data', 'raw', 'coraza-audit-sqli.csv'),
-    os.path.join('training', 'training-data', 'raw', 'coraza-audit-xss.csv')
+    os.path.join('training', 'training-data', 'raw', 'coraza-audit-benign_20250708_200813.csv'),
+    os.path.join('training', 'training-data', 'raw', 'coraza-audit-sqli_20250708_202126.csv'),
+    os.path.join('training', 'training-data', 'raw', 'coraza-audit-xss_20250708_202722.csv'),
+    os.path.join('training', 'training-data', 'raw', 'coraza-audit-dta_20250708_203535.csv'),
 ]
 
 
