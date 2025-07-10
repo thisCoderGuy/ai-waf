@@ -8,7 +8,7 @@ import time
 from loggers import global_logger, evaluation_logger
 
 from config import (
-    PERFORM_DATA_CLEANING_ONLY,
+    PERFORM_TRAINING,
     TEST_SIZE,
     REQUIRED_DIRS, 
     RANDOM_STATE
@@ -50,14 +50,15 @@ def main():
 
     # 1. Load and Clean Data
     df = load_and_clean_data()
-    if PERFORM_DATA_CLEANING_ONLY:
-        return
     if df.empty:
         evaluation_logger.error("No data remaining after cleaning. Cannot proceed with training.")
         return
     global_logger.debug(f"{type(df)=}")
     global_logger.debug(f"{df.shape=}")
     global_logger.debug(f"{df.columns=}")
+
+    if not PERFORM_TRAINING:
+        return
 
     # 2. Preprocess Data (Feature extraction) (No preprocessing necessary for deep learning as they use their own embedding layers)
     preprocessor, X, y = preprocess_data(df)

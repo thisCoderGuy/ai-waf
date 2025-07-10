@@ -100,3 +100,9 @@ Actual Malicious                 0                   13
 2025-07-09 18:15:24,608 - evaluation_logger - INFO - 	Total rows removed during cleaning: 0
 2025-07-09 18:15:24,608 - evaluation_logger - INFO - 	Remaining 8159 entries after cleaning.
 2025-07-09 18:15:24,744 - evaluation_logger - INFO - 	Cleaned data saved to training\training-data\cleaned\coraza-audit-cleaned.csv
+2025-07-10 17:15:32,780 - evaluation_logger - INFO - ####################################################################
+2025-07-10 17:15:32,781 - evaluation_logger - INFO - Model Training Started: 2025-07-10 17:15:32
+2025-07-10 17:15:32,781 - evaluation_logger - INFO - --- Data Cleaning ---
+2025-07-10 17:15:32,913 - evaluation_logger - INFO - 	Total rows removed during cleaning: 0
+2025-07-10 17:15:32,913 - evaluation_logger - INFO - 	Remaining 4931 entries after cleaning.
+2025-07-10 17:15:32,954 - evaluation_logger - INFO - 	Cleaned data saved to training/training-data/cleaned/coraza-audit-cleaned.csv

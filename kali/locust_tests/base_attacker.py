@@ -15,6 +15,25 @@ class BaseAttacker(TaskSet):
     """
     A base class for all attacker TaskSets, providing common utility methods for different HTTP methods.
     """
+    OBFUSCATION_CHOICES = ["single", "double", "none"]
+
+    def on_start(self):
+        """
+        Called when an SQLiAttacker starts. Sets a user agent based on probability.
+        """
+        # 60% chance of malicious UA, 40% chance of legitimate UA
+        user_agent_choices = [
+            (random.choice(AppConfig.MALICIOUS_USER_AGENTS), 0.6),
+            (random.choice(AppConfig.USER_AGENTS), 0.4)
+        ]
+        self.client.headers["User-Agent"] = random.choices(
+            [ua for ua, weight in user_agent_choices],
+            weights=[weight for ua, weight in user_agent_choices],
+            k=1
+        )[0]
+        # Add any other on_start logic specific to SQLiAttacker if needed
+        # For example, if it needs to maintain state like login credentials or specific targets.
+
     def _send_request(self, method: str, path_key: str, data: dict = None, params: dict = None,
                       name_suffix: str = "", path_format_args: dict = None, headers: dict = None,
                       obfuscation_type: str = "single"):

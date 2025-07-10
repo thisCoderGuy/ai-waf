@@ -6,13 +6,13 @@ import (
 
 // Custom log file
 const loggerFormat = "csv"
-const loggerPath = "/var/log/coraza/coraza-audit-dta.csv"
+const loggerPath = "/var/log/coraza/coraza-audit-enum.csv" // e.g., "/var/log/coraza/coraza-audit-benign.csv"
 
 // Default values for AI verdict and vulnerability type labels.
 // These can be modified here without touching the logger logic.
 const (
 	DefaultAIVerdictLabel           = "malicious" //benign or malicious
-	DefaultAIVulnerabilityTypeLabel = "dta"       //none, sqli, xss, dta, etc
+	DefaultAIVulnerabilityTypeLabel = "enum"      //none, sqli, xss, dta, enum, csrf, etc
 )
 const (
 	aiMicroserviceURL = "http://ai-microservice:5000/classify"
