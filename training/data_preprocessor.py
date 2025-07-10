@@ -13,9 +13,9 @@ import numpy as np
 # Import model-specific configurations and tuning parameters
 from config import (
     LABEL, TEXT_FEATURES, CATEGORICAL_FEATURES, NUMERICAL_FEATURES,
-    PERFORM_SPARSE_PREPROCESSING, TFIDF_MAX_FEATURES,
+    TYPE_OF_PREPROCESSING, TFIDF_MAX_FEATURES,
     TFIDF_ANALYZERS, TFIDF_NGRAM_RANGES,
-    PERFORM_DENSE_PREPROCESSING, TOKENIZER_CONFIGS, 
+    TOKENIZER_CONFIGS, 
     MAX_SEQ_LENGTHS
 )
 
@@ -70,7 +70,7 @@ def preprocess_data(df):
             df[feature] = ''
     
     
-    if PERFORM_SPARSE_PREPROCESSING:
+    if TYPE_OF_PREPROCESSING == 'sparse':
 
         evaluation_logger.info("> Sparse Feature extraction")
         log_message = f"""\tTFIDF_MAX_FEATURES: {TFIDF_MAX_FEATURES}
@@ -118,7 +118,7 @@ def preprocess_data(df):
 
         evaluation_logger.info("Sparse feature extraction and preprocessing complete.")
 
-    elif PERFORM_DENSE_PREPROCESSING:
+    elif TYPE_OF_PREPROCESSING == 'dense':
         evaluation_logger.info("> Dense Feature extraction")
         log_message = f"""\tUsing :
     \tTOKENIZER_CONFIGS: {TOKENIZER_CONFIGS}

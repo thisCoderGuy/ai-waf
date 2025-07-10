@@ -34,8 +34,4 @@ class WebsiteUser(HttpUser):
         CSRFAttacker: AppConfig.USER_TASK_WEIGHTS["CSRFAttacker"], # from locust_tests.attackers
     }
 
-    def on_start(self):
-        """
-        Called when a Locust user starts. Sets a random legitimate User-Agent.
-        """
-        self.client.headers["User-Agent"] = random.choice(AppConfig.USER_AGENTS)
+    

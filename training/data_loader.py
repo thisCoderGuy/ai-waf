@@ -5,7 +5,7 @@ import io # Import io for StringIO
 from loggers import global_logger, evaluation_logger
 
 from config import (
-    RAW_DATA_FILE_PATHS,  CLEANED_DATA_OUTPUT_PATH,
+    RAW_DATA_FILE_PATHS,  CLEANED_DATA_OUTPUT_PATH, CLEANED_DATA_PATH,
     PERFORM_DATA_CLEANING, COLUMNS_TO_DROP, PROBLEMATIC_ENDINGS,
     LABEL, LABEL_VALUES, CRITICAL_FEATURES,COLUMNS_TO_UPPERCASE
     )
@@ -184,8 +184,6 @@ def _drop_specified_columns(df):
         global_logger.info("\tNo specified columns to drop were found in the DataFrame.")
     return df
 
-
-
 def load_and_clean_data():
     """
     Orchestrates loading data (either raw and cleaning or from a cleaned file).
@@ -227,7 +225,7 @@ def load_and_clean_data():
         if not df.empty:
             try:
                 df.to_csv(output_file_path_with_timestamp, index=False)
-                evaluation_logger.info(f"\tCleaned data saved to {CLEANED_DATA_OUTPUT_PATH}")
+                evaluation_logger.info(f"\tCleaned data saved to {output_file_path_with_timestamp}")
             except Exception as e:
                 evaluation_logger.error(f"Error saving cleaned data to CSV: {e}")
         else:
@@ -235,16 +233,16 @@ def load_and_clean_data():
 
         
     else:
-        global_logger.info(f"\tLoading already cleaned data from {CLEANED_DATA_OUTPUT_PATH}")
+        global_logger.info(f"\tLoading already cleaned data from {CLEANED_DATA_PATH}")
         try:
             # Load the single cleaned CSV file directly
-            df = pd.read_csv(CLEANED_DATA_OUTPUT_PATH)
-            evaluation_logger.info(f"\tSuccessfully loaded {len(df)} entries from {CLEANED_DATA_OUTPUT_PATH}")
+            df = pd.read_csv(CLEANED_DATA_PATH)
+            evaluation_logger.info(f"\tSuccessfully loaded {len(df)} entries from {CLEANED_DATA_PATH}")
         except FileNotFoundError:
-            evaluation_logger.error(f"Error: Cleaned data file not found at {CLEANED_DATA_OUTPUT_PATH}. Set 'perform_data_cleaning=True' if you want to clean from raw data.")
+            evaluation_logger.error(f"Error: Cleaned data file not found at {CLEANED_DATA_PATH}. Set 'perform_data_cleaning=True' if you want to clean from raw data.")
             return pd.DataFrame()
         except Exception as e:
-            evaluation_logger.error(f"Error loading cleaned data from {CLEANED_DATA_OUTPUT_PATH}: {e}")
+            evaluation_logger.error(f"Error loading cleaned data from {CLEANED_DATA_PATH}: {e}")
             return pd.DataFrame()
    
         

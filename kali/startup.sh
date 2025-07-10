@@ -23,7 +23,7 @@ elif [ "$COMMAND_MODE" = "locust-then-shell" ]; then
     locust -f /app/locustfile.py \
            --host=http://coraza-proxy:8080 \
            --users 100 --spawn-rate 10 \
-           --run-time 5m \
+           --run-time 3m \
            --headless \
            --html /app/reports/traffic_report.html \
            --csv /app/reports/traffic_stats.csv "$@" # "$@" now contains only the remaining args
@@ -35,7 +35,7 @@ else # Default mode: run locust directly
     locust -f /app/locustfile.py \
            --host=http://coraza-proxy:8080 \
            --users 100 --spawn-rate 10 \
-           --run-time 5m \
+           --run-time 3m \
            --headless \
            --html /app/reports/traffic_report.html \
            --csv /app/reports/traffic_stats.csv "$@" # "$@" now contains only the remaining args

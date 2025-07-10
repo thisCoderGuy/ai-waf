@@ -18,11 +18,11 @@ import numpy as np
 from config import (
     MODEL_TYPE,
     MODEL_CLASSES,
-    PERFORM_DENSE_PREPROCESSING,
+    TYPE_OF_PREPROCESSING,
     N_SPLITS_CROSS_VALIDATION,
     RANDOM_STATE,
     PERFORM_TUNING,
-    TUNING_METHOD,
+    CV_AND_TUNING_METHOD,
     RANDOM_SEARCH_N_ITER, MODEL_PARAMS, TUNING_PARAMS
 )
 
@@ -47,7 +47,7 @@ def get_model(preprocessor):
     # Dynamically select model and its parameters
     model_params = MODEL_PARAMS.get(MODEL_TYPE, {})
     
-    if  PERFORM_DENSE_PREPROCESSING:
+    if  TYPE_OF_PREPROCESSING == 'dense':
         model_params['preprocessor'] = preprocessor
 
     if 'random_state' in model_params and model_params['random_state'] is None:
@@ -73,7 +73,7 @@ def train_model(X_train, y_train, preprocessor):
     log_message = f"""\tArchitecture Used: {MODEL_TYPE.upper()}
 \tModel Parameters: {MODEL_PARAMS[MODEL_TYPE]}
 \tHyperparameter tuning: {PERFORM_TUNING}
-\tHyperparameter tuning method: {TUNING_METHOD}
+\tHyperparameter tuning method: {CV_AND_TUNING_METHOD}
 \tCross-Validation Splits: {N_SPLITS_CROSS_VALIDATION}
 \tNum of hyperparameter combinations in Random Search: {RANDOM_SEARCH_N_ITER}
 \tRandom State: {RANDOM_STATE}
@@ -86,7 +86,7 @@ def train_model(X_train, y_train, preprocessor):
     
 
     if PERFORM_TUNING:
-        global_logger.info(f"Starting Hyperparameter Tuning ({TUNING_METHOD.upper()} Search) using {N_SPLITS_CROSS_VALIDATION}-fold Stratified Cross-Validation  for {MODEL_TYPE.upper()} model...")
+        global_logger.info(f"Starting Hyperparameter Tuning ({CV_AND_TUNING_METHOD.upper()} Search) using {N_SPLITS_CROSS_VALIDATION}-fold Stratified Cross-Validation  for {MODEL_TYPE.upper()} model...")
         param_grid = TUNING_PARAMS.get(MODEL_TYPE)
 
         if not param_grid:
@@ -97,7 +97,7 @@ def train_model(X_train, y_train, preprocessor):
         # Define the cross-validation strategy for tuning
         cv_strategy = StratifiedKFold(n_splits=N_SPLITS_CROSS_VALIDATION, shuffle=True, random_state=RANDOM_STATE)
 
-        if TUNING_METHOD == 'grid':
+        if CV_AND_TUNING_METHOD == 'grid':
             search_cv = GridSearchCV(
                 estimator=estimator,
                 param_grid=param_grid,
@@ -106,7 +106,7 @@ def train_model(X_train, y_train, preprocessor):
                 n_jobs=-1, # Use all available CPU cores
                 verbose=2
             )
-        elif TUNING_METHOD == 'random':
+        elif CV_AND_TUNING_METHOD == 'random':
             search_cv = RandomizedSearchCV(
                 estimator=estimator,
                 param_distributions=param_grid, # For RandomizedSearchCV, use param_distributions
@@ -118,7 +118,7 @@ def train_model(X_train, y_train, preprocessor):
                 random_state=RANDOM_STATE # For reproducibility of random search
             )
         else:
-            raise ValueError(f"Unsupported tuning method: {TUNING_METHOD}. Must be 'grid' or 'random'.")
+            raise ValueError(f"Unsupported tuning method: {CV_AND_TUNING_METHOD}. Must be 'grid' or 'random'.")
 
         search_cv.fit(X_train, y_train)
 

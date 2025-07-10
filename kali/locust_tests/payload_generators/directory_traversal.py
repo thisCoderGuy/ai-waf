@@ -4,6 +4,48 @@ class DirectoryTraversalPayloadGenerator:
     """
     Generates various types of Directory Traversal payloads with randomized components.
     """
+
+    @staticmethod
+    def is_dt_payload(payload: str) -> bool:
+        """
+        Checks if a given string payload contains common directory traversal patterns.
+
+        Args:
+            payload: The string to check.
+
+        Returns:
+            True if it's likely a directory traversal payload, False otherwise.
+        """
+        if not isinstance(payload, str):
+            return False
+
+        # Common directory traversal patterns
+        # - ../ or ..\ (and variations with encoding)
+        # - /../ or \..\
+        # - URL encoded variations (%2e%2e%2f, %2e%2e/, %2e%2e\ etc.)
+        # - Double URL encoded variations (e.g., %252e%252e%252f)
+        dt_patterns = [
+            r'\.\./',        # ../
+            r'\.\.\\',       # ..\
+            r'%2e%2e%2f',    # ../ URL encoded
+            r'%2e%2e%5c',    # ..\ URL encoded
+            r'%252e%252e%252f', # ../ double URL encoded
+            r'%252e%252e%255c', # ..\ double URL encoded
+            r'\.\./\.\./',   # ../../
+            r'\.\.\\\.\.\\', # ..\..\
+            r'/etc/passwd',  # Specific file often targeted
+            r'boot.ini',     # Specific file often targeted (Windows)
+            r'proc/self/cwd',# Linux specific
+            r'WEB-INF',      # Java specific directory
+        ]
+
+        # Combine patterns into a single regex for efficiency
+        # re.IGNORECASE to catch ".." and "..\" variations
+        # re.DOTALL to allow matching across newlines if the payload is multi-line
+        combined_pattern = re.compile('|'.join(dt_patterns), re.IGNORECASE | re.DOTALL)
+
+        return bool(combined_pattern.search(payload))
+    
     @staticmethod
     def _get_random_path_separator() -> str:
         """Returns a random path separator style."""
