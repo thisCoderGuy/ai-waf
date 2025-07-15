@@ -89,9 +89,6 @@ services:
     hostname: ml_trainer
     environment:
       # Optional: Control training parameters via env vars
-      TRAINING_HYPERPARAMS: "epochs=10,lr=0.001"
-      DATASET_INPUT_PATH: /data/input/ # Where to find the generated datasets
-      MODEL_OUTPUT_PATH: /models/output/ # Where to save the trained model
     volumes:
       - ./training/training-data/:/app/training/training-data # Read raw logs from coraza-proxy output
       - ./training/model-logs:/app/training/model-logs # Read raw logs from coraza-proxy output

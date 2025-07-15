@@ -1,115 +1,83 @@
 Method,Name,Error,Occurrences
-GET,address/[GET_ADDRESS_ENUM_GET],HTTPError('500 Server Error: Internal Server Error for url: address/[GET_ADDRESS_ENUM_GET]'),81
-GET,product_details/[GET_PRODUCT_ENUM_NONEXISTENT_GET],HTTPError('500 Server Error: Internal Server Error for url: product_details/[GET_PRODUCT_ENUM_NONEXISTENT_GET]'),151
-GET,security_question_by_id/[GET_SEC_QUESTION_ENUM_GET],HTTPError('403 Client Error: Forbidden for url: security_question_by_id/[GET_SEC_QUESTION_ENUM_GET]'),10
-POST,password_reset/[POST_USER_ENUM_PASSWORD_RESET_NONEXISTENT_POST],HTTPError('403 Client Error: Forbidden for url: password_reset/[POST_USER_ENUM_PASSWORD_RESET_NONEXISTENT_POST]'),26
-GET,address/[GET_ADDRESS_ENUM_NONEXISTENT_GET],HTTPError('500 Server Error: Internal Server Error for url: address/[GET_ADDRESS_ENUM_NONEXISTENT_GET]'),81
-GET,/phpmyadmin/[GET_ADMIN_PAGE_ENUM],"gaierror(-2, 'Name or service not known')",2
-GET,/.git/config/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /.git/config/[GET_FILE_ENUM]'),7
-GET,/README.md/[GET_FILE_ENUM],"gaierror(-2, 'Name or service not known')",2
-GET,feedback_by_id/[GET_FEEDBACK_ENUM_GET],HTTPError('401 Client Error: Unauthorized for url: feedback_by_id/[GET_FEEDBACK_ENUM_GET]'),137
-GET,/rest/admin/debug/[GET_ADMIN_PAGE_ENUM],HTTPError('500 Server Error: Internal Server Error for url: /rest/admin/debug/[GET_ADMIN_PAGE_ENUM]'),3
-GET,card/[GET_CARD_ENUM_NONEXISTENT_GET],"gaierror(-2, 'Name or service not known')",10
+GET,/settings/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /settings/[GET_ADMIN_PAGE_ENUM]'),2
+GET,address/[GET_ADDRESS_ENUM_GET],HTTPError('500 Server Error: Internal Server Error for url: address/[GET_ADDRESS_ENUM_GET]'),267
+GET,product_details/[GET_PRODUCT_ENUM_NONEXISTENT_GET],HTTPError('500 Server Error: Internal Server Error for url: product_details/[GET_PRODUCT_ENUM_NONEXISTENT_GET]'),460
+GET,security_question_by_id/[GET_SEC_QUESTION_ENUM_GET],HTTPError('403 Client Error: Forbidden for url: security_question_by_id/[GET_SEC_QUESTION_ENUM_GET]'),48
+POST,password_reset/[POST_USER_ENUM_PASSWORD_RESET_NONEXISTENT_POST],HTTPError('403 Client Error: Forbidden for url: password_reset/[POST_USER_ENUM_PASSWORD_RESET_NONEXISTENT_POST]'),146
+GET,address/[GET_ADDRESS_ENUM_NONEXISTENT_GET],HTTPError('500 Server Error: Internal Server Error for url: address/[GET_ADDRESS_ENUM_NONEXISTENT_GET]'),267
+GET,/.git/config/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /.git/config/[GET_FILE_ENUM]'),30
+GET,feedback_by_id/[GET_FEEDBACK_ENUM_GET],HTTPError('401 Client Error: Unauthorized for url: feedback_by_id/[GET_FEEDBACK_ENUM_GET]'),467
+GET,/rest/admin/debug/[GET_ADMIN_PAGE_ENUM],HTTPError('500 Server Error: Internal Server Error for url: /rest/admin/debug/[GET_ADMIN_PAGE_ENUM]'),9
 GET,/config/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /config/[GET_ADMIN_PAGE_ENUM]'),1
-GET,/admin/config.php/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /admin/config.php/[GET_FILE_ENUM]'),1
-GET,privacy_request/[GET_PRIVACY_REQ_ENUM_GET],"gaierror(-2, 'Name or service not known')",21
-GET,product_details/[GET_PRODUCT_ENUM_GET],HTTPError('403 Client Error: Forbidden for url: product_details/[GET_PRODUCT_ENUM_GET]'),15
-GET,challenge/[GET_CHALLENGE_ENUM_GET],"gaierror(-2, 'Name or service not known')",10
-POST,user_login/[POST_USER_ENUM_LOGIN_POST],"gaierror(-2, 'Name or service not known')",48
-POST,user_login/[POST_USER_ENUM_LOGIN_NONEXISTENT_POST],"gaierror(-2, 'Name or service not known')",48
-GET,card/[GET_CARD_ENUM_GET],HTTPError('403 Client Error: Forbidden for url: card/[GET_CARD_ENUM_GET]'),7
-GET,card/[GET_CARD_ENUM_GET],"gaierror(-2, 'Name or service not known')",10
-POST,user_login/[POST_USER_ENUM_LOGIN_NONEXISTENT_POST],HTTPError('401 Client Error: Unauthorized for url: user_login/[POST_USER_ENUM_LOGIN_NONEXISTENT_POST]'),237
-GET,challenge/[GET_CHALLENGE_ENUM_NONEXISTENT_GET],"gaierror(-2, 'Name or service not known')",10
-GET,privacy_request/[GET_PRIVACY_REQ_ENUM_NONEXISTENT_GET],HTTPError('401 Client Error: Unauthorized for url: privacy_request/[GET_PRIVACY_REQ_ENUM_NONEXISTENT_GET]'),79
-GET,/logs/[GET_ADMIN_PAGE_ENUM],"gaierror(-2, 'Name or service not known')",1
-POST,password_reset/[POST_USER_ENUM_PASSWORD_RESET_POST],HTTPError('403 Client Error: Forbidden for url: password_reset/[POST_USER_ENUM_PASSWORD_RESET_POST]'),26
-GET,card/[GET_CARD_ENUM_NONEXISTENT_GET],HTTPError('403 Client Error: Forbidden for url: card/[GET_CARD_ENUM_NONEXISTENT_GET]'),7
-GET,feedback_by_id/[GET_FEEDBACK_ENUM_GET],"gaierror(-2, 'Name or service not known')",34
-GET,product_details/[GET_PRODUCT_ENUM_GET],HTTPError('500 Server Error: Internal Server Error for url: product_details/[GET_PRODUCT_ENUM_GET]'),151
-GET,memory_detail/[GET_MEMORY_ENUM_GET],"gaierror(-2, 'Name or service not known')",12
-GET,/data/backup.zip/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /data/backup.zip/[GET_FILE_ENUM]'),1
-GET,challenge/[GET_CHALLENGE_ENUM_NONEXISTENT_GET],HTTPError('401 Client Error: Unauthorized for url: challenge/[GET_CHALLENGE_ENUM_NONEXISTENT_GET]'),59
-GET,order/[GET_ORDER_ENUM_NONEXISTENT_GET],HTTPError('500 Server Error: Internal Server Error for url: order/[GET_ORDER_ENUM_NONEXISTENT_GET]'),152
-GET,memory_detail/[GET_MEMORY_ENUM_GET],HTTPError('403 Client Error: Forbidden for url: memory_detail/[GET_MEMORY_ENUM_GET]'),10
-POST,password_reset/[POST_USER_ENUM_PASSWORD_RESET_POST],"ConnectionRefusedError(111, 'Connection refused')",1
-GET,/package-lock.json/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /package-lock.json/[GET_FILE_ENUM]'),3
-GET,/package.json/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /package.json/[GET_FILE_ENUM]'),7
-GET,memory_detail/[GET_MEMORY_ENUM_NONEXISTENT_GET],"gaierror(-2, 'Name or service not known')",12
-GET,feedback_by_id/[GET_FEEDBACK_ENUM_NONEXISTENT_GET],HTTPError('401 Client Error: Unauthorized for url: feedback_by_id/[GET_FEEDBACK_ENUM_NONEXISTENT_GET]'),137
-GET,order/[GET_ORDER_ENUM_GET],"ConnectionRefusedError(111, 'Connection refused')",1
-GET,privacy_request/[GET_PRIVACY_REQ_ENUM_GET],HTTPError('403 Client Error: Forbidden for url: privacy_request/[GET_PRIVACY_REQ_ENUM_GET]'),9
-GET,/settings/[GET_ADMIN_PAGE_ENUM],"gaierror(-2, 'Name or service not known')",2
-GET,feedback_by_id/[GET_FEEDBACK_ENUM_GET],HTTPError('403 Client Error: Forbidden for url: feedback_by_id/[GET_FEEDBACK_ENUM_GET]'),20
-GET,file_download/[GET_FILE_DOWNLOAD_ENUM_QUERY],HTTPError('403 Client Error: Forbidden for url: file_download/[GET_FILE_DOWNLOAD_ENUM_QUERY]'),34
-GET,/sitemap.xml/[GET_FILE_ENUM],"gaierror(-2, 'Name or service not known')",1
-GET,security_question_by_id/[GET_SEC_QUESTION_ENUM_NONEXISTENT_GET],HTTPError('403 Client Error: Forbidden for url: security_question_by_id/[GET_SEC_QUESTION_ENUM_NONEXISTENT_GET]'),10
-GET,privacy_request/[GET_PRIVACY_REQ_ENUM_GET],HTTPError('401 Client Error: Unauthorized for url: privacy_request/[GET_PRIVACY_REQ_ENUM_GET]'),79
+GET,/admin/config.php/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /admin/config.php/[GET_FILE_ENUM]'),2
+GET,product_details/[GET_PRODUCT_ENUM_GET],HTTPError('403 Client Error: Forbidden for url: product_details/[GET_PRODUCT_ENUM_GET]'),84
+GET,card/[GET_CARD_ENUM_GET],HTTPError('403 Client Error: Forbidden for url: card/[GET_CARD_ENUM_GET]'),39
+GET,/wp-admin/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /wp-admin/[GET_ADMIN_PAGE_ENUM]'),2
+POST,user_login/[POST_USER_ENUM_LOGIN_NONEXISTENT_POST],HTTPError('401 Client Error: Unauthorized for url: user_login/[POST_USER_ENUM_LOGIN_NONEXISTENT_POST]'),702
+GET,/test/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /test/[GET_ADMIN_PAGE_ENUM]'),2
+GET,/swagger.json/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /swagger.json/[GET_ADMIN_PAGE_ENUM]'),6
+GET,privacy_request/[GET_PRIVACY_REQ_ENUM_NONEXISTENT_GET],HTTPError('401 Client Error: Unauthorized for url: privacy_request/[GET_PRIVACY_REQ_ENUM_NONEXISTENT_GET]'),219
+POST,password_reset/[POST_USER_ENUM_PASSWORD_RESET_POST],HTTPError('403 Client Error: Forbidden for url: password_reset/[POST_USER_ENUM_PASSWORD_RESET_POST]'),146
+GET,card/[GET_CARD_ENUM_NONEXISTENT_GET],HTTPError('403 Client Error: Forbidden for url: card/[GET_CARD_ENUM_NONEXISTENT_GET]'),39
+GET,product_details/[GET_PRODUCT_ENUM_GET],HTTPError('500 Server Error: Internal Server Error for url: product_details/[GET_PRODUCT_ENUM_GET]'),460
+GET,/data/backup.zip/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /data/backup.zip/[GET_FILE_ENUM]'),3
+GET,challenge/[GET_CHALLENGE_ENUM_NONEXISTENT_GET],HTTPError('401 Client Error: Unauthorized for url: challenge/[GET_CHALLENGE_ENUM_NONEXISTENT_GET]'),244
+GET,order/[GET_ORDER_ENUM_NONEXISTENT_GET],HTTPError('500 Server Error: Internal Server Error for url: order/[GET_ORDER_ENUM_NONEXISTENT_GET]'),454
+GET,/logs/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /logs/[GET_ADMIN_PAGE_ENUM]'),2
+GET,memory_detail/[GET_MEMORY_ENUM_GET],HTTPError('403 Client Error: Forbidden for url: memory_detail/[GET_MEMORY_ENUM_GET]'),43
+GET,/package-lock.json/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /package-lock.json/[GET_FILE_ENUM]'),20
+GET,/package.json/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /package.json/[GET_FILE_ENUM]'),22
+GET,feedback_by_id/[GET_FEEDBACK_ENUM_NONEXISTENT_GET],HTTPError('401 Client Error: Unauthorized for url: feedback_by_id/[GET_FEEDBACK_ENUM_NONEXISTENT_GET]'),467
+GET,privacy_request/[GET_PRIVACY_REQ_ENUM_GET],HTTPError('403 Client Error: Forbidden for url: privacy_request/[GET_PRIVACY_REQ_ENUM_GET]'),50
+GET,/sitemap.xml/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /sitemap.xml/[GET_ADMIN_PAGE_ENUM]'),1
+GET,feedback_by_id/[GET_FEEDBACK_ENUM_GET],HTTPError('403 Client Error: Forbidden for url: feedback_by_id/[GET_FEEDBACK_ENUM_GET]'),85
+GET,file_download/[GET_FILE_DOWNLOAD_ENUM_QUERY],HTTPError('403 Client Error: Forbidden for url: file_download/[GET_FILE_DOWNLOAD_ENUM_QUERY]'),147
+GET,security_question_by_id/[GET_SEC_QUESTION_ENUM_NONEXISTENT_GET],HTTPError('403 Client Error: Forbidden for url: security_question_by_id/[GET_SEC_QUESTION_ENUM_NONEXISTENT_GET]'),48
+GET,privacy_request/[GET_PRIVACY_REQ_ENUM_GET],HTTPError('401 Client Error: Unauthorized for url: privacy_request/[GET_PRIVACY_REQ_ENUM_GET]'),219
 GET,/robots.txt/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /robots.txt/[GET_ADMIN_PAGE_ENUM]'),1
-GET,feedback_by_id/[GET_FEEDBACK_ENUM_NONEXISTENT_GET],HTTPError('403 Client Error: Forbidden for url: feedback_by_id/[GET_FEEDBACK_ENUM_NONEXISTENT_GET]'),20
-GET,/phpmyadmin/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /phpmyadmin/[GET_ADMIN_PAGE_ENUM]'),1
-GET,privacy_request/[GET_PRIVACY_REQ_ENUM_NONEXISTENT_GET],HTTPError('403 Client Error: Forbidden for url: privacy_request/[GET_PRIVACY_REQ_ENUM_NONEXISTENT_GET]'),9
-GET,challenge/[GET_CHALLENGE_ENUM_NONEXISTENT_GET],HTTPError('403 Client Error: Forbidden for url: challenge/[GET_CHALLENGE_ENUM_NONEXISTENT_GET]'),2
-GET,/README.md/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /README.md/[GET_FILE_ENUM]'),1
-GET,security_question_by_id/[GET_SEC_QUESTION_ENUM_NONEXISTENT_GET],"gaierror(-2, 'Name or service not known')",11
-GET,order/[GET_ORDER_ENUM_NONEXISTENT_GET],"gaierror(-2, 'Name or service not known')",36
-GET,/rest/admin/users/[GET_ADMIN_PAGE_ENUM],HTTPError('500 Server Error: Internal Server Error for url: /rest/admin/users/[GET_ADMIN_PAGE_ENUM]'),3
-POST,user_login/[POST_USER_ENUM_LOGIN_POST],HTTPError('401 Client Error: Unauthorized for url: user_login/[POST_USER_ENUM_LOGIN_POST]'),237
-GET,challenge/[GET_CHALLENGE_ENUM_GET],HTTPError('401 Client Error: Unauthorized for url: challenge/[GET_CHALLENGE_ENUM_GET]'),59
-POST,password_reset/[POST_USER_ENUM_PASSWORD_RESET_POST],HTTPError('500 Server Error: Internal Server Error for url: password_reset/[POST_USER_ENUM_PASSWORD_RESET_POST]'),190
-GET,memory_detail/[GET_MEMORY_ENUM_NONEXISTENT_GET],HTTPError('500 Server Error: Internal Server Error for url: memory_detail/[GET_MEMORY_ENUM_NONEXISTENT_GET]'),83
-GET,order/[GET_ORDER_ENUM_NONEXISTENT_GET],HTTPError('403 Client Error: Forbidden for url: order/[GET_ORDER_ENUM_NONEXISTENT_GET]'),15
-GET,file_download/[GET_FILE_DOWNLOAD_ENUM_QUERY],"gaierror(-2, 'Name or service not known')",8
-GET,/robots.txt/[GET_ADMIN_PAGE_ENUM],"gaierror(-2, 'Name or service not known')",2
-GET,memory_detail/[GET_MEMORY_ENUM_GET],"ConnectionRefusedError(111, 'Connection refused')",1
-GET,order/[GET_ORDER_ENUM_GET],HTTPError('403 Client Error: Forbidden for url: order/[GET_ORDER_ENUM_GET]'),15
-GET,card/[GET_CARD_ENUM_GET],HTTPError('401 Client Error: Unauthorized for url: card/[GET_CARD_ENUM_GET]'),82
-GET,feedback_by_id/[GET_FEEDBACK_ENUM_NONEXISTENT_GET],"gaierror(-2, 'Name or service not known')",34
-GET,challenge/[GET_CHALLENGE_ENUM_GET],HTTPError('403 Client Error: Forbidden for url: challenge/[GET_CHALLENGE_ENUM_GET]'),2
-DELETE,user_profile/[DELETE_USER_ENUM_DELETE],HTTPError('403 Client Error: Forbidden for url: user_profile/[DELETE_USER_ENUM_DELETE]'),82
-GET,memory_detail/[GET_MEMORY_ENUM_GET],HTTPError('500 Server Error: Internal Server Error for url: memory_detail/[GET_MEMORY_ENUM_GET]'),83
-GET,address/[GET_ADDRESS_ENUM_NONEXISTENT_GET],"ConnectionRefusedError(111, 'Connection refused')",1
-DELETE,user_profile/[DELETE_USER_ENUM_DELETE_NONEXISTENT],HTTPError('403 Client Error: Forbidden for url: user_profile/[DELETE_USER_ENUM_DELETE_NONEXISTENT]'),82
-GET,/data/users.json/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /data/users.json/[GET_FILE_ENUM]'),1
-POST,password_reset/[POST_USER_ENUM_PASSWORD_RESET_NONEXISTENT_POST],HTTPError('500 Server Error: Internal Server Error for url: password_reset/[POST_USER_ENUM_PASSWORD_RESET_NONEXISTENT_POST]'),190
-GET,card/[GET_CARD_ENUM_NONEXISTENT_GET],HTTPError('401 Client Error: Unauthorized for url: card/[GET_CARD_ENUM_NONEXISTENT_GET]'),82
-POST,user_login/[POST_USER_ENUM_LOGIN_POST],HTTPError('403 Client Error: Forbidden for url: user_login/[POST_USER_ENUM_LOGIN_POST]'),33
-GET,/rest/admin/application-version/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /rest/admin/application-version/[GET_ADMIN_PAGE_ENUM]'),2
-GET,/debug/[GET_ADMIN_PAGE_ENUM],"gaierror(-2, 'Name or service not known')",1
-DELETE,user_profile/[DELETE_USER_ENUM_DELETE_NONEXISTENT],"gaierror(-2, 'Name or service not known')",16
-GET,security_question_by_id/[GET_SEC_QUESTION_ENUM_NONEXISTENT_GET],HTTPError('401 Client Error: Unauthorized for url: security_question_by_id/[GET_SEC_QUESTION_ENUM_NONEXISTENT_GET]'),67
-GET,/package-lock.json/[GET_FILE_ENUM],"gaierror(-2, 'Name or service not known')",2
-GET,/data/access.log/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /data/access.log/[GET_FILE_ENUM]'),2
-GET,/administration/[GET_ADMIN_PAGE_ENUM],"gaierror(-2, 'Name or service not known')",1
-GET,address/[GET_ADDRESS_ENUM_GET],"gaierror(-2, 'Name or service not known')",17
-GET,address/[GET_ADDRESS_ENUM_GET],HTTPError('403 Client Error: Forbidden for url: address/[GET_ADDRESS_ENUM_GET]'),13
-GET,/controlpanel/[GET_ADMIN_PAGE_ENUM],"gaierror(-2, 'Name or service not known')",1
-GET,address/[GET_ADDRESS_ENUM_NONEXISTENT_GET],HTTPError('403 Client Error: Forbidden for url: address/[GET_ADDRESS_ENUM_NONEXISTENT_GET]'),13
-POST,user_login/[POST_USER_ENUM_LOGIN_NONEXISTENT_POST],HTTPError('403 Client Error: Forbidden for url: user_login/[POST_USER_ENUM_LOGIN_NONEXISTENT_POST]'),33
-GET,/users/[GET_ADMIN_PAGE_ENUM],"gaierror(-2, 'Name or service not known')",2
-GET,order/[GET_ORDER_ENUM_GET],"gaierror(-2, 'Name or service not known')",36
-GET,product_details/[GET_PRODUCT_ENUM_GET],"gaierror(-2, 'Name or service not known')",28
-GET,memory_detail/[GET_MEMORY_ENUM_NONEXISTENT_GET],"ConnectionRefusedError(111, 'Connection refused')",1
-POST,password_reset/[POST_USER_ENUM_PASSWORD_RESET_NONEXISTENT_POST],"gaierror(-2, 'Name or service not known')",34
-GET,/rest/admin/users/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /rest/admin/users/[GET_ADMIN_PAGE_ENUM]'),1
-GET,/metrics/[GET_ADMIN_PAGE_ENUM],"gaierror(-2, 'Name or service not known')",1
-GET,product_details/[GET_PRODUCT_ENUM_NONEXISTENT_GET],HTTPError('403 Client Error: Forbidden for url: product_details/[GET_PRODUCT_ENUM_NONEXISTENT_GET]'),15
-DELETE,user_profile/[DELETE_USER_ENUM_DELETE],"gaierror(-2, 'Name or service not known')",16
+GET,feedback_by_id/[GET_FEEDBACK_ENUM_NONEXISTENT_GET],HTTPError('403 Client Error: Forbidden for url: feedback_by_id/[GET_FEEDBACK_ENUM_NONEXISTENT_GET]'),85
+GET,/phpmyadmin/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /phpmyadmin/[GET_ADMIN_PAGE_ENUM]'),3
+GET,privacy_request/[GET_PRIVACY_REQ_ENUM_NONEXISTENT_GET],HTTPError('403 Client Error: Forbidden for url: privacy_request/[GET_PRIVACY_REQ_ENUM_NONEXISTENT_GET]'),50
+GET,challenge/[GET_CHALLENGE_ENUM_NONEXISTENT_GET],HTTPError('403 Client Error: Forbidden for url: challenge/[GET_CHALLENGE_ENUM_NONEXISTENT_GET]'),42
+GET,/admin/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /admin/[GET_ADMIN_PAGE_ENUM]'),5
+GET,/controlpanel/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /controlpanel/[GET_ADMIN_PAGE_ENUM]'),1
+GET,/README.md/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /README.md/[GET_FILE_ENUM]'),5
+GET,/rest/admin/application-configuration/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /rest/admin/application-configuration/[GET_ADMIN_PAGE_ENUM]'),1
+GET,/rest/admin/users/[GET_ADMIN_PAGE_ENUM],HTTPError('500 Server Error: Internal Server Error for url: /rest/admin/users/[GET_ADMIN_PAGE_ENUM]'),11
+POST,user_login/[POST_USER_ENUM_LOGIN_POST],HTTPError('401 Client Error: Unauthorized for url: user_login/[POST_USER_ENUM_LOGIN_POST]'),702
+GET,challenge/[GET_CHALLENGE_ENUM_GET],HTTPError('401 Client Error: Unauthorized for url: challenge/[GET_CHALLENGE_ENUM_GET]'),244
+POST,password_reset/[POST_USER_ENUM_PASSWORD_RESET_POST],HTTPError('500 Server Error: Internal Server Error for url: password_reset/[POST_USER_ENUM_PASSWORD_RESET_POST]'),747
+GET,memory_detail/[GET_MEMORY_ENUM_NONEXISTENT_GET],HTTPError('500 Server Error: Internal Server Error for url: memory_detail/[GET_MEMORY_ENUM_NONEXISTENT_GET]'),242
+GET,order/[GET_ORDER_ENUM_NONEXISTENT_GET],HTTPError('403 Client Error: Forbidden for url: order/[GET_ORDER_ENUM_NONEXISTENT_GET]'),87
+GET,order/[GET_ORDER_ENUM_GET],HTTPError('403 Client Error: Forbidden for url: order/[GET_ORDER_ENUM_GET]'),87
+GET,card/[GET_CARD_ENUM_GET],HTTPError('401 Client Error: Unauthorized for url: card/[GET_CARD_ENUM_GET]'),234
+GET,challenge/[GET_CHALLENGE_ENUM_GET],HTTPError('403 Client Error: Forbidden for url: challenge/[GET_CHALLENGE_ENUM_GET]'),42
+DELETE,user_profile/[DELETE_USER_ENUM_DELETE],HTTPError('403 Client Error: Forbidden for url: user_profile/[DELETE_USER_ENUM_DELETE]'),259
+GET,memory_detail/[GET_MEMORY_ENUM_GET],HTTPError('500 Server Error: Internal Server Error for url: memory_detail/[GET_MEMORY_ENUM_GET]'),242
+DELETE,user_profile/[DELETE_USER_ENUM_DELETE_NONEXISTENT],HTTPError('403 Client Error: Forbidden for url: user_profile/[DELETE_USER_ENUM_DELETE_NONEXISTENT]'),259
+GET,/metrics/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /metrics/[GET_ADMIN_PAGE_ENUM]'),1
+POST,password_reset/[POST_USER_ENUM_PASSWORD_RESET_NONEXISTENT_POST],HTTPError('500 Server Error: Internal Server Error for url: password_reset/[POST_USER_ENUM_PASSWORD_RESET_NONEXISTENT_POST]'),747
+GET,card/[GET_CARD_ENUM_NONEXISTENT_GET],HTTPError('401 Client Error: Unauthorized for url: card/[GET_CARD_ENUM_NONEXISTENT_GET]'),234
+POST,user_login/[POST_USER_ENUM_LOGIN_POST],HTTPError('403 Client Error: Forbidden for url: user_login/[POST_USER_ENUM_LOGIN_POST]'),140
+GET,/debug/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /debug/[GET_ADMIN_PAGE_ENUM]'),2
+GET,/rest/admin/application-version/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /rest/admin/application-version/[GET_ADMIN_PAGE_ENUM]'),3
+GET,security_question_by_id/[GET_SEC_QUESTION_ENUM_NONEXISTENT_GET],HTTPError('401 Client Error: Unauthorized for url: security_question_by_id/[GET_SEC_QUESTION_ENUM_NONEXISTENT_GET]'),231
+GET,/data/access.log/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /data/access.log/[GET_FILE_ENUM]'),24
+GET,address/[GET_ADDRESS_ENUM_GET],HTTPError('403 Client Error: Forbidden for url: address/[GET_ADDRESS_ENUM_GET]'),40
+GET,address/[GET_ADDRESS_ENUM_NONEXISTENT_GET],HTTPError('403 Client Error: Forbidden for url: address/[GET_ADDRESS_ENUM_NONEXISTENT_GET]'),40
+POST,user_login/[POST_USER_ENUM_LOGIN_NONEXISTENT_POST],HTTPError('403 Client Error: Forbidden for url: user_login/[POST_USER_ENUM_LOGIN_NONEXISTENT_POST]'),140
+GET,/backup/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /backup/[GET_ADMIN_PAGE_ENUM]'),3
+GET,/products/manage/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /products/manage/[GET_ADMIN_PAGE_ENUM]'),1
+GET,/rest/admin/users/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /rest/admin/users/[GET_ADMIN_PAGE_ENUM]'),4
+GET,/openapi.json/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /openapi.json/[GET_ADMIN_PAGE_ENUM]'),2
+GET,/robots.txt/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /robots.txt/[GET_FILE_ENUM]'),2
+GET,product_details/[GET_PRODUCT_ENUM_NONEXISTENT_GET],HTTPError('403 Client Error: Forbidden for url: product_details/[GET_PRODUCT_ENUM_NONEXISTENT_GET]'),84
 GET,/api-docs//[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /api-docs//[GET_ADMIN_PAGE_ENUM]'),1
-GET,privacy_request/[GET_PRIVACY_REQ_ENUM_NONEXISTENT_GET],"gaierror(-2, 'Name or service not known')",21
-GET,security_question_by_id/[GET_SEC_QUESTION_ENUM_GET],HTTPError('401 Client Error: Unauthorized for url: security_question_by_id/[GET_SEC_QUESTION_ENUM_GET]'),67
-GET,/package.json/[GET_FILE_ENUM],"gaierror(-2, 'Name or service not known')",1
-POST,password_reset/[POST_USER_ENUM_PASSWORD_RESET_POST],"gaierror(-2, 'Name or service not known')",34
-GET,/sitemap.xml/[GET_ADMIN_PAGE_ENUM],"gaierror(-2, 'Name or service not known')",1
-GET,/web.config/[GET_FILE_ENUM],"gaierror(-2, 'Name or service not known')",1
-GET,memory_detail/[GET_MEMORY_ENUM_NONEXISTENT_GET],HTTPError('403 Client Error: Forbidden for url: memory_detail/[GET_MEMORY_ENUM_NONEXISTENT_GET]'),10
-GET,address/[GET_ADDRESS_ENUM_NONEXISTENT_GET],"gaierror(-2, 'Name or service not known')",17
-GET,/LICENSE/[GET_FILE_ENUM],"gaierror(-2, 'Name or service not known')",1
-GET,/web.config/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /web.config/[GET_FILE_ENUM]'),5
-GET,address/[GET_ADDRESS_ENUM_GET],"ConnectionRefusedError(111, 'Connection refused')",1
-GET,/.env/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /.env/[GET_FILE_ENUM]'),6
-GET,order/[GET_ORDER_ENUM_NONEXISTENT_GET],"ConnectionRefusedError(111, 'Connection refused')",1
-GET,security_question_by_id/[GET_SEC_QUESTION_ENUM_GET],"gaierror(-2, 'Name or service not known')",11
-GET,order/[GET_ORDER_ENUM_GET],HTTPError('500 Server Error: Internal Server Error for url: order/[GET_ORDER_ENUM_GET]'),152
-GET,product_details/[GET_PRODUCT_ENUM_NONEXISTENT_GET],"gaierror(-2, 'Name or service not known')",28
-POST,password_reset/[POST_USER_ENUM_PASSWORD_RESET_NONEXISTENT_POST],"ConnectionRefusedError(111, 'Connection refused')",1
+GET,security_question_by_id/[GET_SEC_QUESTION_ENUM_GET],HTTPError('401 Client Error: Unauthorized for url: security_question_by_id/[GET_SEC_QUESTION_ENUM_GET]'),231
+GET,/rest/admin/debug/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /rest/admin/debug/[GET_ADMIN_PAGE_ENUM]'),3
+GET,memory_detail/[GET_MEMORY_ENUM_NONEXISTENT_GET],HTTPError('403 Client Error: Forbidden for url: memory_detail/[GET_MEMORY_ENUM_NONEXISTENT_GET]'),43
+GET,/users/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /users/[GET_ADMIN_PAGE_ENUM]'),2
+GET,/web.config/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /web.config/[GET_FILE_ENUM]'),28
+GET,/LICENSE/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /LICENSE/[GET_FILE_ENUM]'),4
+GET,/.env/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /.env/[GET_FILE_ENUM]'),23
+GET,order/[GET_ORDER_ENUM_GET],HTTPError('500 Server Error: Internal Server Error for url: order/[GET_ORDER_ENUM_GET]'),454

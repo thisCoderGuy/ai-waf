@@ -85,11 +85,11 @@ We encourage you to contribute code by submitting pull requests\!
 
 2. **Build and start the Docker containers:**  
 
-Refer to the main [README.md](./README.md) for details on how to build and start the Docker containers.
+Refer to the main [README.md](./README.md#installation) for details on how to build and start the Docker containers.
 
 ### **Running the Testbed**
 
-Refer to the main [README.md](./README.md) for details on how to access and interact with the different components and operational phases of the testbed.
+Refer to the main [README.md](./README.md#accessing-components) for details on how to access and interact with the different components and operational phases of the testbed.
 
 ## **Coding Guidelines**
 

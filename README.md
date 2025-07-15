@@ -1,5 +1,30 @@
 # **Hybrid Traditional-AI WAF**
 
+
+## **Table of Contents**
+
+* [Project Overview](#project-overview)
+* [Operational Modes](#operational-modes)
+  * [1\. Dataset Generation Mode](#1-dataset-generation-mode)
+  * [2\. Model Training Mode](#2-model-training-mode)
+  * [3\. Live Evaluation Mode](#3-live-evaluation-mode)
+* [Testbed Architecture](#testbed-architecture)
+* [Getting Started](#getting-started)
+  * [Prerequisites](#prerequisites)
+  * [Installation](#installation)
+  * [Accessing Components](#accessing-components)
+* [Usage](#usage)
+  * [1\. Running Dataset Generation](#1-running-dataset-generation)
+  * [2\. Running Model Training](#2-running-model-training)
+  * [3\. Running Live Evaluation](#3-running-live-evaluation)
+* [Technologies Used](#technologies-used)
+* [Contributing](#contributing)
+* [License](#license)
+* [Contact](#contact)
+
+
+
+
 ## **Project Overview**
 
 This research project focuses on developing and evaluating a **Hybrid Web Application Firewall (WAF)** that combines traditional rule-based detection with advanced **Artificial Intelligence (AI)** capabilities. The core objective is to enhance web application security by leveraging machine learning models to detect sophisticated and novel attack patterns that might bypass conventional WAF rules. 
@@ -18,7 +43,9 @@ This mode focuses on creating high-quality, labeled datasets for training machin
 
 This mode focuses on the process of building and extending various machine learning models, ranging from **traditional machine learning algorithms** to **advanced deep learning architectures** like multi-input RNN or CNN classifiers, all utilizing the meticulously generated datasets. 
 
-The project provides a **comprehensive framework** for training classification models. This framework supports experimentation and optimization across a spectrum of model complexities to achieve optimal threat detection. To learn more about the training framework, visit the [Training Framework](./docs/training/training_framework.md) page.
+The project provides a **comprehensive framework** for training classification models. To learn more about the model training mode, visit the [Model Training Mode](./docs/training/model_training.md) page.
+
+This framework supports experimentation and optimization across a spectrum of model complexities to achieve optimal threat detection. To learn more about the training framework, visit the [Training Framework](./docs/training/training_framework.md) page.
 
 ### **3\. Live Evaluation Mode**
 
@@ -100,7 +127,7 @@ To set up and run this project, follow these steps:
 * **Wazuh Dashboard (Kibana/OpenSearch Dashboards):** https://localhost  
   * Default credentials: admin/SecretPassword (change immediately in production\!)  
 * **Kali Linux Container:** You can exec into the Kali container to run tools manually or verify scripts.  
-  `docker ps # Find the container ID/name for Kali  `
+  `docker ps     # Find the container ID/name for Kali  `
 
   `docker exec -it <kali_container_id_or_name> bash`
 
