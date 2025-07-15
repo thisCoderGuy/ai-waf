@@ -12,23 +12,23 @@ Our approach encompasses a full lifecycle: from generating meticulously labeled 
 
 ### **1\. Dataset Generation Phase**
 
-This phase focuses on creating high-quality, labeled datasets for training machine learning models. It involves simulating various web traffic patterns and meticulously logging the interactions. To configure the generation of datasets, visit the [Generating Datasets](./GENERATING_DATASETS.md) page.
+This phase focuses on creating high-quality, labeled datasets for training machine learning models. It involves simulating various web traffic patterns and meticulously logging the interactions. To configure the generation of datasets, visit the [Generating Datasets](./docs/datasets/generating_datasets.md) page.
 
 ### **2\. Model Training Phase**
 
 This phase focuses on the process of building and extending various machine learning models, ranging from **traditional machine learning algorithms** to **advanced deep learning architectures** like multi-input RNN or CNN classifiers, all utilizing the meticulously generated datasets. 
 
-The project provides a **comprehensive framework** for training classification models. This framework supports experimentation and optimization across a spectrum of model complexities to achieve optimal threat detection. To learn more about the training framework, visit the [Training Framework](./TRAINING_FRAMEWORK.md) page.
+The project provides a **comprehensive framework** for training classification models. This framework supports experimentation and optimization across a spectrum of model complexities to achieve optimal threat detection. To learn more about the training framework, visit the [Training Framework](./docs/training/training_framework.md) page.
 
 ### **3\. Live Evaluation Phase**
 
 This phase is dedicated to the **real-time evaluation and demonstration** of the trained AI model's performance when integrated into the security pipeline.
 
-To learn more about the live evaluation mode, visit the [Live Evaluation Mode](./LIVE_EVALUATION.MD) page.
+To learn more about the live evaluation mode, visit the [Live Evaluation Mode](./docs/live_evaluation/live_evaluation.md) page.
 
 ## **Testbed Architecture**
 
-The project utilizes a robust and reproducible **Containerized Web Application Security Analytics Testbed**, built entirely with **Docker Compose**. This multi-component infrastructure is designed to simulate real-world web application interactions, including both legitimate user traffic and various attack vectors, while meticulously collecting security telemetry across three distinct operational modes. To learn more about the comprehensive test bed, visit the [Test Bed](./TEST_BED.md) page.
+The project utilizes a robust and reproducible **Containerized Web Application Security Analytics Testbed**, built entirely with **Docker Compose**. This multi-component infrastructure is designed to simulate real-world web application interactions, including both legitimate user traffic and various attack vectors, while meticulously collecting security telemetry across three distinct operational modes. To learn more about the comprehensive test bed, visit the [Test Bed](./docs/testbed/test_bed.md) page.
 
 ## **Getting Started**
 
@@ -42,11 +42,12 @@ To set up and run this project, follow these steps:
 ### **Installation**
 
 1. **Clone the repository:**  
-   git clone https://github.com/thisCoderGuy/ai-waf.git  
-   cd ai-waf
+   `git clone https://github.com/thisCoderGuy/ai-waf.git`
+
+   `cd ai-waf`
 
 2. **Build and start the Docker containers:**  
-   docker compose up \--build \-d
+   `docker compose up \--build \-d`
 
    This command will build all necessary images and start the services in detached mode.
 
@@ -56,8 +57,9 @@ To set up and run this project, follow these steps:
 * **Wazuh Dashboard (Kibana/OpenSearch Dashboards):** http://localhost:5601 (default port, check docker-compose.yml for exact port)  
   * Default credentials: wazuh/wazuh (change immediately in production\!)  
 * **Kali Linux Container:** You can exec into the Kali container to run tools manually or verify scripts.  
-  docker ps \# Find the container ID/name for Kali  
-  docker exec \-it \<kali\_container\_id\_or\_name\> bash
+  `docker ps \# Find the container ID/name for Kali  `
+
+  `docker exec \-it \<kali\_container\_id\_or\_name\> bash`
 
 ## **Usage**
 
@@ -65,15 +67,15 @@ This project supports three distinct operational phases, each with its own setup
 
 ### **1\. Running Dataset Generation**
 
-Follow the instructions on the [Generating Datasets](./GENERATING_DATASETS.md) page to configure and execute the traffic generation and logging processes.
+Follow the instructions on the [Generating Datasets](./docs/datasets/generating_datasets.md) page to configure and execute the traffic generation and logging processes.
 
 ### **2\. Running Model Training**
 
-Refer to the [Training Framework](./TRAINING_FRAMEWORK.md) page for detailed guidance on preparing data, configuring models (traditional ML or deep learning), and initiating the training process.
+Refer to the [Training Framework](./docs/training/training_framework.md) page for detailed guidance on preparing data, configuring models (traditional ML or deep learning), and initiating the training process.
 
 ### **3\. Running Live Evaluation**
 
-Consult the [Live Evaluation Mode](./LIVE_EVALUATION.MD) page to learn how to deploy the AI Microservice, integrate it with Coraza, and observe real-time detection results through Wazuh.
+Consult the [Live Evaluation Mode](./docs/live_evaluation/live_evaluation.md) page to learn how to deploy the AI Microservice, integrate it with Coraza, and observe real-time detection results through Wazuh.
 
 ## **Technologies Used**
 
