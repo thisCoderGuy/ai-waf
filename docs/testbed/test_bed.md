@@ -12,29 +12,43 @@ The testbed serves as a controlled environment for:
 
 ## **Core Components**
 
-The testbed is composed of several Docker services, each serving a specific role in the security pipeline:
+The testbed is composed of several Docker services, each serving a specific role in the security pipeline. We extend our gratitude to the open-source communities behind these powerful tools:
 
-* **Wazuh Stack (wazuh.manager, wazuh.indexer, wazuh.dashboard):**  
+* **Wazuh Stack** ([Wazuh](https://wazuh.com/) \- Manager, Indexer, Dashboard):  
   * A comprehensive open-source security platform.  
   * **Manager:** Collects and analyzes security data from agents, performing threat detection and alerting.  
   * **Indexer:** Stores and indexes the security events, making them searchable.  
   * **Dashboard:** Provides a web-based interface for visualizing alerts, managing agents, and exploring security data.  
   * **Role:** Primarily used in **Live Evaluation Mode** for real-time monitoring and analysis of WAF and AI microservice outputs.  
-* **Coraza Proxy (coraza-proxy):**  
-  * Acts as the Web Application Firewall (WAF) component.  
+* **Coraza Proxy** ([Coraza WAF](https://coraza.io/) \- ModSecurity-compatible rules):  
+  * An open-source Web Application Firewall (WAF) component.  
   * **Role:** Intercepts incoming web traffic, applies ModSecurity-compatible rules, and forwards requests to the target application. It can also send traffic to the ai-microservice for AI-based classification and logs all processed requests, which are crucial for dataset generation.  
-* **AI Microservice (ai-microservice):**  
-  * A custom Flask-based microservice that hosts the trained AI model.  
+* **AI Microservice** (Custom Flask-based application):  
+  * A custom microservice built using the [Flask](https://flask.palletsprojects.com/) web framework.  
   * **Role:** Receives web request data from the coraza-proxy, performs real-time classification (e.g., benign/malicious verdict), and returns the result to the WAF. It loads the pre-trained model from a mounted volume.  
-* **Juice Shop (juice-shop):**  
-  * A deliberately insecure web application (OWASP Juice Shop).  
+* **Juice Shop** ([OWASP Juice Shop](https://owasp.org/www-project-juice-shop/)):  
+  * A deliberately insecure web application, part of the OWASP project.  
   * **Role:** Serves as the target application for both legitimate user interactions and simulated attacks, providing a realistic environment for the WAF to protect.  
-* **Kali Linux (kali):**  
-  * A penetration testing distribution.  
-  * **Role:** Used to generate various types of web traffic, including automated attacks (e.g., using Locust) and manual penetration testing, to simulate real-world scenarios for dataset generation and live evaluation.  
-* **ML Trainer (ml\_trainer):**  
+* **Kali Linux** ([Kali Linux](https://www.kali.org/)):  
+  * A popular open-source penetration testing distribution.  
+  * **Role:** Used to generate various types of web traffic, including automated attacks (e.g., using [Locust](https://locust.io/)) and manual penetration testing, to simulate real-world scenarios for dataset generation and live evaluation.  
+* **ML Trainer** (Leveraging various open-source ML libraries):  
   * A dedicated service for training machine learning models.  
-  * **Role:** Consumes raw logs generated during dataset generation, preprocesses them, trains AI models (supporting both PyTorch and TensorFlow, with optional GPU acceleration), and saves the trained models for use by the ai-microservice.
+  * **Role:** Consumes raw logs generated during dataset generation, preprocesses them, trains AI models, and saves the trained models for use by the ai-microservice.  
+  * **Key Libraries/Frameworks:**  
+    * [PyTorch](https://pytorch.org/)  
+    * [TensorFlow](https://www.tensorflow.org/)  
+    * [scikit-learn](https://scikit-learn.org/stable/)  
+    * [Pandas](https://pandas.pydata.org/)  
+    * [NumPy](https://numpy.org/)  
+    * [Matplotlib](https://matplotlib.org/)  
+    * [Seaborn](https://seaborn.pydata.org/)  
+    * [Hugging Face Transformers](https://huggingface.co/docs/transformers/)  
+    * [Hugging Face Datasets](https://huggingface.co/docs/datasets/)  
+    * [Hugging Face Accelerate](https://huggingface.co/docs/accelerate/)  
+    * [Joblib](https://joblib.readthedocs.io/en/latest/)  
+* **Docker** ([Docker Engine](https://www.google.com/search?q=https://www.docker.com/products/docker-engine/), [Docker Compose](https://docs.docker.com/compose/)):  
+  * The foundational open-source platform for containerization and orchestrating multi-container applications.
 
 ## **Networking**
 
