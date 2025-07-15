@@ -21,13 +21,13 @@ Please take a moment to review this document to understand how to contribute eff
 
 ## **Code of Conduct**
 
-This project adheres to a [Code of Conduct](./). By participating, you are expected to uphold this code. Please report unacceptable behavior to [your.email@example.com](mailto:your.email@example.com).
+This project adheres to a [Code of Conduct](./). By participating, you are expected to uphold this code. Please report unacceptable behavior to [nelly.delessy@gmail.com](mailto:nelly.delessy@gmail.com).
 
 ## **How to Contribute**
 
 ### **Reporting Bugs**
 
-If you find a bug, please help us by submitting an issue to our [GitHub Issues](https://www.google.com/search?q=https://github.com/your-username/your-repo-name/issues). Before submitting, please:
+If you find a bug, please help us by submitting an issue to our [GitHub Issues](https://github.com/thisCoderGuy/ai-waf/issues). Before submitting, please:
 
 * **Check existing issues:** Search to see if the bug has already been reported.  
 * **Provide clear details:**  
