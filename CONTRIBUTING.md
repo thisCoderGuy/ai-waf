@@ -6,22 +6,22 @@ Please take a moment to review this document to understand how to contribute eff
 
 ## **Table of Contents**
 
-* [Code of Conduct](https://www.google.com/search?q=%23code-of-conduct)  
-* [How to Contribute](https://www.google.com/search?q=%23how-to-contribute)  
-  * [Reporting Bugs](https://www.google.com/search?q=%23reporting-bugs)  
-  * [Suggesting Enhancements](https://www.google.com/search?q=%23suggesting-enhancements)  
-  * [Pull Requests](https://www.google.com/search?q=%23pull-requests)  
-* [Development Setup](https://www.google.com/search?q=%23development-setup)  
-  * [Prerequisites](https://www.google.com/search?q=%23prerequisites)  
-  * [Installation](https://www.google.com/search?q=%23installation)  
-  * [Running the Testbed](https://www.google.com/search?q=%23running-the-testbed)  
-* [Coding Guidelines](https://www.google.com/search?q=%23coding-guidelines)  
-* [Commit Message Guidelines](https://www.google.com/search?q=%23commit-message-guidelines)  
-* [License](https://www.google.com/search?q=%23license)
+* [Code of Conduct](#code-of-conduct)
+* [How to Contribute](#how-to-contribute)  
+  * [Reporting Bugs](#reporting-bugs)  
+  * [Suggesting Enhancements](#suggesting-enhancements)  
+  * [Pull Requests](#pull-requests)  
+* [Development Setup](#development-setup)  
+  * [Prerequisites](#prerequisites)  
+  * [Installation](#installation)  
+  * [Running the Testbed](#running-the-testbed)  
+* [Coding Guidelines](#coding-guidelines)
+* [Commit Message Guidelines](#commit-message-guidelines)  
+* [License](#license)
 
 ## **Code of Conduct**
 
-This project adheres to a [Code of Conduct](https://www.google.com/search?q=CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to [your.email@example.com](mailto:your.email@example.com).
+This project adheres to a [Code of Conduct](./). By participating, you are expected to uphold this code. Please report unacceptable behavior to [your.email@example.com](mailto:your.email@example.com).
 
 ## **How to Contribute**
 
@@ -78,10 +78,12 @@ We encourage you to contribute code by submitting pull requests\!
 ### **Installation**
 
 1. **Clone the repository:**  
+
    git clone https://github.com/your-username/your-repo-name.git  
    cd your-repo-name
 
 2. **Build and start the Docker containers:**  
+
    docker-compose up \--build \-d
 
    This command will build all necessary images and start the services in detached mode.
@@ -113,8 +115,8 @@ Examples:
 
 ## **License**
 
-By contributing to Hybrid Traditional-AI WAF, you agree that your contributions will be licensed under the project's [MIT License](https://www.google.com/search?q=LICENSE).
+By contributing to Hybrid Traditional-AI WAF, you agree that your contributions will be licensed under the project's [MIT License](./LICENSE.md).
 
 ## **Contact**
 
-For any questions or further assistance, please open an issue or contact [your.email@example.com](mailto:your.email@example.com).
+For any questions or further assistance, please open an issue or contact [nelly.delessy@gmail.com](mailto:nelly.delessy@gmail.com).
