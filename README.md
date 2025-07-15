@@ -38,18 +38,61 @@ To set up and run this project, follow these steps:
 
 * [Docker](https://docs.docker.com/get-docker/) (Docker Engine and Docker Compose)  
 * [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+* **For GPU-accelerated training (Linux hosts with NVIDIA GPUs):**  
+  * **NVIDIA Drivers:** Ensure the latest NVIDIA GPU drivers are installed on your host system. Verify with `nvidia-smi`.  
+  * **NVIDIA Container Toolkit:** Install the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) on your host. This configures your Docker daemon to enable GPU access for containers. After installation, restart your Docker daemon (`sudo systemctl restart docker`).  
+  * **Docker Daemon Configuration:** Confirm that your Docker daemon recognizes the nvidia runtime by running `docker info | grep Runtimes`. It should list nvidia. If not, re-run `sudo nvidia-ctk runtime configure --runtime=docker` and restart Docker.  
+* **For GPU-accelerated training (Windows hosts with NVIDIA GPUs):**  
+  * **Windows Subsystem for Linux 2 (WSL2):** Ensure WSL2 is enabled and a Linux distribution (e.g., Ubuntu) is installed. Docker Desktop leverages WSL2 for GPU support.  
+  * **NVIDIA Drivers:** Install the latest NVIDIA GPU drivers for Windows on your host system.  
+  * **NVIDIA CUDA Toolkit for WSL:** Install the [NVIDIA CUDA Toolkit for WSL](https://docs.nvidia.com/cuda/wsl-user-guide/index.html) within your WSL2 Linux distribution. This provides the necessary CUDA libraries inside WSL2.  
+  * **Docker Desktop Configuration:** Ensure Docker Desktop is configured to use the WSL2 backend (Settings \> General \> Use WSL 2 based engine). Docker Desktop should automatically expose the GPU to containers running in WSL2 if the above prerequisites are met. There is typically no explicit "GPU acceleration" toggle in Docker Desktop for Windows; it's handled via WSL2 integration.
 
 ### **Installation**
 
 1. **Clone the repository:**  
+
    `git clone https://github.com/thisCoderGuy/ai-waf.git`
 
    `cd ai-waf`
 
-2. **Build and start the Docker containers:**  
-   `docker compose up --build -d`
+2. **Build and start the Docker containers for your desired mode:**  
 
-   This command will build all necessary images and start the services in detached mode.
+     Your *docker-compose.yml* uses profiles to manage different operational modes.  
+
+   * To run the **Dataset Generation Mode**:  
+
+     `docker compose --profile app-core up --build -d`
+
+   * To run the **Model Training Mode**: 
+
+     The training service is configured to attempt to use your NVIDIA GPU if available and correctly set up on your host.  
+
+     * **If you have an NVIDIA GPU:** Ensure all GPU prerequisites (drivers, toolkit, Docker config) are met.  
+
+        `docker compose --profile train up --build` 
+
+     * **If you do NOT have an NVIDIA GPU:** The training service is configured to request GPU resources. If no GPU is available or configured, Docker might fail to start this service with a "could not select device driver" error. You will need to either:  
+       * **Remove the deploy section** from the training service in *docker-compose.yml* if you want to run CPU-only training.  
+       * Or, consider using a CPU-only base image in training/Dockerfile (e.g., FROM python:3.9-slim-buster) and remove GPU-specific libraries from requirements.txt if you intend to train without a GPU.  
+         
+      *Note: The training service is designed to run its task and then exit. You will see its logs in your terminal.*  
+
+   * To run the **Live Evaluation Mode**:  
+
+     `docker compose --profile app-core --profile live-eval up --build -d`
+
+3. **Stopping Services:**  
+   * **To stop all running services (regardless of profile):**  
+
+     `docker compose down`
+
+   * **To stop services for a specific profile (e.g., app-core and live-eval):**  
+
+     `docker compose --profile app-core --profile live-eval down`
+
+     *Note: When stopping services by profile, only the services explicitly activated by those profiles (and their dependencies) will be stopped. If you started services from multiple profiles, you may need to specify all active profiles to stop them.*
+
 
 ### **Accessing Components**
 

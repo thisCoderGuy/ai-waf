@@ -79,18 +79,17 @@ We encourage you to contribute code by submitting pull requests\!
 
 1. **Clone the repository:**  
 
-   git clone https://github.com/your-username/your-repo-name.git  
-   cd your-repo-name
+   `git clone https://github.com/thisCoderGuy/ai-waf.git`
+
+   `cd ai-waf`
 
 2. **Build and start the Docker containers:**  
 
-   docker-compose up \--build \-d
-
-   This command will build all necessary images and start the services in detached mode.
+Refer to the main [README.md](./README.md) for details on how to build and start the Docker containers.
 
 ### **Running the Testbed**
 
-Refer to the main [README.md](http://docs.google.com/README.md) for details on how to access and interact with the different components and operational phases of the testbed.
+Refer to the main [README.md](./README.md) for details on how to access and interact with the different components and operational phases of the testbed.
 
 ## **Coding Guidelines**
 

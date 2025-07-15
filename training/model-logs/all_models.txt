@@ -1,19 +1,25 @@
-2025-07-03 10:04:16,983 - evaluation_logger - INFO - ####################################################################
-2025-07-03 10:04:16,983 - evaluation_logger - INFO - Model Training Started: 2025-07-03 10:04:16
-2025-07-03 10:04:16,984 - evaluation_logger - INFO - --- Data Cleaning ---
-2025-07-03 10:04:16,991 - evaluation_logger - INFO - 	Successfully loaded 1743 entries from training/training-data/cleaned/coraza-audit-cleaned.csv
-2025-07-03 10:04:16,991 - evaluation_logger - INFO - --- Data Preprocessing ---
-2025-07-03 10:04:16,991 - evaluation_logger - INFO - NUMERICAL_FEATURES=['RequestLength', 'PathLength', 'QueryLength']
-2025-07-03 10:04:16,991 - evaluation_logger - INFO - TEXT_FEATURES=['RequestURIPath', 'RequestURIQuery', 'RequestBody', 'UserAgent']
-2025-07-03 10:04:16,991 - evaluation_logger - INFO - CATEGORICAL_FEATURES=['RequestMethod']
-2025-07-03 10:04:16,991 - evaluation_logger - INFO - LABEL='AIVerdictLabel'
-2025-07-03 10:04:16,993 - evaluation_logger - INFO - > Dense Feature extraction
-2025-07-03 10:04:16,993 - evaluation_logger - INFO - 	Using :
+2025-07-15 18:48:22,264 - evaluation_logger - INFO - ####################################################################
+2025-07-15 18:48:22,264 - evaluation_logger - INFO - Model Training Started: 2025-07-15 18:48:22
+2025-07-15 18:48:22,264 - evaluation_logger - INFO - --- Data Cleaning ---
+2025-07-15 18:48:22,374 - evaluation_logger - INFO - 	Total rows removed during cleaning: 0
+2025-07-15 18:48:22,374 - evaluation_logger - INFO - 	Remaining 4931 entries after cleaning.
+2025-07-15 18:48:22,400 - evaluation_logger - INFO - 	Cleaned data saved to training/training-data/cleaned/coraza-audit-cleaned_20250715_184822.csv
+2025-07-15 18:52:27,188 - evaluation_logger - INFO - ####################################################################
+2025-07-15 18:52:27,188 - evaluation_logger - INFO - Model Training Started: 2025-07-15 18:52:27
+2025-07-15 18:52:27,189 - evaluation_logger - INFO - --- Data Cleaning ---
+2025-07-15 18:52:27,202 - evaluation_logger - INFO - 	Successfully loaded 4931 entries from training/training-data/cleaned/coraza-audit-cleaned_20250715_184822.csv
+2025-07-15 18:52:27,203 - evaluation_logger - INFO - --- Data Preprocessing ---
+2025-07-15 18:52:27,203 - evaluation_logger - INFO - NUMERICAL_FEATURES=['RequestLength', 'PathLength', 'QueryLength']
+2025-07-15 18:52:27,203 - evaluation_logger - INFO - TEXT_FEATURES=['RequestURIPath', 'RequestURIQuery', 'RequestBody', 'UserAgent']
+2025-07-15 18:52:27,203 - evaluation_logger - INFO - CATEGORICAL_FEATURES=['RequestMethod']
+2025-07-15 18:52:27,203 - evaluation_logger - INFO - LABEL='AIVerdictLabel'
+2025-07-15 18:52:27,206 - evaluation_logger - INFO - > Dense Feature extraction
+2025-07-15 18:52:27,206 - evaluation_logger - INFO - 	Using :
     	TOKENIZER_CONFIGS: {'RequestURIPath': 'char', 'RequestURIQuery': 'char', 'RequestBody': 'char', 'UserAgent': 'char'}
     	MAX_SEQ_LENGTHS: {'RequestURIPath': 50, 'RequestURIQuery': 50, 'RequestBody': 50, 'UserAgent': 100}
-2025-07-03 10:04:17,046 - evaluation_logger - INFO - Dense feature extraction and preprocessing complete.
-2025-07-03 10:04:17,048 - evaluation_logger - INFO - --- Model Training ---
-2025-07-03 10:04:17,048 - evaluation_logger - INFO - 	Architecture Used: CNN
+2025-07-15 18:52:27,342 - evaluation_logger - INFO - Dense feature extraction and preprocessing complete.
+2025-07-15 18:52:27,345 - evaluation_logger - INFO - --- Model Training ---
+2025-07-15 18:52:27,345 - evaluation_logger - INFO - 	Architecture Used: CNN
 	Model Parameters: {'learning_rate': 0.001, 'epochs': 50, 'batch_size': 32, 'optimizer_type': 'adam', 'optimizer_params': {'weight_decay': 0.0001}, 'loss_type': 'CrossEntropyLoss', 'loss_params': {}, 'dropout_rate': 0.5, 'hidden_size': 64, 'num_classes': 2, 'numerical_hidden_size': 32, 'text_embed_dims': {'RequestURIPath': 32, 'RequestURIQuery': 32, 'RequestBody': 32, 'UserAgent': 32}, 'categorical_embed_dims': {'RequestMethod': 3}, 'text_cnn_configs': {'RequestURIPath': {'n_filters': 32, 'filter_size': 3}, 'RequestURIQuery': {'n_filters': 48, 'filter_size': 5}, 'RequestBody': {'n_filters': 96, 'filter_size': 5}, 'UserAgent': {'n_filters': 64, 'filter_size': 4}}}
 	Hyperparameter tuning: False
 	Hyperparameter tuning method: random
@@ -21,18 +27,18 @@
 	Num of hyperparameter combinations in Random Search: 10
 	Random State: 42
 	Tuning Parameters: {'hidden_size': [32], 'learning_rate': [0.01]}
-2025-07-03 10:04:17,145 - evaluation_logger - INFO - Device: cuda
-2025-07-03 10:04:17,868 - evaluation_logger - INFO -   Model type: CNNClassifier
-2025-07-03 10:04:17,868 - evaluation_logger - INFO -   Optimizer: adam ({'weight_decay': 0.0001, 'lr': 0.001})
-2025-07-03 10:04:17,868 - evaluation_logger - INFO -   Loss: CrossEntropyLoss ({})
-2025-07-03 10:04:17,868 - evaluation_logger - INFO -   Epochs: 50, Batch Size: 32
-2025-07-03 10:04:17,868 - evaluation_logger - INFO -   Device: cuda
-2025-07-03 10:04:23,986 - evaluation_logger - INFO - MultiInputCNNClassifier(
+2025-07-15 18:52:27,456 - evaluation_logger - INFO - Device: cuda
+2025-07-15 18:52:28,213 - evaluation_logger - INFO -   Model type: CNNClassifier
+2025-07-15 18:52:28,213 - evaluation_logger - INFO -   Optimizer: adam ({'weight_decay': 0.0001, 'lr': 0.001})
+2025-07-15 18:52:28,213 - evaluation_logger - INFO -   Loss: CrossEntropyLoss ({})
+2025-07-15 18:52:28,213 - evaluation_logger - INFO -   Epochs: 50, Batch Size: 32
+2025-07-15 18:52:28,213 - evaluation_logger - INFO -   Device: cuda
+2025-07-15 18:52:44,675 - evaluation_logger - INFO - MultiInputCNNClassifier(
   (text_embedding_branches): ModuleDict(
-    (RequestURIPath): Embedding(29, 32)
-    (RequestURIQuery): Embedding(43, 32)
-    (RequestBody): Embedding(60, 32)
-    (UserAgent): Embedding(45, 32)
+    (RequestURIPath): Embedding(57, 32)
+    (RequestURIQuery): Embedding(44, 32)
+    (RequestBody): Embedding(63, 32)
+    (UserAgent): Embedding(50, 32)
   )
   (cat_embedding_branches): ModuleDict(
     (RequestMethod): Embedding(4, 3)
@@ -51,8 +57,8 @@
     (3): Linear(in_features=64, out_features=2, bias=True)
   )
 )
-2025-07-03 10:04:23,986 - evaluation_logger - INFO - --- Model Evaluation ---
-2025-07-03 10:04:24,011 - evaluation_logger - INFO - 	--- Evaluation Results ---
+2025-07-15 18:52:44,675 - evaluation_logger - INFO - --- Model Evaluation ---
+2025-07-15 18:52:44,744 - evaluation_logger - INFO - 	--- Evaluation Results ---
 	Accuracy: 1.0000
 	Precision: 1.0000
 	Recall: 1.0000
@@ -61,48 +67,18 @@
 	--- Classification Report ---
               precision    recall  f1-score   support
 
-      benign       1.00      1.00      1.00       336
-   malicious       1.00      1.00      1.00        13
+      benign       1.00      1.00      1.00       442
+   malicious       1.00      1.00      1.00       545
 
-    accuracy                           1.00       349
-   macro avg       1.00      1.00      1.00       349
-weighted avg       1.00      1.00      1.00       349
+    accuracy                           1.00       987
+   macro avg       1.00      1.00      1.00       987
+weighted avg       1.00      1.00      1.00       987
 
 
 	--- Confusion Matrix ---
                   Predicted Benign  Predicted Malicious
-Actual Benign                  336                    0
-Actual Malicious                 0                   13
+Actual Benign                  442                    0
+Actual Malicious                 0                  545
 
-2025-07-03 10:04:24,011 - evaluation_logger - INFO - 	---Total training and evaluation time ---
-	6.96 seconds
-2025-07-09 17:54:43,186 - evaluation_logger - INFO - ####################################################################
-2025-07-09 17:54:43,186 - evaluation_logger - INFO - Model Training Started: 2025-07-09 17:54:43
-2025-07-09 17:54:43,186 - evaluation_logger - INFO - --- Data Cleaning ---
-2025-07-09 17:58:21,920 - evaluation_logger - INFO - ####################################################################
-2025-07-09 17:58:21,920 - evaluation_logger - INFO - Model Training Started: 2025-07-09 17:58:21
-2025-07-09 17:58:21,920 - evaluation_logger - INFO - --- Data Cleaning ---
-2025-07-09 18:00:04,828 - evaluation_logger - INFO - ####################################################################
-2025-07-09 18:00:04,828 - evaluation_logger - INFO - Model Training Started: 2025-07-09 18:00:04
-2025-07-09 18:00:04,843 - evaluation_logger - INFO - --- Data Cleaning ---
-2025-07-09 18:00:04,883 - evaluation_logger - INFO - 	Total rows removed during cleaning: 1
-2025-07-09 18:00:04,883 - evaluation_logger - INFO - 	Remaining 66 entries after cleaning.
-2025-07-09 18:00:04,884 - evaluation_logger - INFO - 	Cleaned data saved to training\training-data\cleaned\coraza-audit-cleaned.csv
-2025-07-09 18:12:46,348 - evaluation_logger - INFO - ####################################################################
-2025-07-09 18:12:46,348 - evaluation_logger - INFO - Model Training Started: 2025-07-09 18:12:46
-2025-07-09 18:12:46,348 - evaluation_logger - INFO - --- Data Cleaning ---
-2025-07-09 18:12:46,376 - evaluation_logger - INFO - 	Total rows removed during cleaning: 1
-2025-07-09 18:12:46,376 - evaluation_logger - INFO - 	Remaining 66 entries after cleaning.
-2025-07-09 18:12:46,382 - evaluation_logger - INFO - 	Cleaned data saved to training\training-data\cleaned\coraza-audit-cleaned.csv
-2025-07-09 18:15:24,229 - evaluation_logger - INFO - ####################################################################
-2025-07-09 18:15:24,229 - evaluation_logger - INFO - Model Training Started: 2025-07-09 18:15:24
-2025-07-09 18:15:24,244 - evaluation_logger - INFO - --- Data Cleaning ---
-2025-07-09 18:15:24,608 - evaluation_logger - INFO - 	Total rows removed during cleaning: 0
-2025-07-09 18:15:24,608 - evaluation_logger - INFO - 	Remaining 8159 entries after cleaning.
-2025-07-09 18:15:24,744 - evaluation_logger - INFO - 	Cleaned data saved to training\training-data\cleaned\coraza-audit-cleaned.csv
-2025-07-10 17:15:32,780 - evaluation_logger - INFO - ####################################################################
-2025-07-10 17:15:32,781 - evaluation_logger - INFO - Model Training Started: 2025-07-10 17:15:32
-2025-07-10 17:15:32,781 - evaluation_logger - INFO - --- Data Cleaning ---
-2025-07-10 17:15:32,913 - evaluation_logger - INFO - 	Total rows removed during cleaning: 0
-2025-07-10 17:15:32,913 - evaluation_logger - INFO - 	Remaining 4931 entries after cleaning.
-2025-07-10 17:15:32,954 - evaluation_logger - INFO - 	Cleaned data saved to training/training-data/cleaned/coraza-audit-cleaned.csv
+2025-07-15 18:52:44,744 - evaluation_logger - INFO - 	---Total training and evaluation time ---
+	17.40 seconds

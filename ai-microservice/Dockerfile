@@ -25,19 +25,6 @@ RUN apt-get update && \
 
 
 
-RUN curl -sSL -o /tmp/wazuh-agent.deb https://packages.wazuh.com/4.x/apt/pool/main/w/wazuh-agent/wazuh-agent_4.8.0-1_amd64.deb && \
-    # Install the downloaded .deb package
-    dpkg -i /tmp/wazuh-agent.deb && \
-    # Resolve any missing dependencies that dpkg might have left (usually handled by apt-get -f install)
-    apt-get update && \
-    apt-get install -fy && \
-    # Clean up the downloaded .deb file
-    rm /tmp/wazuh-agent.deb
-
-
-# Copy custom Wazuh agent configuration
-COPY wazuh_agent_config/ossec.conf /var/ossec/etc/ossec.conf
-
 
 # Start Wazuh agent first, then the Python app
-CMD ["/bin/bash", "-c", "/var/ossec/bin/wazuh-agentd -d && python app.py"]
+CMD ["/bin/bash", "-c", "python app.py"]

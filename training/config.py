@@ -6,7 +6,7 @@ import os
 #########################################################
 
 # Do perform data cleaning?
-PERFORM_DATA_CLEANING = True # True or False
+PERFORM_DATA_CLEANING = False # True or False
 
            #########################################################
            # if data cleaning is performed
@@ -52,13 +52,13 @@ CLEANED_DATA_OUTPUT_PATH = os.path.join('training', 'training-data', 'cleaned', 
            #########################################################
 
 # Which cleaned dataset to load?
-CLEANED_DATA_PATH = os.path.join('training', 'training-data', 'cleaned', 'coraza-audit-cleaned_20250709_181524.csv') 
+CLEANED_DATA_PATH = os.path.join('training', 'training-data', 'cleaned', 'coraza-audit-cleaned_20250715_184822.csv') 
 
 #########################################################
 # --- 2. Training ---
 #########################################################
 # Do perform training?
-PERFORM_TRAINING = False # True or False
+PERFORM_TRAINING = True # True or False
 
 
    #########################################################
@@ -91,7 +91,7 @@ LABEL_VALUES = ['benign', 'malicious']
 # Traditional machine learning algorithms generally handle sparse data well. 
 # Deep learning algorithms: Neural nets expect dense tensors.
 
-TYPE_OF_PREPROCESSING = 'sparse' # 'sparse' or 'dense'
+TYPE_OF_PREPROCESSING = 'dense' # 'sparse' or 'dense'
 
 
 

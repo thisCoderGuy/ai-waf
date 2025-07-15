@@ -41,15 +41,6 @@ RUN apt-get update && \
 
 
 
-RUN curl -sSL -o /tmp/wazuh-agent.deb https://packages.wazuh.com/4.x/apt/pool/main/w/wazuh-agent/wazuh-agent_4.8.0-1_amd64.deb && \
-    # Install the downloaded .deb package
-    dpkg -i /tmp/wazuh-agent.deb && \
-    # Resolve any missing dependencies that dpkg might have left (usually handled by apt-get -f install)
-    apt-get update && \
-    apt-get install -fy && \
-    # Clean up the downloaded .deb file
-    rm /tmp/wazuh-agent.deb
-
 
 # Copy the built Go application from the builder stage
 COPY --from=builder /coraza-proxy /usr/local/bin/coraza-proxy
@@ -59,13 +50,10 @@ COPY --from=builder /coraza-proxy /usr/local/bin/coraza-proxy
 COPY coraza.conf /etc/coraza/coraza.conf
 
 
-# Copy custom Wazuh agent configuration
-COPY wazuh_agent_config/ossec.conf /var/ossec/etc/ossec.conf
-
 
 # Expose the proxy port
 EXPOSE 8080
 
 
-# Command to run the Wazuh agent and then the Coraza proxy
-CMD ["/bin/bash", "-c", "/var/ossec/bin/wazuh-agentd -d && /usr/local/bin/coraza-proxy"]
+# Command to run the Coraza proxy
+CMD ["/bin/bash", "-c", "/usr/local/bin/coraza-proxy"]
