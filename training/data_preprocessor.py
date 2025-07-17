@@ -11,7 +11,7 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 import numpy as np
 
 # Import model-specific configurations and tuning parameters
-from config import (
+from training_config import (
     LABEL, TEXT_FEATURES, CATEGORICAL_FEATURES, NUMERICAL_FEATURES,
     TYPE_OF_PREPROCESSING, TFIDF_MAX_FEATURES,
     TFIDF_ANALYZERS, TFIDF_NGRAM_RANGES,

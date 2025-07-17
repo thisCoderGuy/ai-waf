@@ -6,11 +6,13 @@ from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.preprocessing import LabelEncoder 
 from scipy.sparse import issparse
 from torch.utils.data import TensorDataset, DataLoader
+import copy
 
 from loggers import global_logger, evaluation_logger
 
-from config import (
-    TEXT_FEATURES, CATEGORICAL_FEATURES,  NUMERICAL_FEATURES
+from training_config import (
+    TEXT_FEATURES, CATEGORICAL_FEATURES,  NUMERICAL_FEATURES,
+    PERFORM_EARLY_STOPPING, EARLY_STOPPING_PATIENCE
 )
 from http_request_dataset import HTTPRequestMultiInputDataset
 
@@ -28,7 +30,9 @@ class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
                  learning_rate=0.001, epochs=50, batch_size=32,
                  random_state=None,
                  optimizer_type='adam',  optimizer_params=None,
-                 loss_type='CrossEntropyLoss',  loss_params=None):
+                 loss_type='CrossEntropyLoss',  loss_params=None,
+                 perform_early_stopping=PERFORM_EARLY_STOPPING,
+                 early_stopping_patience=EARLY_STOPPING_PATIENCE):
         """
         Initializes the base PyTorch classifier.
 
@@ -57,7 +61,8 @@ class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
 
         self.num_classes = num_classes
         self.numerical_hidden_size = numerical_hidden_size
-        
+        self.perform_early_stopping = perform_early_stopping
+        self.early_stopping_patience = early_stopping_patience
         
         categorical_embed_dims = categorical_embed_dims
         
@@ -138,13 +143,16 @@ class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
 
 
 
-    def fit(self, X, y):
+    def fit(self, X, y, X_val=None, y_val=None):
         """
-        Trains the PyTorch model.
+        Trains the PyTorch model with optional early stopping.
 
         Args:
-            X (np.array or sparse matrix): Preprocessed training features.
-            y (np.array): Training labels.
+            X (pd.DataFrame): Training features.
+            y (pd.Series): Training labels.
+            X_val (pd.DataFrame, optional): Validation features for early stopping. Defaults to None.
+            y_val (pd.Series, optional): Validation labels for early stopping. Defaults to None.
+
         Returns:
             self: The trained classifier.
         """
@@ -152,6 +160,10 @@ class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
         # Build the model components if not already built
         if self.model is None:
             self._build_model_components()
+
+        if self.perform_early_stopping and (X_val is None or y_val is None):
+            global_logger.warning("Early stopping is enabled but validation data (X_val, y_val) was not provided. Disabling early stopping for this run.")
+            self.perform_early_stopping = False
 
         # Create DataLoader for batching
         # Combine everything into one dataset
@@ -169,11 +181,18 @@ class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
         
         train_loader = DataLoader(train_dataset, batch_size=self.batch_size, shuffle=True)
 
+        val_loader = None
+        if self.perform_early_stopping:
+            val_dataset = HTTPRequestMultiInputDataset(X=X_val, y=y_val)
+            val_loader = DataLoader(val_dataset, batch_size=self.batch_size, shuffle=False)
+
+
         global_logger.info(f"Starting training:")
         evaluation_logger.info(f"  Model type: {self.__class__.__name__}")
         evaluation_logger.info(f"  Optimizer: {self.optimizer_type} ({self.optimizer_params})")
         evaluation_logger.info(f"  Loss: {self.loss_type} ({self.loss_params})")
         evaluation_logger.info(f"  Epochs: {self.epochs}, Batch Size: {self.batch_size}")
+        evaluation_logger.info(f"  Early Stopping: {self.perform_early_stopping}, Patience: {self.early_stopping_patience}")
         evaluation_logger.info(f"  Device: {self.device}")
 
         # TODO
@@ -181,6 +200,11 @@ class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
         # l1_lambda = 0.001
         # L2 regularization , same as weight_decay param in Adam Optimizer
         # l2_lambda = 0.001
+
+
+        best_val_loss = float('inf')
+        epochs_no_improve = 0
+        self.best_model_state = copy.deepcopy(self.model.state_dict())
 
         for epoch in range(self.epochs):
             self.model.train() # Set model to training mode
@@ -239,9 +263,51 @@ class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
 
                 total_loss += loss.item()
 
-            avg_loss = total_loss / len(train_loader)
-            global_logger.info(f"Epoch {epoch+1}/{self.epochs} - Loss: {avg_loss:.4f}")
+            avg_train_loss = total_loss / len(train_loader)
+            
+             # --- Validation Phase ---
+            if self.perform_early_stopping and val_loader:
+                self.model.eval()
+                total_val_loss = 0
+                with torch.no_grad():
+                    for batch in val_loader:
+                        batch_text_tensors, batch_cat_tensors, batch_num_tensors, batch_labels = batch
+                        batch_text_tensors = [t.to(self.device) for t in batch_text_tensors]
+                        batch_cat_tensors = [t.to(self.device) for t in batch_cat_tensors]
+                        batch_num_tensors = [t.to(self.device) for t in batch_num_tensors]
+                        batch_labels = batch_labels.to(self.device)
 
+                        logits = self.model(
+                            text_inputs=batch_text_tensors,
+                            categorical_inputs=batch_cat_tensors,
+                            numerical_inputs=batch_num_tensors
+                        )
+                        val_loss = self.criterion(logits, batch_labels.long())
+                        total_val_loss += val_loss.item()
+                
+                avg_val_loss = total_val_loss / len(val_loader)
+                global_logger.info(f"Epoch {epoch+1}/{self.epochs} - Train Loss: {avg_train_loss:.4f} - Val Loss: {avg_val_loss:.4f}")
+
+                if avg_val_loss < best_val_loss:
+                    best_val_loss = avg_val_loss
+                    epochs_no_improve = 0
+                    self.best_model_state = copy.deepcopy(self.model.state_dict())
+                    global_logger.info(f"  New best validation loss: {best_val_loss:.4f}. Saving model state.")
+                else:
+                    epochs_no_improve += 1
+                    global_logger.info(f"  Validation loss did not improve. Patience: {epochs_no_improve}/{self.early_stopping_patience}")
+
+                if epochs_no_improve >= self.early_stopping_patience:
+                    evaluation_logger.info(f"Early stopping triggered at epoch {epoch+1}. Restoring best model weights.")
+                    self.model.load_state_dict(self.best_model_state)
+                    break # Exit training loop
+            else:
+                global_logger.info(f"Epoch {epoch+1}/{self.epochs} - Train Loss: {avg_train_loss:.4f}")
+
+        # Load the best model state at the end of training
+        if self.perform_early_stopping:
+            global_logger.info("Training finished. Loaded best model weights.")
+            self.model.load_state_dict(self.best_model_state)
         
         return self
 

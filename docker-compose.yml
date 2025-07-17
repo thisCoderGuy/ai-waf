@@ -31,20 +31,29 @@ services:
 
   ai-microservice:
     build:
-      context: ./ai-microservice
-      dockerfile: Dockerfile
+      context: . # Need to access training files (custom source code)
+      dockerfile: ai-microservice/Dockerfile
     container_name: ai-microservice
     hostname: ai-microservice
+    environment:
+      PYTHONPATH: /app/ml_pipeline_src # Add your source directory to Python's search path
     ports:
       - "5000:5000" # For Coraza Proxy to access
     volumes:
       - ./ai-microservice/wazuh_agent_config/ossec.conf:/var/ossec/etc/ossec.conf # Mount agent config
-      # --- IMPORTANT: Mount your trained model here ---
-      # This line maps your local trained model directory to /app/model inside the container
-      # - ./predictive_model:/app/model:ro # Host path : Container path : read-only
+      - ./ai-microservice/trained-models:/app/trained-models:ro # Host path : Container path : read-only
     networks:
       - wazuh-net # For Wazuh agent to communicate with manager
     profiles: ["app-core", "live-eval"] # Part of the application core profile, also needed for live-eval
+    # --- GPU Configuration (for NVIDIA GPUs) ---
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all # Use all available GPUs
+              capabilities: [gpu]
+    # --- End GPU Configuration ---
 
 
   kali:
@@ -87,12 +96,10 @@ services:
       dockerfile: Dockerfile
     container_name: ml_trainer
     hostname: ml_trainer
-    environment:
-      # Optional: Control training parameters via env vars
     volumes:
       - ./training/training-data/:/app/training/training-data # Read raw logs from coraza-proxy output
       - ./training/model-logs:/app/training/model-logs # Read raw logs from coraza-proxy output
-      - ./ai-microservice/trained-models:/models/output # Volume to save the trained model
+      - ./ai-microservice/trained-models:/app/ai-microservice/trained-models # Volume to save the trained model
     networks:
       - app-net # Connect to the application network to access shared data volumes
     profiles: ["train"] # This service will only run when 'train' profile is activated

@@ -15,13 +15,15 @@ from loggers import global_logger, evaluation_logger
 
 import numpy as np
 
-from config import (
+from training_config import (
     MODEL_TYPE,
+    IS_DEEP_LEARNING_MODEL,
     MODEL_CLASSES,
     TYPE_OF_PREPROCESSING,
     N_SPLITS_CROSS_VALIDATION,
     RANDOM_STATE,
     PERFORM_TUNING,
+    PERFORM_EARLY_STOPPING,
     CV_AND_TUNING_METHOD,
     RANDOM_SEARCH_N_ITER, MODEL_PARAMS, TUNING_PARAMS
 )
@@ -57,7 +59,7 @@ def get_model(preprocessor):
 
     return model
 
-def train_model(X_train, y_train, preprocessor):
+def train_model(X_train, y_train, preprocessor, X_val=None, y_val=None):
     """
     Trains a machine learning model using Stratified K-Fold Cross-Validation.
     Optionally performs hyperparameter tuning using GridSearchCV or RandomizedSearchCV.
@@ -83,9 +85,7 @@ def train_model(X_train, y_train, preprocessor):
     
     model = get_model(preprocessor)
 
-    
-
-    if PERFORM_TUNING:
+    if PERFORM_TUNING and not IS_DEEP_LEARNING_MODEL:
         global_logger.info(f"Starting Hyperparameter Tuning ({CV_AND_TUNING_METHOD.upper()} Search) using {N_SPLITS_CROSS_VALIDATION}-fold Stratified Cross-Validation  for {MODEL_TYPE.upper()} model...")
         param_grid = TUNING_PARAMS.get(MODEL_TYPE)
 
@@ -128,11 +128,19 @@ def train_model(X_train, y_train, preprocessor):
 
         final_model = search_cv.best_estimator_ # The model with the best parameters
     else:
-        # No cross validation, nor hyperparameter tuning
+       # No hyperparameter tuning, direct training
         final_model = model
-        final_model.fit(X_train, y_train)
+
+        if IS_DEEP_LEARNING_MODEL and PERFORM_EARLY_STOPPING:
+            global_logger.info(f"Training with early stopping using the provided validation set.")
+            # Train with early stopping using the validation set passed from main.py
+            final_model.fit(X_train, y_train, X_val=X_val, y_val=y_val)
+        else:
+            # Train without early stopping
+            final_model.fit(X_train, y_train)
+            
         global_logger.info(f"{MODEL_TYPE.upper()} model training complete.")
 
-    if MODEL_TYPE.lower() == 'fcnn' or MODEL_TYPE.lower() == 'cnn' or MODEL_TYPE.lower() == 'rnn'  or MODEL_TYPE.lower() == 'lstm':
+    if IS_DEEP_LEARNING_MODEL:
         evaluation_logger.info(final_model.model)
     return final_model

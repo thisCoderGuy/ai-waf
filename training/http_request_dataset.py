@@ -3,7 +3,7 @@ from torch.utils.data import Dataset
 from collections import OrderedDict
 import numpy as np
 
-from config import (
+from training_config import (
     TEXT_FEATURES, CATEGORICAL_FEATURES,  NUMERICAL_FEATURES
 )
 from loggers import global_logger

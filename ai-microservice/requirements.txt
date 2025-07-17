@@ -1,4 +1,25 @@
 flask
-pandas
 joblib
+
+# Core ML libraries
+numpy
+pandas
 scikit-learn
+matplotlib
+seaborn
+
+# PyTorch with CUDA 12.4 compatibility
+torch==2.2.0+cu121
+torchvision==0.17.0+cu121
+torchaudio==2.2.0+cu121
+# Ensure you use the correct index-url for PyTorch with CUDA
+# This line is crucial for PyTorch to find the correct CUDA-enabled binaries
+--extra-index-url https://download.pytorch.org/whl/cu121
+
+# TensorFlow with CUDA 12 compatibility
+tensorflow==2.15.0 # This version generally works well with CUDA 12.x
+
+# Other ML ecosystem libraries
+transformers
+datasets
+accelerate

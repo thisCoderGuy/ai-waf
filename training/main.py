@@ -7,11 +7,14 @@ import time
 
 from loggers import global_logger, evaluation_logger
 
-from config import (
+from training_config import (
     PERFORM_TRAINING,
     TEST_SIZE,
     REQUIRED_DIRS, 
-    RANDOM_STATE
+    RANDOM_STATE,
+    MODEL_TYPE,
+    IS_DEEP_LEARNING_MODEL,
+    PERFORM_EARLY_STOPPING
 )
 from data_loader import load_and_clean_data
 from data_preprocessor import preprocess_data
@@ -39,9 +42,7 @@ def main():
     7. Evaluates the trained model and logs results.
     8. Saves the trained model and preprocessor.
     """
-    
-
-    
+        
     evaluation_logger.info(f"####################################################################")
     evaluation_logger.info(f"Model Training Started: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
@@ -74,17 +75,39 @@ def main():
 
     # Split data into training and testing sets
     # stratify=y ensures that both train and test sets have proportional class distributions
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=TEST_SIZE, random_state=RANDOM_STATE, stratify=y)
+    X_train_full, X_test, y_train_full, y_test = train_test_split(
+        X, y, test_size=TEST_SIZE, random_state=RANDOM_STATE, stratify=y
+    )
+    
+    # Default to the full training set
+    X_train, y_train = X_train_full, y_train_full
+    X_val, y_val = None, None
 
-    global_logger.debug(f"\tTraining data shape: {X_train.shape}")
-    global_logger.debug(f"\tTesting data shape: {X_test.shape}")    
-    global_logger.debug(f"\tTraining labels: {y_train.shape}")
-    global_logger.debug(f"\tTesting labels: {y_test.shape}")
+    # If using a DL model with early stopping, create a validation set from the training data
+    if IS_DEEP_LEARNING_MODEL and PERFORM_EARLY_STOPPING:
+        X_train, X_val, y_train, y_val = train_test_split(
+            X_train_full, y_train_full,
+            test_size=0.2, # 20% of the training data becomes validation data
+            random_state=RANDOM_STATE,
+            stratify=y_train_full
+        )
+        global_logger.debug(f"\tTraining data shape (after validation split): {X_train.shape}")
+        global_logger.debug(f"\tValidation data shape: {X_val.shape}")
+
+    global_logger.debug(f"\tFinal Training data shape: {X_train.shape}")
+    global_logger.debug(f"\tFinal Testing data shape: {X_test.shape}")
+    global_logger.debug(f"\tFinal Training labels: {y_train.shape}")
+    global_logger.debug(f"\tFinal Testing labels: {y_test.shape}")
+    if X_val is not None:
+        global_logger.debug(f"\tFinal Validation data shape: {X_val.shape}")
+        global_logger.debug(f"\tFinal Validation labels: {y_val.shape}")
+
+
 
     start_time = time.time()
 
     # 3. Train Model
-    model = train_model(X_train, y_train, preprocessor) 
+    model = train_model(X_train, y_train, preprocessor, X_val=X_val, y_val=y_val) 
    
     # 4. Evaluate Model
     evaluate_model(model, X_test, y_test)

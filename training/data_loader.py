@@ -4,7 +4,7 @@ import io # Import io for StringIO
 
 from loggers import global_logger, evaluation_logger
 
-from config import (
+from training_config import (
     RAW_DATA_FILE_PATHS,  CLEANED_DATA_OUTPUT_PATH, CLEANED_DATA_PATH,
     PERFORM_DATA_CLEANING, COLUMNS_TO_DROP, PROBLEMATIC_ENDINGS,
     LABEL, LABEL_VALUES, CRITICAL_FEATURES,COLUMNS_TO_UPPERCASE

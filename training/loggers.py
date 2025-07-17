@@ -1,7 +1,7 @@
 import logging
 import logging.config
 
-from config import LOGGING_CONFIG
+from training_config import LOGGING_CONFIG
 
 # Apply the config
 logging.config.dictConfig(LOGGING_CONFIG)

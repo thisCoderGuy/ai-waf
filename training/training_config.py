@@ -182,6 +182,8 @@ RANDOM_STATE = 42
 #                         'fcnn', 'cnn', 'rnn', 'lstm', 'transformer', 'llm'  # For those choose N_SPLITS_CROSS_VALIDATION = small num
 MODEL_TYPE = 'cnn'
 
+IS_DEEP_LEARNING_MODEL = True #  ['fcnn', 'cnn', 'rnn', etc]
+
 MODEL_CLASSES = {
     'svm': 'SVC',
     'random_forest': 'RandomForestClassifier',
@@ -419,18 +421,30 @@ TUNING_PARAMS = {
     }
 }
 
+   #########################################################
+   # --- 2.4. Early Stopping?  ---
+   #########################################################
 
+# Early stopping is a regularization technique that halts training 
+# when the performance on a validation set stops improving, helping prevent overfitting.
+# In Deep Learning: Used frequently
+# In Traditional ML (e.g., Logistic Regression, SVMs, etc.):   Less commonly used, but still possible.
+
+# Early Stopping Parameters for Deep Learning Models
+PERFORM_EARLY_STOPPING = True # New: Set to True to enable early stopping for deep learning models
+EARLY_STOPPING_PATIENCE = 10 # Number of epochs to wait for improvement before stopping
 
 
    #########################################################
-   # --- 2.4. Model Output Configuration ---
+   # --- 2.5. Model Output Configuration ---
    #########################################################
 # Path to save the trained model.
 MODEL_BASE_OUTPUT_DIR = os.path.join('ai-microservice', 'trained-models')
 # Prefix for the generated model and preprocessor filenames (e.g., 'svm_malicious_traffic_model_20250611_1330.joblib')
 MODEL_FILENAME_PREFIX = 'malicious_traffic_model'
 PREPROCESSOR_FILENAME_PREFIX = 'malicious_traffic_preprocessor'
-
+# store the filename of the most recently trained model and its preprocessor. This file will reside within the ai-microservice directory.
+LATEST_MODEL_INFO_PATH = os.path.join('ai-microservice', 'trained-models', 'latest_model_info.txt')
 #########################################################
 # --- Loggers Setup ---
 #########################################################

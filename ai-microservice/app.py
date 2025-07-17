@@ -5,7 +5,8 @@ import pandas as pd
 import os
 
 from config import (
-    MODEL_PATH, PREPROCESSOR_PATH 
+     MODEL_PATH, PREPROCESSOR_PATH, # Existing explicit paths (can be used as fallback/initial defaults)
+    BASE_MODEL_DIR, LATEST_MODEL_INFO_PATH # Paths for dynamic loading
 )
 
 app = Flask(__name__)
@@ -20,27 +21,67 @@ model = None
 preprocessor = None
 
 def load_ml_assets():
-    """Loads the trained model and preprocessor on application startup."""
+    """
+    Loads the trained model and preprocessor on application startup.
+    Prioritizes loading the latest model info from LATEST_MODEL_INFO_PATH.
+    Falls back to explicitly defined MODEL_PATH/PREPROCESSOR_PATH if latest info is not found.
+    """
     global model, preprocessor
-    try:
-        if os.path.exists(MODEL_PATH):
-            model = joblib.load(MODEL_PATH)
-            logging.info(f"Model loaded successfully from {MODEL_PATH}")
-        else:
-            logging.error(f"Model file not found at {MODEL_PATH}")
-            model = None
+   
+    current_model_path = None
+    current_preprocessor_path = None
+    
+    logging.info("Attempting to load ML assets...")
 
-        if os.path.exists(PREPROCESSOR_PATH):
-            preprocessor = joblib.load(PREPROCESSOR_PATH)
-            logging.info(f"Preprocessor loaded successfully from {PREPROCESSOR_PATH}")
+    try:
+        # --- Attempt to load from LATEST_MODEL_INFO_PATH first ---
+        if os.path.exists(LATEST_MODEL_INFO_PATH):
+            logging.info(f"Reading latest model info from {LATEST_MODEL_INFO_PATH}")
+            with open(LATEST_MODEL_INFO_PATH, 'r') as f:
+                model_filename_from_info = None
+                preprocessor_filename_from_info = None
+                for line in f:
+                    if line.startswith("model_filename="):
+                        model_filename_from_info = line.split('=', 1)[1].strip()
+                    elif line.startswith("preprocessor_filename="):
+                        preprocessor_filename_from_info = line.split('=', 1)[1].strip()
+            
+            if model_filename_from_info:
+                current_model_path = os.path.join(BASE_MODEL_DIR, model_filename_from_info)
+                current_preprocessor_path = os.path.join(BASE_MODEL_DIR, preprocessor_filename_from_info) if preprocessor_filename_from_info else None
+                logging.info(f"Determined latest model: {current_model_path}")
+            else:
+                logging.warning(f"'{LATEST_MODEL_INFO_PATH}' found but no valid 'model_filename' entry. Falling back to explicit paths.")
         else:
-            logging.error(f"Preprocessor file not found at {PREPROCESSOR_PATH}")
+            logging.warning(f"'{LATEST_MODEL_INFO_PATH}' not found. Falling back to explicit paths from config.")
+
+        # --- Fallback to explicit paths if latest info couldn't be used ---
+        if current_model_path is None:
+            current_model_path = MODEL_PATH
+            current_preprocessor_path = PREPROCESSOR_PATH
+            logging.info(f"Using explicit model paths: Model={current_model_path}, Preprocessor={current_preprocessor_path}")
+
+        # --- Load the model and preprocessor using the determined paths ---
+        if current_model_path and os.path.exists(current_model_path):
+            # Using the unified load_model_and_preprocessor from model_utils
+            model = joblib.load(current_model_path)            
+            preprocessor = joblib.load(current_preprocessor_path)
+            
+            if model:
+                logging.info(f"ML assets loaded successfully using: Model={current_model_path}, Preprocessor={current_preprocessor_path}")
+            else:
+                logging.error("Failed to load model and/or preprocessor from determined paths.")
+        else:
+            logging.error(f"Model file not found at the determined path: {current_model_path}")
+            model = None
             preprocessor = None
 
     except Exception as e:
-        logging.error(f"Error loading ML assets: {e}")
+        logging.error(f"Error loading ML assets: {e}", exc_info=True)
         model = None
         preprocessor = None
+            
+
 
 # Load ML assets when the Flask app starts
 with app.app_context():
