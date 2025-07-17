@@ -31,6 +31,7 @@ def _add_timestamp_to_filename(file_path: str) -> str:
 
     return new_file_path
 
+
 def _load_raw_log_files():
     """
     Loads and merges CSV log entries from the specified list of files,
@@ -45,41 +46,47 @@ def _load_raw_log_files():
         pandas.DataFrame: A merged DataFrame of raw log entries after line-level filtering.
     """
     all_dfs = []
-    global_logger.info("\dLoading raw log files and applying initial line filtering...")
+    global_logger.info("Loading raw log files and applying initial line filtering...")
     for raw_data_file in RAW_DATA_FILE_PATHS:
         try:
-            with open(raw_data_file, 'r', encoding='utf-8', errors='ignore') as f:
-                raw_lines = f.readlines()
+            # Read the file in chunks to handle potentially large files efficiently
+            # The 'comment' parameter can be used if problematic lines consistently start with a specific character.
+            # However, since PROBLEMATIC_ENDINGS are at the end, we'll filter post-read.
+            chunks = pd.read_csv(
+                raw_data_file,
+                chunksize=10000,  # Adjust chunksize based on available memory and file size
+                on_bad_lines='warn', # Warn about bad lines, don't skip silently
+                encoding='utf-8',
+                errors='ignore'
+            )
+            
+            file_dfs = []
+            for i, chunk in enumerate(chunks):
+                initial_chunk_rows = len(chunk)
+                
+                # Create a boolean mask for rows to keep
+                keep_mask = pd.Series(True, index=chunk.index)
+                for col in chunk.select_dtypes(include=['object']).columns: # Only check string columns
+                    for ending in PROBLEMATIC_ENDINGS:
+                        # Check if any string in the column contains the problematic ending
+                        keep_mask &= ~chunk[col].astype(str).str.contains(ending, case=False, na=False)
+                
+                chunk_filtered = chunk[keep_mask]
+                
+                rows_filtered_out = initial_chunk_rows - len(chunk_filtered)
+                if rows_filtered_out > 0:
+                    global_logger.info(f"  Filtered {rows_filtered_out} rows from chunk {i} of {raw_data_file} based on problematic endings.")
 
-            if not raw_lines:
-                global_logger.warning(f"Warning: {raw_data_file} is empty. Skipping.")
+                file_dfs.append(chunk_filtered)
+
+            if not file_dfs:
+                global_logger.warning(f"Warning: No valid data found in {raw_data_file} after filtering. Skipping.")
                 continue
 
-            header_line = raw_lines[0]
-            data_lines = raw_lines[1:]
-            filtered_data_lines = []
-
-            for data_line in data_lines:
-                stripped_line = data_line.rstrip('\r\n')
-                keep_this_line = True
-                for ending in PROBLEMATIC_ENDINGS:
-                    if stripped_line.endswith(ending):
-                        keep_this_line = False
-                        break
-                if keep_this_line:
-                    filtered_data_lines.append(data_line)
-
-            processed_content = [header_line] + filtered_data_lines
-
-            if len(processed_content) <= 1: # Only header or no valid data lines
-                global_logger.warning(f"Warning: No valid CSV-like data lines found in {raw_data_file} after initial filtering. Skipping.")
-                continue
-
-            data_io = io.StringIO("".join(processed_content))
-            df = pd.read_csv(data_io, on_bad_lines='skip')
+            df = pd.concat(file_dfs, ignore_index=True)
             all_dfs.append(df)
             global_logger.info(f"\tSuccessfully loaded and pre-filtered {raw_data_file}")
-            global_logger.info(f"  (Original lines: {len(raw_lines)}, Filtered lines for CSV parsing: {len(processed_content)})")
+            global_logger.info(f"  (Total rows loaded from file: {len(df)})")
 
         except FileNotFoundError:
             global_logger.warning(f"Warning: Log file not found at {raw_data_file}. Skipping.")

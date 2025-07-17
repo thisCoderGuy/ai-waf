@@ -13,10 +13,24 @@ This section guides you through setting up and running your testbed in **Live Ev
 
 ## **Configuration Steps**
 
-For Live Evaluation Mode, ensure your AI model is trained and accessible by the ai-microservice. The ai-microservice is configured to load the model from the mounted volume.
 
-* **Trained Model Path:** The ai-microservice expects the trained model to be at `/app/model/ai_waf_model.pkl` inside its container, which maps to `./training/trained_models` on your host. Ensure your training process has placed a valid model file there.  
-* **AI Microservice URL:** The coraza-proxy is configured to send traffic to the ai-microservice for classification. This is set via the `AI_MICROSERVICE_URL` environment variable in `docker-compose.yml`.  
+For Live Evaluation Mode, ensure your **AI model** and its **associated preprocessor** are trained and accessible by the ai-microservice. The ai-microservice is configured to load these artifacts from a mounted volume.
+
+* **Trained Model and Preprocessor Paths**:  
+
+  The ai-microservice expects the trained model and preprocessor files to be located within its container at paths like `/app/trained-models/cnn_malicious_traffic_model_20250703_100424.joblib` and `/app/trained-models/cnn_malicious_traffic_preprocessor_20250703_100424.joblib` as defined in your `ai-microservice/config.py`.  
+
+  These paths inside the container map to the `./ai-microservice/trained-models` directory on your host machine. Ensure that your training process has successfully placed both the model (`cnn_malicious_traffic_model_*.joblib`) and the preprocessor (`cnn_malicious_traffic_preprocessor_*.joblib`) files into your host's `./ai-microservice/trained-models` directory, and that their filenames (including timestamps) match what's specified in your ai-microservice's `config.py`.  
+
+  **Example config.py snippet (inside ai-microservice):**  
+
+  ```python
+  BASE_MODEL_DIR = '/app/trained-models/'
+  MODEL_FILENAME = 'cnn_malicious_traffic_model_20250703_100424.joblib'
+  PREPROCESSOR_FILENAME = 'cnn_malicious_traffic_preprocessor_20250703_100424.joblib'
+  ```
+
+
 * Coraza Proxy Logging (for observation, not dataset generation):  
   While this mode focuses on evaluation, the coraza-proxy still logs traffic. You can adjust its logging behavior in `./coraza-proxy/config.go`. The `DefaultAIVerdictLabel` and `DefaultAIVulnerabilityTypeLabel` are set during dataset generation, but in live evaluation, the AI microservice's classification will determine the actual verdict/type. These labels in `config.go` would primarily be for demonstration purposes if you want to hardcode a default for unclassified traffic or for initial setup.  
 

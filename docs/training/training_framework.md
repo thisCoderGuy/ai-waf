@@ -65,15 +65,14 @@ After training, the model's performance is rigorously assessed on an unseen test
   * **Recall (Sensitivity):** Proportion of true positives among all actual positives (minimizing false negatives).  
   * **F1-Score:** Harmonic mean of precision and recall.  
   * **Confusion Matrix:** Detailed breakdown of true/false positives/negatives.  
-  * **ROC AUC:** Receiver Operating Characteristic Area Under the Curve.  
-* **Libraries:** scikit-learn for metrics and matplotlib/seaborn for visualization of results (e.g., confusion matrices, ROC curves).
+  
 
 ### **6\. Model Saving and Versioning**
 
 Once a satisfactory model is trained and evaluated, it is saved for later use in the ai-microservice.
 
 * **Format:** Models are typically saved in formats native to their framework (e.g., .pt or .pth for PyTorch, .h5 or SavedModel format for TensorFlow/Keras, .pkl for scikit-learn models using joblib).  
-* **Output Path:** Saved models are written to the /models/output/ directory inside the container, which is mounted to ./training/trained\_models on your host.  
-* **Versioning:** While not explicitly built into the current docker-compose.yml, it's good practice to implement a naming convention or a dedicated model registry to manage different versions of your trained models.
+* **Output Path:** Saved models are written to the /models/output/ directory inside the container, which is mounted to `./ai-microservice/trained-models` on your host.  
+//TODO Use [MLflow as a Model Repository](https://docs.databricks.com/aws/en/mlflow/)   ([github](https://github.com/mlflow/mlflow))
 
 By following these stages and leveraging the provided Dockerized environment, the training framework ensures a robust and efficient process for developing high-performing AI models for your WAF project.

@@ -62,19 +62,24 @@ Configure how the coraza-proxy service logs the traffic, including the format an
 * **File:** `./coraza-proxy/config.go`  
 * **Parameters to change:**  
   * `loggerFormat`: Set to "csv" or "json" for the desired log file format.  
-  * `loggerPath`: Specify the full path and filename for the output log file within the container (e.g., "/var/log/coraza/coraza-audit-benign.csv"). Remember this path is mapped to `./training/training-data/raw` on your host.  
+  * `logFileName`: Specify the **filename for the output log file** within the container (e.g., "coraza-audit-benign.csv"). Remember this path is mapped to `./training/training-data/raw` on your host.  In addition, a timestamp will be added to the provided filename to ensure uniqueness and prevent overwriting of previous log files.
   * `DefaultAIVerdictLabel`: A label to categorize the overall verdict (e.g., "benign", "malicious").  
   * `DefaultAIVulnerabilityTypeLabel`: A label to specify the type of vulnerability or attack (e.g., "none", "sqli", "xss").
 
 ```go
 // Example snippet from ./coraza-proxy/config.go  
-const loggerFormat \= "csv"  
-const loggerPath \="/var/log/coraza/coraza-audit-benign.csv"  
-// Default values for AI verdict and vulnerability type labels.  
-// These can be modified here without touching the logger logic.  
+const loggerFormat = "csv"  
+const (
+	logBaseDir = "/var/log/coraza/"
+
+	// A timestamp will be added to the provided filename
+	logFileName = "coraza-audit-enum.csv"
+
+	loggerPath = logBaseDir + logFileName // e.g., "/var/log/coraza/coraza-audit-enum.csv"
+)  
 const (  
-    DefaultAIVerdictLabel         \= "benign" // benign or malicious  
-    DefaultAIVulnerabilityTypeLabel \= "none"  // none, sqli, xss, etc.  
+    DefaultAIVerdictLabel         = "benign" // benign or malicious  
+    DefaultAIVulnerabilityTypeLabel = "none"  // none, sqli, xss, etc.  
 )
 ```
 

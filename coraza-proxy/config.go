@@ -6,7 +6,15 @@ import (
 
 // Custom log file
 const loggerFormat = "csv"
-const loggerPath = "/var/log/coraza/coraza-audit-enum.csv" // e.g., "/var/log/coraza/coraza-audit-benign.csv"
+
+const (
+	logBaseDir = "/var/log/coraza/"
+
+	// A timestamp will be added to the provided filename
+	logFileName = "coraza-audit-enum.csv"
+
+	loggerPath = logBaseDir + logFileName // e.g., "/var/log/coraza/coraza-audit-enum.csv"
+)
 
 // Default values for AI verdict and vulnerability type labels.
 // These can be modified here without touching the logger logic.
