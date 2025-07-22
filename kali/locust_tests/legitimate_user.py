@@ -13,6 +13,7 @@ class LegitimateUser(TaskSet):
         """
         Called when a LegitimateUser starts. Always sets a random legitimate User-Agent.
         """
+        
         self.client.headers["User-Agent"] = random.choice(AppConfig.USER_AGENTS)
         self.cart_items = {} # {product_id: quantity}
 

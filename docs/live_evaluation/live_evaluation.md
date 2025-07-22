@@ -39,8 +39,8 @@ For Live Evaluation Mode, ensure your **AI model** and its **associated preproce
   // These values are primarily for dataset generation.  
   // In Live Evaluation, the AI Microservice's verdict will override the default.  
   const (  
-      DefaultAIVerdictLabel         = "benign" // benign or malicious  
-      DefaultAIVulnerabilityTypeLabel = "none"  // none, sqli, xss, etc.  
+      DefaultAIVerdictLabel         = "unkniwn" // benign or malicious  
+      DefaultAIVulnerabilityTypeLabel = "unkniwn"  // none, sqli, xss, etc.  
   )
   ```
 

@@ -1,19 +1,26 @@
+import time
+# Define the path to the shared config file
+
+        
 class AppConfig:
     """
     Centralized configuration for application endpoints, parameters, and attack payloads.
     This makes the code more extensible and easier to manage.
     """
+
+    SHARED_CONFIG_FILE_PATH = "/shared_data/traffic_type.txt"
+
     # Base URL for the application (can be overridden by Locust CLI --host)
     BASE_HOST = "http://localhost:8080"
 
-    # --- Task Weights (moved to config) ---
-    USER_TASK_WEIGHTS = { # ints only
-        "LegitimateUser": 0,
-        "SQLiAttacker": 0,
-        "XSSAttacker": 0,
-        "DirectoryTraversalAttacker": 0,
-        "EnumerationAttacker": 10,
-        "CSRFAttacker": 0,
+    # --- Task duration (in seconds) ---
+    PHASE_LENGTHS_SECONDS = { # ints only
+        "LegitimateUser": 2400, # 1200 sec = 20mn
+        "SQLiAttacker": 600, # 600 sec = 10mn
+        "XSSAttacker": 600, # 300 sec = 5mn
+        "DirectoryTraversalAttacker": 600,
+        "EnumerationAttacker": 600,
+        "CSRFAttacker": 600,
     }
     
 

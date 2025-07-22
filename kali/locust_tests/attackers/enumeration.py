@@ -11,6 +11,7 @@ class EnumerationAttacker(BaseAttacker):
     """
     Simulates attempts to enumerate valid users, product IDs, or other resources.
     """
+
     @task(3)
     def user_enumeration_login_post(self):
         """

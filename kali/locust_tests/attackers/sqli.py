@@ -6,7 +6,6 @@ from ..base_attacker import BaseAttacker
 from ..payload_generators.sqli import SQLiPayloadGenerator
 from ..obfuscators import PayloadObfuscator # Needed for direct path obfuscation
 from ..config import AppConfig # Needed for common query params, endpoints
-
 class SQLiAttacker(BaseAttacker):
     """
     Simulates a user attempting SQL Injection attacks using dynamically generated payloads.

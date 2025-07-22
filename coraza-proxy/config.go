@@ -11,17 +11,18 @@ const (
 	logBaseDir = "/var/log/coraza/"
 
 	// A timestamp will be added to the provided filename
-	logFileName = "coraza-audit-enum.csv"
+	logFileName = "coraza-dataset.csv"
 
 	loggerPath = logBaseDir + logFileName // e.g., "/var/log/coraza/coraza-audit-enum.csv"
 )
 
 // Default values for AI verdict and vulnerability type labels.
-// These can be modified here without touching the logger logic.
-const (
-	DefaultAIVerdictLabel           = "malicious" //benign or malicious
-	DefaultAIVulnerabilityTypeLabel = "enum"      //none, sqli, xss, dta, enum, csrf, etc
-)
+const DefaultAIVerdictLabel = "UNKNOWN"
+const DefaultAIVulnerabilityTypeLabel = "UNKNOWN_VULNERABILITY"
+
+// File signaling values for AI verdict and vulnerability type labels.
+const SHARED_CONFIG_FILE_PATH = "/shared_data/traffic_type.txt"
+
 const (
 	aiMicroserviceURL = "http://ai-microservice:5000/classify"
 	targetAppURL      = "http://juice-shop:3000"

@@ -273,7 +273,7 @@ MODEL_PARAMS = {
             # 'weight': [1.0, 10.0] # Needs to be a torch.Tensor, converted inside the wrapper
         },
         'dropout_rate': 0.5, 
-        'hidden_size': 64,
+        'hidden_size': 256,
         'num_classes': 2,
         'numerical_hidden_size': 32,
         'text_embed_dims': {

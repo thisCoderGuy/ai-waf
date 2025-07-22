@@ -14,6 +14,7 @@ class CSRFAttacker(BaseAttacker):
     This assumes the application expects a CSRF token for these actions.
     """
 
+
     def _send_csrf_request(self, method: str, path_key: str, data: dict = None, params: dict = None,
                            name_suffix: str = "", path_format_args: dict = None, include_invalid_token: bool = False):
         """

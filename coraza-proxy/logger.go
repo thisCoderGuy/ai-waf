@@ -43,6 +43,7 @@ var wazuhLogger *CorazaLogger
 
 // NewCorazaLogger creates a new CorazaLogger based on the provided configuration.
 func NewCorazaLogger(config LoggerConfig) (*CorazaLogger, error) {
+	fmt.Print("Starting##########################################")
 
 	dir := filepath.Dir(config.Filename)
 	filenameWithExt := filepath.Base(config.Filename)
@@ -55,6 +56,8 @@ func NewCorazaLogger(config LoggerConfig) (*CorazaLogger, error) {
 	newFilename := fmt.Sprintf("%s_%s%s", baseName, timestamp, extension)
 
 	finalPath := filepath.Join(dir, newFilename)
+
+	fmt.Print("finalPath: ", finalPath, "\n")
 
 	file, err := os.OpenFile(finalPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
@@ -179,6 +182,41 @@ func (c *CorazaLogger) writeCSVHeader() error {
 	return c.csvWriter.Error()
 }
 
+// readTrafficLabelFromFile attempts to read and parse the traffic label from the shared file.
+// It returns the aiVerdict and aiVerdictLabel, or default values if an error occurs.
+func readTrafficLabelFromFile() (string, string) {
+	content, err := os.ReadFile(SHARED_CONFIG_FILE_PATH)
+	if err != nil {
+		// Log the error but return defaults to avoid crashing
+		fmt.Printf("[%s] Coraza Logger: ERROR reading shared traffic label file %s: %v\n", time.Now().Format(time.RFC3339), SHARED_CONFIG_FILE_PATH, err)
+		return DefaultAIVerdictLabel, DefaultAIVulnerabilityTypeLabel
+	}
+
+	// Trim whitespace and newlines
+	fullLabel := strings.TrimSpace(string(content))
+
+	// Split the label into verdict and type
+	parts := strings.SplitN(fullLabel, "_", 2) // Split only on the first underscore
+
+	var aiVerdict string
+	var aiVulnerabilityType string
+
+	if len(parts) >= 2 {
+		aiVerdict = parts[0]
+		aiVulnerabilityType = parts[1]
+	} else if len(parts) == 1 {
+		// If only one part (e.g., "BENIGN"), use it as verdict, and type remains default
+		aiVerdict = parts[0]
+		aiVulnerabilityType = DefaultAIVulnerabilityTypeLabel // Fallback
+	} else {
+		// Empty file or malformed, return defaults
+		fmt.Printf("[%s] Coraza Logger: WARNING: Empty or malformed traffic label in %s: '%s'. Using defaults.\n", time.Now().Format(time.RFC3339), SHARED_CONFIG_FILE_PATH, fullLabel)
+		return DefaultAIVerdictLabel, DefaultAIVulnerabilityTypeLabel
+	}
+
+	return aiVerdict, aiVulnerabilityType
+}
+
 // LogTransaction dispatches logging to either JSON or CSV format.
 func (c *CorazaLogger) LogTransaction(
 	tx types.Transaction,
@@ -188,10 +226,7 @@ func (c *CorazaLogger) LogTransaction(
 	aiVerdict string,
 ) {
 
-	// Initialize new fields with default values from the same package (main)
-	// No explicit import needed, just use the constant name directly.
-	aiVerdictLabel := DefaultAIVerdictLabel
-	aiVulnerabilityTypeLabel := DefaultAIVulnerabilityTypeLabel
+	aiVerdictLabel, aiVulnerabilityTypeLabel := readTrafficLabelFromFile()
 
 	if c.config.Format == "json" {
 		c.logTransactionJSON(tx, req, res, aiScore, aiVerdict, aiVerdictLabel, aiVulnerabilityTypeLabel)

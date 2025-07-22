@@ -11,7 +11,6 @@ class XSSAttacker(BaseAttacker):
     Simulates a user attempting Cross-Site Scripting (XSS) attacks using dynamically generated payloads.
     """
 
-
     @task(5)
     def xss_search_fuzzing_get(self):
         payload = XSSPayloadGenerator.get_random_xss_payload()

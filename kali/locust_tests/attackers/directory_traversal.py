@@ -11,6 +11,7 @@ class DirectoryTraversalAttacker(BaseAttacker):
     """
     Simulates a user attempting Directory Traversal (Path Traversal) attacks using dynamically generated payloads.
     """
+
    
     def _send_dt_request(self, method, endpoint_key, path_format_args=None, params=None, data=None, name_suffix=""):
         """Wrapper for _send_request specifically for Directory Traversal payloads."""

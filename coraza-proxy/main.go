@@ -6,7 +6,6 @@ import (
 	"time" // Added for potential future use, e.g. server timeouts
 )
 
-
 func init() {
 	var err error
 
@@ -19,7 +18,7 @@ func init() {
 	if err != nil {
 		log.Fatalf("Failed to create Coraza logger: %v", err)
 	}
-	SetGlobalLogger(loggerInstance) 
+	SetGlobalLogger(loggerInstance)
 	//GetGlobalLogger().LogInfo("Logger ready!")
 	//log.Println("Logger ready!")
 
@@ -32,12 +31,12 @@ func init() {
 	if err != nil {
 		log.Fatalf("Failed to create Wazuh Coraza logger: %v", err)
 	}
-	SetWazuhLogger(wazuhLoggerInstance) 
+	SetWazuhLogger(wazuhLoggerInstance)
 	//GetGlobalLogger().LogInfo("Logger ready!")
 	//log.Println("Logger ready!")
 
 	// Initialize WAF
-	err = InitializeWAF()
+	err = InitializeWAF() // waf.go
 	if err != nil {
 		log.Fatalf("Failed to initialize WAF: %v. ", err)
 	}
@@ -45,7 +44,7 @@ func init() {
 	//GetGlobalLogger().LogInfo("WAF ready!")
 
 	//Initialize Proxy
-	err = InitializeReverseProxy()
+	err = InitializeReverseProxy() //reverse-proxy.go
 	if err != nil {
 		log.Fatalf("Failed to initialize Reverse Proxy: %v.", err)
 	}
@@ -53,14 +52,16 @@ func init() {
 	//GetGlobalLogger().LogInfo("Reverse Proxy ready!")
 }
 
-
-// The wafHandler acts as a pre-proxy WAF, inspecting and potentially blocking requests 
+// The wafHandler acts as a pre-proxy WAF, inspecting and potentially blocking requests
 // before they even reach the reverseProxy for forwarding. The reverseProxy then handles
-//  the actual communication with the backend application, and its ModifyResponse function 
+//
+//	the actual communication with the backend application, and its ModifyResponse function
+//
 // allows the wafHandler (specifically, the WAF transaction) to inspect the responses coming
-//  from the backend before they are sent back to the client. 
+//
+//	from the backend before they are sent back to the client.
 func main() {
-	
+
 	// Register the wafHandler to handle all incoming HTTP requests.
 	http.HandleFunc("/", WAFHandler) //  "/": This is the URL path being registered. In this case, it's the root path (/), meaning this handler will be invoked for all incoming requests to the server regardless of the path.
 	port := ":8080"                  // Consider making port configurable
@@ -90,5 +91,4 @@ func main() {
 		}
 	}()
 
-	
 }

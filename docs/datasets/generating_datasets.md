@@ -25,33 +25,33 @@ Adjust the timing parameters for traffic generation within the kali container.
 * **File:** `./kali/startup.sh`  
 * **Parameters to change:**  
   * `DELAY_SECONDS`: Controls the delay before traffic generation begins.  
-  * `--run-time`: Determines the duration for which traffic will be generated (e.g., 10m for 10 minutes).
+  * `--run-time`: Determines the maximum duration for which traffic will be generated (e.g., 10m for 10 minutes).
 
 ```bash
 # Example snippet from ./kali/startup.sh  
 DELAY_SECONDS=60 # Delay before traffic generation starts  
 # ...  
 # Command to start traffic generation (e.g., Locust)  
-locust --run-time 10m # Duration of traffic generation
+locust --run-time 240m # Maximum duration of traffic generation
 ```
 
 ### **Type of Traffic Generated**
 
-Define the types of user behavior and attacks you want to simulate.
+Define the types and durations of user behavior and attacks you want to simulate.
 
 * **File:** `./kali/locust_tests/config.py`  
 * **Parameters to change:**  
-  * `USER_TASK_WEIGHTS`: A dictionary where keys are user/attacker types and values are their relative weights (integers only). Higher weights mean more frequent simulation of that behavior.
+  * `PHASE_LENGTHS_SECONDS`: A dictionary where keys are user/attacker types and values are their relative durations (in seconds). 
 
 ```python
 # Example snippet from ./kali/locust_tests/config.py  
-USER_TASK_WEIGHTS = { # ints only  
-    "LegitimateUser": 12,  
-    "SQLiAttacker": 0,  
-    "XSSAttacker": 0,  
-    "DirectoryTraversalAttacker": 0,  
-    "EnumerationAttacker": 0,  
-    "CSRFAttacker": 0,  
+PHASE_LENGTHS_SECONDS = { # ints only  
+    "LegitimateUser":  1200,  
+    "SQLiAttacker": 300,  
+    "XSSAttacker": 200,  
+    "DirectoryTraversalAttacker": 100,  
+    "EnumerationAttacker": 100,  
+    "CSRFAttacker": 100,  
 }
 ```
 
@@ -62,9 +62,9 @@ Configure how the coraza-proxy service logs the traffic, including the format an
 * **File:** `./coraza-proxy/config.go`  
 * **Parameters to change:**  
   * `loggerFormat`: Set to "csv" or "json" for the desired log file format.  
-  * `logFileName`: Specify the **filename for the output log file** within the container (e.g., "coraza-audit-benign.csv"). Remember this path is mapped to `./training/training-data/raw` on your host.  In addition, a timestamp will be added to the provided filename to ensure uniqueness and prevent overwriting of previous log files.
-  * `DefaultAIVerdictLabel`: A label to categorize the overall verdict (e.g., "benign", "malicious").  
-  * `DefaultAIVulnerabilityTypeLabel`: A label to specify the type of vulnerability or attack (e.g., "none", "sqli", "xss").
+  * `logFileName`: Specify the **filename for the output log file** within the container (e.g., "coraza-dataset.csv"). Remember this path is mapped to `./training/training-data/raw` on your host.  In addition, a timestamp will be added to the provided filename to ensure uniqueness and prevent overwriting of previous log files.
+  * `DefaultAIVerdictLabel`: A default label to categorize the overall verdict (e.g., "unknown").  
+  * `DefaultAIVulnerabilityTypeLabel`: A default label to specify the type of vulnerability or attack (e.g., "unknown").
 
 ```go
 // Example snippet from ./coraza-proxy/config.go  
@@ -73,13 +73,13 @@ const (
 	logBaseDir = "/var/log/coraza/"
 
 	// A timestamp will be added to the provided filename
-	logFileName = "coraza-audit-enum.csv"
+	logFileName = "coraza-dataset.csv"
 
 	loggerPath = logBaseDir + logFileName // e.g., "/var/log/coraza/coraza-audit-enum.csv"
 )  
 const (  
-    DefaultAIVerdictLabel         = "benign" // benign or malicious  
-    DefaultAIVulnerabilityTypeLabel = "none"  // none, sqli, xss, etc.  
+    DefaultAIVerdictLabel         = "unknown" // benign or malicious  
+    DefaultAIVulnerabilityTypeLabel = "unknown"  // none, sqli, xss, etc.  
 )
 ```
 
