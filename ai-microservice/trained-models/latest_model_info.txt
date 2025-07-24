@@ -1,2 +1,1 @@
-model_filename=cnn_malicious_traffic_model_20250717_214717.joblib
-preprocessor_filename=cnn_malicious_traffic_preprocessor_20250717_214717.joblib
+latest_model_version_dir=fcnn_20250724_184758

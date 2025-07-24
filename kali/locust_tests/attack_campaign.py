@@ -17,7 +17,7 @@ from locust_tests.attackers.csrf import CSRFAttacker
 def set_traffic_label(verdict: str, type: str):
     """Writes the current traffic label to the shared file."""
     try:
-        combined_label = f"{verdict.upper()}_{type.upper()}"
+        combined_label = f"{verdict}_{type}"
         with open(AppConfig.SHARED_CONFIG_FILE_PATH, "w") as f:
             f.write(combined_label)
         print(f"[{time.time()}] Set traffic label to: {combined_label}")

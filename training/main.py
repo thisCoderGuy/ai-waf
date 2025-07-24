@@ -12,7 +12,7 @@ from training_config import (
     TEST_SIZE,
     REQUIRED_DIRS, 
     RANDOM_STATE,
-    MODEL_TYPE,
+    MODEL_ARCHITECTURE,
     IS_DEEP_LEARNING_MODEL,
     PERFORM_EARLY_STOPPING
 )
@@ -61,7 +61,7 @@ def main():
     if not PERFORM_TRAINING:
         return
 
-    # 2. Preprocess Data (Feature extraction) (No preprocessing necessary for deep learning as they use their own embedding layers)
+    # 2. Preprocess Data (Feature extraction) 
     preprocessor, X, y = preprocess_data(df)
     global_logger.debug(f"{type(X)=}\n{type(y)=}")
 
@@ -107,7 +107,7 @@ def main():
     start_time = time.time()
 
     # 3. Train Model
-    model = train_model(X_train, y_train, preprocessor, X_val=X_val, y_val=y_val) 
+    model, model_params = train_model(X_train, y_train, preprocessor, X_val=X_val, y_val=y_val) 
    
     # 4. Evaluate Model
     evaluate_model(model, X_test, y_test)
@@ -117,7 +117,7 @@ def main():
     evaluation_logger.info(f"\t---Total training and evaluation time ---\n\t{total_duration:.2f} seconds")
 
     # 5. Save Model and Preprocessor 
-    save_model_and_preprocessor(model, preprocessor)
+    save_model_and_preprocessor(model, preprocessor, model_params)
 
     
 if __name__ == "__main__":

@@ -4,7 +4,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.model_selection import StratifiedKFold, GridSearchCV, RandomizedSearchCV
 from sklearn.pipeline import Pipeline # Useful for combining preprocessor and model
-from sklearn.neural_network import MLPClassifier # <--- NEW IMPORT for scikit-learn MLP
+from sklearn.neural_network import MLPClassifier 
 
 from MLP_wrapper import PyTorchMLPClassifier 
 from CNN_wrapper import CNNClassifier
@@ -16,7 +16,7 @@ from loggers import global_logger, evaluation_logger
 import numpy as np
 
 from training_config import (
-    MODEL_TYPE,
+    MODEL_ARCHITECTURE,
     IS_DEEP_LEARNING_MODEL,
     MODEL_CLASSES,
     TYPE_OF_PREPROCESSING,
@@ -28,36 +28,34 @@ from training_config import (
     RANDOM_SEARCH_N_ITER, MODEL_PARAMS, TUNING_PARAMS
 )
 
-def get_model(preprocessor):
+def get_model_and_params():
     """
-    Returns an initialized model based on the specified type and parameters.
+    Returns an initialized model based on the specified type and its parameters.
     """
 
-    model_type = MODEL_TYPE.lower()
-    model_class_name = MODEL_CLASSES.get(model_type)
+    model_architecture = MODEL_ARCHITECTURE.lower()
+    model_class_name = MODEL_CLASSES.get(model_architecture)
     if model_class_name is None:
-        raise ValueError(f"Unknown model type: {model_type}. Not found in MODEL_CLASSES.")
+        raise ValueError(f"Unknown model type: {model_architecture}. Not found in MODEL_CLASSES.")
 
     # Dynamically get the class object from its name
     # This requires all model classes to be imported in the current scope
     try:
         ModelClass = globals()[model_class_name]
     except KeyError:
-        raise ImportError(f"Model class '{model_class_name}' for model type '{model_type}' is not imported or defined in the current scope.")
+        raise ImportError(f"Model class '{model_class_name}' for model type '{model_architecture}' is not imported or defined in the current scope.")
 
 
     # Dynamically select model and its parameters
-    model_params = MODEL_PARAMS.get(MODEL_TYPE, {})
+    model_params = MODEL_PARAMS.get(MODEL_ARCHITECTURE, {})
     
-    if  TYPE_OF_PREPROCESSING == 'dense':
-        model_params['preprocessor'] = preprocessor
 
     if 'random_state' in model_params and model_params['random_state'] is None:
         model_params['random_state'] = RANDOM_STATE
 
     model = ModelClass(**model_params)
 
-    return model
+    return model, model_params
 
 def train_model(X_train, y_train, preprocessor, X_val=None, y_val=None):
     """
@@ -72,25 +70,25 @@ def train_model(X_train, y_train, preprocessor, X_val=None, y_val=None):
         object: The trained final model (or the best estimator from tuning).
     """
     evaluation_logger.info("--- Model Training ---")
-    log_message = f"""\tArchitecture Used: {MODEL_TYPE.upper()}
-\tModel Parameters: {MODEL_PARAMS[MODEL_TYPE]}
+    log_message = f"""\tArchitecture Used: {MODEL_ARCHITECTURE.upper()}
+\tModel Parameters: {MODEL_PARAMS[MODEL_ARCHITECTURE]}
 \tHyperparameter tuning: {PERFORM_TUNING}
 \tHyperparameter tuning method: {CV_AND_TUNING_METHOD}
 \tCross-Validation Splits: {N_SPLITS_CROSS_VALIDATION}
 \tNum of hyperparameter combinations in Random Search: {RANDOM_SEARCH_N_ITER}
 \tRandom State: {RANDOM_STATE}
-\tTuning Parameters: {TUNING_PARAMS[MODEL_TYPE]}"""
+\tTuning Parameters: {TUNING_PARAMS[MODEL_ARCHITECTURE]}"""
     evaluation_logger.info(log_message) 
     
     
-    model = get_model(preprocessor)
+    model, model_params = get_model_and_params()
 
     if PERFORM_TUNING and not IS_DEEP_LEARNING_MODEL:
-        global_logger.info(f"Starting Hyperparameter Tuning ({CV_AND_TUNING_METHOD.upper()} Search) using {N_SPLITS_CROSS_VALIDATION}-fold Stratified Cross-Validation  for {MODEL_TYPE.upper()} model...")
-        param_grid = TUNING_PARAMS.get(MODEL_TYPE)
+        global_logger.info(f"Starting Hyperparameter Tuning ({CV_AND_TUNING_METHOD.upper()} Search) using {N_SPLITS_CROSS_VALIDATION}-fold Stratified Cross-Validation  for {MODEL_ARCHITECTURE.upper()} model...")
+        param_grid = TUNING_PARAMS.get(MODEL_ARCHITECTURE)
 
         if not param_grid:
-            raise ValueError(f"No tuning parameters defined for model type: {MODEL_TYPE} in TUNING_PARAMS.")
+            raise ValueError(f"No tuning parameters defined for model type: {MODEL_ARCHITECTURE} in TUNING_PARAMS.")
 
         estimator = model
 
@@ -123,7 +121,7 @@ def train_model(X_train, y_train, preprocessor, X_val=None, y_val=None):
         search_cv.fit(X_train, y_train)
 
         global_logger.info("\nHyperparameter Tuning Complete.")
-        global_logger.info(f"Best parameters for {MODEL_TYPE.upper()}: {search_cv.best_params_}")
+        global_logger.info(f"Best parameters for {MODEL_ARCHITECTURE.upper()}: {search_cv.best_params_}")
         global_logger.info(f"Best cross-validation F1-score: {search_cv.best_score_:.4f}")
 
         final_model = search_cv.best_estimator_ # The model with the best parameters
@@ -134,13 +132,13 @@ def train_model(X_train, y_train, preprocessor, X_val=None, y_val=None):
         if IS_DEEP_LEARNING_MODEL and PERFORM_EARLY_STOPPING:
             global_logger.info(f"Training with early stopping using the provided validation set.")
             # Train with early stopping using the validation set passed from main.py
-            final_model.fit(X_train, y_train, X_val=X_val, y_val=y_val)
+            final_model.fit(X_train, y_train, preprocessor, X_val=X_val, y_val=y_val)
         else:
             # Train without early stopping
-            final_model.fit(X_train, y_train)
+            final_model.fit(X_train, y_train, preprocessor)
             
-        global_logger.info(f"{MODEL_TYPE.upper()} model training complete.")
+        global_logger.info(f"{MODEL_ARCHITECTURE.upper()} model training complete.")
 
     if IS_DEEP_LEARNING_MODEL:
         evaluation_logger.info(final_model.model)
-    return final_model
+    return final_model, model_params

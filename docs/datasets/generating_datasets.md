@@ -25,14 +25,13 @@ Adjust the timing parameters for traffic generation within the kali container.
 * **File:** `./kali/startup.sh`  
 * **Parameters to change:**  
   * `DELAY_SECONDS`: Controls the delay before traffic generation begins.  
-  * `--run-time`: Determines the maximum duration for which traffic will be generated (e.g., 10m for 10 minutes).
+  * `LOCUST_RUN_TIME`: Determines the maximum duration for which traffic will be generated (e.g., 10m for 10 minutes).
 
 ```bash
 # Example snippet from ./kali/startup.sh  
-DELAY_SECONDS=60 # Delay before traffic generation starts  
+DELAY_SECONDS="${DELAY_SECONDS:-10}"
 # ...  
-# Command to start traffic generation (e.g., Locust)  
-locust --run-time 240m # Maximum duration of traffic generation
+LOCUST_RUN_TIME="${LOCUST_RUN_TIME:-5h}" # Maximum duration of traffic generation
 ```
 
 ### **Type of Traffic Generated**
@@ -45,7 +44,7 @@ Define the types and durations of user behavior and attacks you want to simulate
 
 ```python
 # Example snippet from ./kali/locust_tests/config.py  
-PHASE_LENGTHS_SECONDS = { # ints only  
+PHASE_LENGTHS_SECONDS = { # in seconds
     "LegitimateUser":  1200,  
     "SQLiAttacker": 300,  
     "XSSAttacker": 200,  
@@ -63,8 +62,8 @@ Configure how the coraza-proxy service logs the traffic, including the format an
 * **Parameters to change:**  
   * `loggerFormat`: Set to "csv" or "json" for the desired log file format.  
   * `logFileName`: Specify the **filename for the output log file** within the container (e.g., "coraza-dataset.csv"). Remember this path is mapped to `./training/training-data/raw` on your host.  In addition, a timestamp will be added to the provided filename to ensure uniqueness and prevent overwriting of previous log files.
-  * `DefaultAIVerdictLabel`: A default label to categorize the overall verdict (e.g., "unknown").  
-  * `DefaultAIVulnerabilityTypeLabel`: A default label to specify the type of vulnerability or attack (e.g., "unknown").
+  * `DefaultAIVerdictLabel`: A default label to categorize the overall verdict (e.g., "UNKNOWN").  
+  * `DefaultAIVulnerabilityTypeLabel`: A default label to specify the type of vulnerability or attack (e.g., "UNKNOWN_VULNERABILITY").
 
 ```go
 // Example snippet from ./coraza-proxy/config.go  
@@ -78,8 +77,8 @@ const (
 	loggerPath = logBaseDir + logFileName // e.g., "/var/log/coraza/coraza-audit-enum.csv"
 )  
 const (  
-    DefaultAIVerdictLabel         = "unknown" // benign or malicious  
-    DefaultAIVulnerabilityTypeLabel = "unknown"  // none, sqli, xss, etc.  
+    DefaultAIVerdictLabel         = "UNKNOWN" // benign or malicious  
+    DefaultAIVulnerabilityTypeLabel = "UNKNOWN_VULNERABILITY"  // none, sqli, xss, etc.  
 )
 ```
 
@@ -87,7 +86,7 @@ const (
 
 Once you have configured the above parameters, use the following Docker Compose command to start the necessary services for dataset generation:  
 
-`docker compose --profile app-core up --build -d`
+`docker compose --profile app-core --profile dataset-gen up --build -d`
 
 This command will:
 
@@ -97,12 +96,18 @@ This command will:
 
 You can access the Kali Linux container's terminal to initiate traffic generation or perform manual attacks:  
 
-`docker exec -it kali /bin/bash`
+`docker exec -it kali-locust /bin/bash`
+
+You can review logs from the containers, e.g.:  
+
+`docker compose logs kali`
+
+`docker compose logs coraza-proxy`
 
 ## **Stopping the Dataset Generation**
 
 After your desired data generation duration, you can stop the running services to collect your datasets:  
 
-`docker compose --profile app-core down`
+`docker compose --profile app-core --profile dataset-gen down`
 
 This command will stop and remove the app-core services, leaving your generated data in the `./training/training-data/raw` directory on your host, ready for the **Model Training Mode**.

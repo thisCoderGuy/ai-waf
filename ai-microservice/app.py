@@ -1,12 +1,14 @@
 from flask import Flask, request, jsonify
 import logging
 import joblib
+import json
 import pandas as pd
 import os
 
 from config import (
      MODEL_PATH, PREPROCESSOR_PATH, # Existing explicit paths (can be used as fallback/initial defaults)
-    BASE_MODEL_DIR, LATEST_MODEL_INFO_PATH # Paths for dynamic loading
+    BASE_MODEL_DIR, LATEST_MODEL_INFO_PATH, # Paths for dynamic loading
+    TRAINING_TYPE, MODEL_TYPE
 )
 
 app = Flask(__name__)
@@ -21,51 +23,87 @@ model = None
 preprocessor = None
 
 def load_ml_assets():
-    """
-    Loads the trained model and preprocessor on application startup.
-    Prioritizes loading the latest model info from LATEST_MODEL_INFO_PATH.
-    Falls back to explicitly defined MODEL_PATH/PREPROCESSOR_PATH if latest info is not found.
-    """
     global model, preprocessor
    
     current_model_path = None
     current_preprocessor_path = None
     
+    training_type_from_info = None
+    model_type_name_from_info = None 
+    model_params_from_info = {} 
+    
     logging.info("Attempting to load ML assets...")
 
     try:
         # --- Attempt to load from LATEST_MODEL_INFO_PATH first ---
+        latest_model_version_dir = None
         if os.path.exists(LATEST_MODEL_INFO_PATH):
-            logging.info(f"Reading latest model info from {LATEST_MODEL_INFO_PATH}")
+            logging.info(f"Reading latest model info pointer from {LATEST_MODEL_INFO_PATH}")
             with open(LATEST_MODEL_INFO_PATH, 'r') as f:
-                model_filename_from_info = None
-                preprocessor_filename_from_info = None
                 for line in f:
-                    if line.startswith("model_filename="):
-                        model_filename_from_info = line.split('=', 1)[1].strip()
-                    elif line.startswith("preprocessor_filename="):
-                        preprocessor_filename_from_info = line.split('=', 1)[1].strip()
+                    if line.startswith("latest_model_version_dir="):
+                        latest_model_version_dir = line.split('=', 1)[1].strip()
+                        break
             
-            if model_filename_from_info:
-                current_model_path = os.path.join(BASE_MODEL_DIR, model_filename_from_info)
-                current_preprocessor_path = os.path.join(BASE_MODEL_DIR, preprocessor_filename_from_info) if preprocessor_filename_from_info else None
-                logging.info(f"Determined latest model: {current_model_path}")
+            if latest_model_version_dir:
+                model_version_full_path = os.path.join(BASE_MODEL_DIR, latest_model_version_dir)
+                model_info_filepath = os.path.join(model_version_full_path, "model_info.txt")
+
+                if os.path.exists(model_info_filepath):
+                    logging.info(f"Reading model metadata from {model_info_filepath}")
+                    model_filename_from_info = None
+                    preprocessor_filename_from_info = None
+                    with open(model_info_filepath, 'r') as f:
+                        for line in f:
+                            if line.startswith("model_filename="):
+                                model_filename_from_info = line.split('=', 1)[1].strip()
+                            elif line.startswith("preprocessor_filename="):
+                                preprocessor_filename_from_info = line.split('=', 1)[1].strip()
+                            elif line.startswith("training_type="):
+                                training_type_from_info = line.split('=', 1)[1].strip()
+                            elif line.startswith("model_type="):
+                                model_type_name_from_info = line.split('=', 1)[1].strip()
+                            elif line.startswith("model_params="):
+                                try:
+                                    params_str = line.split('=', 1)[1].strip()
+                                    model_params_from_info = json.loads(params_str)
+                                except json.JSONDecodeError as json_err:
+                                    logging.error(f"Failed to parse model_params from '{model_info_filepath}': {json_err}. Using empty params.")
+                                    model_params_from_info = {}
+                    
+                    if model_filename_from_info and training_type_from_info and model_type_name_from_info:
+                        current_model_path = os.path.join(model_version_full_path, model_filename_from_info)
+                        current_preprocessor_path = os.path.join(model_version_full_path, preprocessor_filename_from_info) if preprocessor_filename_from_info else None
+                        logging.info(f"Determined latest model: {current_model_path} (Training Type: {training_type_from_info}, Model Type: {model_type_name_from_info})")
+                    else:
+                        logging.warning(f"Metadata in '{model_info_filepath}' is incomplete. Falling back to explicit paths.")
+                else:
+                    logging.warning(f"Model info file '{model_info_filepath}' not found within version directory. Falling back to explicit paths.")
             else:
-                logging.warning(f"'{LATEST_MODEL_INFO_PATH}' found but no valid 'model_filename' entry. Falling back to explicit paths.")
+                logging.warning(f"'{LATEST_MODEL_INFO_PATH}' found but no 'latest_model_version_dir' entry. Falling back to explicit paths.")
         else:
             logging.warning(f"'{LATEST_MODEL_INFO_PATH}' not found. Falling back to explicit paths from config.")
 
         # --- Fallback to explicit paths if latest info couldn't be used ---
         if current_model_path is None:
-            current_model_path = MODEL_PATH
+            current_model_path = MODEL_PATH 
             current_preprocessor_path = PREPROCESSOR_PATH
-            logging.info(f"Using explicit model paths: Model={current_model_path}, Preprocessor={current_preprocessor_path}")
+            training_type_from_info = TRAINING_TYPE
+            model_type_name_from_info = MODEL_TYPE
+            model_params_from_info = {} # Default to empty if falling back
+            logging.info(f"Using explicit model paths from config: Model={current_model_path}, Preprocessor={current_preprocessor_path}")
 
-        # --- Load the model and preprocessor using the determined paths ---
+        # --- Load the model and preprocessor using the determined paths and types ---
         if current_model_path and os.path.exists(current_model_path):
-            # Using the unified load_model_and_preprocessor from model_utils
-            model = joblib.load(current_model_path)            
-            preprocessor = joblib.load(current_preprocessor_path)
+            from ..training import model_utils # Ensure this import is correct relative to your app.py
+            model, preprocessor = model_utils.load_model_and_preprocessor(
+                model_path=current_model_path,
+                preprocessor_path=current_preprocessor_path,
+                training_type=training_type_from_info,
+                model_type_name=model_type_name_from_info,
+                model_params=model_params_from_info, # NEW: Pass the parsed model parameters
+                logger=app.logger
+            )
             
             if model:
                 logging.info(f"ML assets loaded successfully using: Model={current_model_path}, Preprocessor={current_preprocessor_path}")

@@ -130,7 +130,6 @@ class PyTorchMLPClassifier(BaseDeepLearningClassifier):
                                                                  # where Key -> Embedding Dim):
                  
                  numerical_hidden_size,
-                 preprocessor,
                  # Explicitly listed parameters inherited from BasePyTorchClassifier for scikit-learn's get_params()
                  learning_rate=0.001, epochs=50, batch_size=32, random_state=None, 
                  optimizer_type='adam',  optimizer_params=None,
@@ -153,7 +152,6 @@ class PyTorchMLPClassifier(BaseDeepLearningClassifier):
             loss_type=loss_type,
             loss_params=loss_params,
             num_classes=num_classes,
-            preprocessor=preprocessor,
             text_embed_dims=text_embed_dims,
            categorical_embed_dims=categorical_embed_dims,
            numerical_hidden_size=numerical_hidden_size
@@ -177,7 +175,6 @@ class PyTorchMLPClassifier(BaseDeepLearningClassifier):
         self.text_embed_dims = text_embed_dims
         self.categorical_embed_dims = categorical_embed_dims
         self.numerical_hidden_size = numerical_hidden_size
-        self.preprocessor = preprocessor
         
 
 

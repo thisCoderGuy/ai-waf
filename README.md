@@ -89,7 +89,7 @@ To set up and run this project, follow these steps:
 
    * To run the **Dataset Generation Mode**:  
 
-     `docker compose --profile app-core up --build -d`
+     `docker compose --profile app-core --profile dataset-gen up --build -d`
 
    * To run the **Model Training Mode**: 
 
@@ -110,10 +110,7 @@ To set up and run this project, follow these steps:
      `docker compose --profile app-core --profile live-eval up --build -d`
 
 3. **Stopping Services:**  
-   * **To stop all running services (regardless of profile):**  
-
-     `docker compose down`
-
+   
    * **To stop services for a specific profile (e.g., app-core and live-eval):**  
 
      `docker compose --profile app-core --profile live-eval down`

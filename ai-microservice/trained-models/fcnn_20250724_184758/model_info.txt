@@ -1,0 +1,5 @@
+model_filename=deep_fcnn_malicious_traffic_model.joblib
+preprocessor_filename=deep_fcnn_malicious_traffic_preprocessor.joblib
+model_type=fcnn
+training_type=deep
+timestamp=20250724_184758

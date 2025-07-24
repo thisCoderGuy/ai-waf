@@ -13,6 +13,8 @@ LATEST_MODEL_INFO_PATH = os.path.join(BASE_MODEL_DIR, 'latest_model_info.txt')
 # Define the specific filenames for the model and preprocessor
 MODEL_FILENAME = 'cnn_malicious_traffic_model_20250703_100424.joblib'
 PREPROCESSOR_FILENAME = 'cnn_malicious_traffic_preprocessor_20250703_100424.joblib'
+TRAINING_TYPE = 'deep' # 'deep' or 'traditional'
+MODEL_TYPE = 'cnn'
 
 # Construct the full paths by joining the base directory and filenames
 MODEL_PATH = os.path.join(BASE_MODEL_DIR, MODEL_FILENAME)

@@ -57,7 +57,7 @@ services:
     # --- End GPU Configuration ---
 
 
-  kali:
+  kali-locust:
     build:
       context: ./kali 
       dockerfile: Dockerfile 
@@ -75,8 +75,25 @@ services:
       - NET_ADMIN # Needed for some network tools if you want to use them
     networks:
       - app-net
-    profiles: ["app-core", "live-eval"] # Part of the application core profile, also needed for live-eval
+    profiles: ["dataset-gen"] # Needed for dataset-gen
 
+  kali:
+    build:
+      context: ./kali 
+      dockerfile: Dockerfile 
+    container_name: kali
+    hostname: kali
+    volumes:
+      - ./kali/locust-reports:/app/reports # Mounts a local 'locust-reports' directory to container's /app/reports
+      - shared_traffic_config:/shared_data # named volume to signal traffic type change to coraza
+    stdin_open: true # Keep stdin open for interactive sessions
+    tty: true # Allocate a pseudo-TTY for interactive sessions
+    command: /app/startup.sh shell
+    cap_add:
+      - NET_ADMIN # Needed for some network tools if you want to use them
+    networks:
+      - app-net
+    profiles: ["live-eval"] # Needed for live-eval
 
 
   juice-shop:

@@ -56,8 +56,7 @@ def _load_raw_log_files():
                 raw_data_file,
                 chunksize=10000,  # Adjust chunksize based on available memory and file size
                 on_bad_lines='warn', # Warn about bad lines, don't skip silently
-                encoding='utf-8',
-                errors='ignore'
+                encoding='utf-8'
             )
             
             file_dfs = []

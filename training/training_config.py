@@ -1,6 +1,5 @@
 import os
 
-
 #########################################################
 # --- 1. Data Loading and Cleaning ---
 #########################################################
@@ -14,12 +13,7 @@ PERFORM_DATA_CLEANING = False # True or False
 # Which raw datasets to load?
 # Path to raw dataset files (Coraza audit log files)
 RAW_DATA_FILE_PATHS = [
-    os.path.join('training', 'training-data', 'raw', 'coraza-audit-benign_20250710_200141.csv'),
-    os.path.join('training', 'training-data', 'raw', 'coraza-audit-sqli_20250710_201920.csv'),
-    os.path.join('training', 'training-data', 'raw', 'coraza-audit-xss_20250710_203049.csv'),
-    os.path.join('training', 'training-data', 'raw', 'coraza-audit-dta_20250710_205839.csv'),
-    os.path.join('training', 'training-data', 'raw', 'coraza-audit-csrf_20250710_210344.csv'),
-    os.path.join('training', 'training-data', 'raw', 'coraza-audit-enum_20250710_210931.csv'),
+    os.path.join('training', 'training-data', 'raw', 'coraza-dataset_20250722_204702.csv'),
 ]
 
 # Features that must be present for each data point
@@ -52,14 +46,14 @@ CLEANED_DATA_OUTPUT_PATH = os.path.join('training', 'training-data', 'cleaned', 
            #########################################################
 
 # Which cleaned dataset to load?
-CLEANED_DATA_PATH = os.path.join('training', 'training-data', 'cleaned', 'coraza-audit-cleaned_20250715_184822.csv') 
+CLEANED_DATA_PATH = os.path.join('training', 'training-data', 'cleaned', 'coraza-audit-cleaned_20250724_143510.csv') 
 
 #########################################################
 # --- 2. Training ---
 #########################################################
 # Do perform training?
 PERFORM_TRAINING = True # True or False
-
+TRAINING_TYPE = 'deep' # 'traditional' for Traditional Machine Learning using scikit learn , 'deep' for deep learning using pytorch
 
    #########################################################
    # --- 2.1. Preprocessing (Feature extraction) ---
@@ -180,7 +174,7 @@ RANDOM_STATE = 42
 # Set the current model type. 
 # Possible values so far: 'svm', 'random_forest', 'decision_tree', 'naive_bayes', 'mlp',
 #                         'fcnn', 'cnn', 'rnn', 'lstm', 'transformer', 'llm'  # For those choose N_SPLITS_CROSS_VALIDATION = small num
-MODEL_TYPE = 'cnn'
+MODEL_ARCHITECTURE = 'fcnn'
 
 IS_DEEP_LEARNING_MODEL = True #  ['fcnn', 'cnn', 'rnn', etc]
 
@@ -460,7 +454,7 @@ LOGGING_CONFIG = {
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
-            'level': 'INFO',                       # Choose DEBUG or INFO to see appropriate messages in the console
+            'level': 'DEBUG',                       # Choose DEBUG or INFO to see appropriate messages in the console
             'formatter': 'standard',
         },
         'file': {

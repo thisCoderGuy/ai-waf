@@ -23,12 +23,9 @@ class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
     prediction, and dynamic creation of loss function and optimizer.
     """
     def __init__(self,  num_classes,
-            text_embed_dims,
-            categorical_embed_dims,
             numerical_hidden_size,
-            preprocessor,
                  learning_rate=0.001, epochs=50, batch_size=32,
-                 random_state=None,
+                 random_state=None, text_embed_dims=None, categorical_embed_dims=None,
                  optimizer_type='adam',  optimizer_params=None,
                  loss_type='CrossEntropyLoss',  loss_params=None,
                  perform_early_stopping=PERFORM_EARLY_STOPPING,
@@ -64,22 +61,8 @@ class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
         self.perform_early_stopping = perform_early_stopping
         self.early_stopping_patience = early_stopping_patience
         
-        categorical_embed_dims = categorical_embed_dims
-        
-        self.text_specs = {}
-        for text_feature in text_embed_dims:
-            vocab_size = preprocessor[f"{text_feature}_vocab_size"]
-            self.text_specs[text_feature] = (vocab_size, text_embed_dims[text_feature])
-        
-
-        self.categorical_specs = {}
-        for categorical_feature in categorical_embed_dims:
-            cardinality = preprocessor[f"{categorical_feature}_cardinality"] 
-            self.categorical_specs[categorical_feature] = (cardinality, categorical_embed_dims[categorical_feature])
-                
-
-        self.num_numerical_features =  preprocessor["num_numerical_features"]
-
+        self.categorical_embed_dims = categorical_embed_dims
+        self.text_embed_dims = text_embed_dims
 
 
         # Determine the device (CPU or GPU)
@@ -143,7 +126,7 @@ class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
 
 
 
-    def fit(self, X, y, X_val=None, y_val=None):
+    def fit(self, X, y, preprocessor, X_val=None, y_val=None):
         """
         Trains the PyTorch model with optional early stopping.
 
@@ -156,6 +139,17 @@ class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
         Returns:
             self: The trained classifier.
         """
+
+        
+        self.text_vocab_sizes = preprocessor.text_vocab_sizes
+        
+        self.num_text_features = preprocessor.num_text_input_columns
+        
+
+        self.num_categorical_features = preprocessor.num_categorical_features_dim
+        
+
+        self.num_numerical_features =  preprocessor.num_numerical_features_dim
         
         # Build the model components if not already built
         if self.model is None:
