@@ -2,7 +2,7 @@ import random
 from locust import task
 
 from ..base_attacker import BaseAttacker
-from ..config import AppConfig # Needed for CSRF headers, endpoints
+from ..config import AppConfig 
 
 #TODO Add obfuscation
 

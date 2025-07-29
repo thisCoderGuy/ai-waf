@@ -17,8 +17,8 @@ const (
 )
 
 // Default values for AI verdict and vulnerability type labels.
-const DefaultAIVerdictLabel = "UNKNOWN"
-const DefaultAIVulnerabilityTypeLabel = "UNKNOWN_VULNERABILITY"
+const DefaultAIVerdictLabel = "unknown"
+const DefaultAIVulnerabilityTypeLabel = "unknown_vulnerability"
 
 // File signaling values for AI verdict and vulnerability type labels.
 const SHARED_CONFIG_FILE_PATH = "/shared_data/traffic_type.txt"

@@ -214,7 +214,7 @@ func readTrafficLabelFromFile() (string, string) {
 		return DefaultAIVerdictLabel, DefaultAIVulnerabilityTypeLabel
 	}
 
-	return aiVerdict, aiVulnerabilityType
+	return strings.ToLower(aiVerdict), strings.ToLower(aiVulnerabilityType)
 }
 
 // LogTransaction dispatches logging to either JSON or CSV format.

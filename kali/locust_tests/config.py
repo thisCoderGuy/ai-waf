@@ -15,7 +15,7 @@ class AppConfig:
 
     # --- Task duration (in seconds) ---
     PHASE_LENGTHS_SECONDS = { # ints only
-        "LegitimateUser": 2400, # 1200 sec = 20mn
+        "LegitimateUser": 1200, # 1200 sec = 20mn
         "SQLiAttacker": 600, # 600 sec = 10mn
         "XSSAttacker": 600, # 300 sec = 5mn
         "DirectoryTraversalAttacker": 600,

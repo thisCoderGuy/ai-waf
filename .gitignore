@@ -54,3 +54,33 @@ logs/
 
 # Environment variables
 .env
+
+# --- Machine Learning Artifacts ---
+
+# Compiled models
+*.joblib
+*.pkl
+*.h5          # Keras/TensorFlow models
+*.pb          # TensorFlow SavedModel files (protobuf)
+*.pth         # PyTorch models
+*.pt          # PyTorch models
+*.bin         # Binary model files
+
+# Datasets, Reports and Model directories 
+/training/models-logs/
+/training/training-data/
+/ai-microservice/trained-models/
+/shared_data/
+/kali/locust-reports/
+
+# --- Datasets ---
+
+# CSV files
+*.csv
+# Parquet files
+*.parquet
+# Feather files
+*.feather
+# SQL databases (e.g., SQLite for local data)
+*.sqlite
+*.db

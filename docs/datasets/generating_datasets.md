@@ -38,7 +38,7 @@ LOCUST_RUN_TIME="${LOCUST_RUN_TIME:-5h}" # Maximum duration of traffic generatio
 
 Define the types and durations of user behavior and attacks you want to simulate.
 
-* **File:** `./kali/locust_tests/config.py`  
+* **File:** `./kali/locust-tests/config.py`  
 * **Parameters to change:**  
   * `PHASE_LENGTHS_SECONDS`: A dictionary where keys are user/attacker types and values are their relative durations (in seconds). 
 
