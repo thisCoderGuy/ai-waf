@@ -64,6 +64,7 @@ class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
         self.categorical_embed_dims = categorical_embed_dims
         self.text_embed_dims = text_embed_dims
 
+        global_logger.debug(f"Deep Learning Classifier being created")
 
         # Determine the device (CPU or GPU)
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -140,17 +141,27 @@ class BaseDeepLearningClassifier(BaseEstimator, ClassifierMixin):
             self: The trained classifier.
         """
 
+        global_logger.debug(f"Deep Learning Classifier training starting using:")
+     
         
-        self.text_vocab_sizes = preprocessor.text_vocab_sizes
+            
         
-        self.num_text_features = preprocessor.num_text_input_columns
-        
-
         self.num_categorical_features = preprocessor.num_categorical_features_dim
-        
-
         self.num_numerical_features =  preprocessor.num_numerical_features_dim
+
+        self.text_specs = dict()
+        for text_feat in TEXT_FEATURES:
+            self.text_specs[text_feat] = (preprocessor.text_vocab_sizes[text_feat], self.text_embed_dims[text_feat])                  
+        global_logger.debug(f"\t{self.text_specs=}")
         
+        self.categorical_specs = dict()
+        for cat_feat in CATEGORICAL_FEATURES:
+            self.categorical_specs[cat_feat] = (preprocessor.cat_cardinalities[cat_feat], self.categorical_embed_dims[cat_feat])
+
+        global_logger.debug(f"\t{self.categorical_specs=}")
+        global_logger.debug(f"\t{self.num_numerical_features=}")
+
+
         # Build the model components if not already built
         if self.model is None:
             self._build_model_components()

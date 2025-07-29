@@ -529,3 +529,346 @@ Actual Malicious                 1                32246
 	Random State: 42
 	Tuning Parameters: {'hidden_size': [32], 'learning_rate': [0.01]}
 2025-07-24 21:40:48,111 - evaluation_logger - INFO - Device: cuda
+2025-07-29 18:10:49,778 - evaluation_logger - INFO - ####################################################################
+2025-07-29 18:10:49,778 - evaluation_logger - INFO - Model Training Started: 2025-07-29 18:10:49
+2025-07-29 18:10:49,779 - evaluation_logger - INFO - --- Data Cleaning ---
+2025-07-29 18:10:50,338 - evaluation_logger - INFO - 	Total rows removed during cleaning: 0
+2025-07-29 18:10:50,338 - evaluation_logger - INFO - 	Remaining 2659 entries after cleaning.
+2025-07-29 18:10:50,361 - evaluation_logger - INFO - 	Cleaned data saved to training/training-data/cleaned/coraza-audit-cleaned_20250729_181050.csv
+2025-07-29 18:15:02,413 - evaluation_logger - INFO - ####################################################################
+2025-07-29 18:15:02,413 - evaluation_logger - INFO - Model Training Started: 2025-07-29 18:15:02
+2025-07-29 18:15:02,414 - evaluation_logger - INFO - --- Data Cleaning ---
+2025-07-29 18:15:02,875 - evaluation_logger - INFO - 	Successfully loaded 173849 entries from training/training-data/cleaned/coraza-audit-cleaned_20250724_143510.csv
+2025-07-29 18:16:18,471 - evaluation_logger - INFO - ####################################################################
+2025-07-29 18:16:18,471 - evaluation_logger - INFO - Model Training Started: 2025-07-29 18:16:18
+2025-07-29 18:16:18,471 - evaluation_logger - INFO - --- Data Cleaning ---
+2025-07-29 18:16:18,911 - evaluation_logger - INFO - 	Successfully loaded 173849 entries from training/training-data/cleaned/coraza-audit-cleaned_20250724_143510.csv
+2025-07-29 18:16:53,966 - evaluation_logger - INFO - ####################################################################
+2025-07-29 18:16:53,966 - evaluation_logger - INFO - Model Training Started: 2025-07-29 18:16:53
+2025-07-29 18:16:53,966 - evaluation_logger - INFO - --- Data Cleaning ---
+2025-07-29 18:16:54,408 - evaluation_logger - INFO - 	Successfully loaded 173849 entries from training/training-data/cleaned/coraza-audit-cleaned_20250724_143510.csv
+2025-07-29 18:16:54,408 - evaluation_logger - INFO - --- Data Preprocessing ---
+2025-07-29 18:16:54,408 - evaluation_logger - INFO - NUMERICAL_FEATURES=['RequestLength', 'PathLength', 'QueryLength']
+2025-07-29 18:16:54,408 - evaluation_logger - INFO - TEXT_FEATURES=['RequestURIPath', 'RequestURIQuery', 'RequestBody', 'UserAgent']
+2025-07-29 18:16:54,408 - evaluation_logger - INFO - CATEGORICAL_FEATURES=['RequestMethod']
+2025-07-29 18:16:54,408 - evaluation_logger - INFO - LABEL='AIVerdictLabel'
+2025-07-29 18:16:54,466 - evaluation_logger - INFO - > Dense Feature extraction
+2025-07-29 18:16:54,466 - evaluation_logger - INFO - 	Using :
+    	TOKENIZER_CONFIGS: {'RequestURIPath': 'char', 'RequestURIQuery': 'char', 'RequestBody': 'char', 'UserAgent': 'char'}
+    	MAX_SEQ_LENGTHS: {'RequestURIPath': 50, 'RequestURIQuery': 50, 'RequestBody': 50, 'UserAgent': 100}
+2025-07-29 18:17:02,610 - evaluation_logger - INFO - Dense feature extraction and preprocessing complete.
+2025-07-29 18:17:02,794 - evaluation_logger - INFO - --- Model Training ---
+2025-07-29 18:17:02,794 - evaluation_logger - INFO - 	Architecture Used: FCNN
+	Model Parameters: {'learning_rate': 0.001, 'epochs': 50, 'batch_size': 32, 'optimizer_type': 'adam', 'optimizer_params': {'weight_decay': 0.0001}, 'loss_type': 'CrossEntropyLoss', 'loss_params': {}, 'dropout_rate': 0.5, 'hidden_size': 64, 'num_classes': 2, 'numerical_hidden_size': 32, 'text_embed_dims': {'RequestURIPath': 32, 'RequestURIQuery': 32, 'RequestBody': 32, 'UserAgent': 32}, 'categorical_embed_dims': {'RequestMethod': 3}}
+	Hyperparameter tuning: False
+	Hyperparameter tuning method: random
+	Cross-Validation Splits: 3
+	Num of hyperparameter combinations in Random Search: 10
+	Random State: 42
+	Tuning Parameters: {'hidden_size': [32], 'learning_rate': [0.01]}
+2025-07-29 18:17:02,917 - evaluation_logger - INFO - Device: cuda
+2025-07-29 18:42:19,240 - evaluation_logger - INFO - ####################################################################
+2025-07-29 18:42:19,240 - evaluation_logger - INFO - Model Training Started: 2025-07-29 18:42:19
+2025-07-29 18:42:19,241 - evaluation_logger - INFO - --- Data Cleaning ---
+2025-07-29 18:42:19,682 - evaluation_logger - INFO - 	Successfully loaded 173849 entries from training/training-data/cleaned/coraza-audit-cleaned_20250724_143510.csv
+2025-07-29 18:42:19,683 - evaluation_logger - INFO - --- Data Preprocessing ---
+2025-07-29 18:42:19,683 - evaluation_logger - INFO - NUMERICAL_FEATURES=['RequestLength', 'PathLength', 'QueryLength']
+2025-07-29 18:42:19,683 - evaluation_logger - INFO - TEXT_FEATURES=['RequestURIPath', 'RequestURIQuery', 'RequestBody', 'UserAgent']
+2025-07-29 18:42:19,683 - evaluation_logger - INFO - CATEGORICAL_FEATURES=['RequestMethod']
+2025-07-29 18:42:19,683 - evaluation_logger - INFO - LABEL='AIVerdictLabel'
+2025-07-29 18:42:19,741 - evaluation_logger - INFO - > Dense Feature extraction
+2025-07-29 18:42:19,741 - evaluation_logger - INFO - 	Using :
+    	TOKENIZER_CONFIGS: {'RequestURIPath': 'char', 'RequestURIQuery': 'char', 'RequestBody': 'char', 'UserAgent': 'char'}
+    	MAX_SEQ_LENGTHS: {'RequestURIPath': 50, 'RequestURIQuery': 50, 'RequestBody': 50, 'UserAgent': 100}
+2025-07-29 18:42:28,094 - evaluation_logger - INFO - Dense feature extraction and preprocessing complete.
+2025-07-29 18:42:28,267 - evaluation_logger - INFO - --- Model Training ---
+2025-07-29 18:42:28,268 - evaluation_logger - INFO - 	Architecture Used: FCNN
+	Random State: 42
+	Model Parameters: {'learning_rate': 0.001, 'epochs': 50, 'batch_size': 32, 'optimizer_type': 'adam', 'optimizer_params': {'weight_decay': 0.0001}, 'loss_type': 'CrossEntropyLoss', 'loss_params': {}, 'dropout_rate': 0.5, 'hidden_size': 64, 'num_classes': 2, 'numerical_hidden_size': 32, 'text_embed_dims': {'RequestURIPath': 32, 'RequestURIQuery': 32, 'RequestBody': 32, 'UserAgent': 32}, 'categorical_embed_dims': {'RequestMethod': 3}}
+	Hyperparameter tuning: False
+	Hyperparameter tuning method: random
+	Cross-Validation Splits: 3
+	Num of hyperparameter combinations in Random Search: 10
+	Tuning Parameters: {'hidden_size': [32], 'learning_rate': [0.01]}
+2025-07-29 18:42:28,400 - evaluation_logger - INFO - Device: cuda
+2025-07-29 18:43:38,778 - evaluation_logger - INFO - ####################################################################
+2025-07-29 18:43:38,779 - evaluation_logger - INFO - Model Training Started: 2025-07-29 18:43:38
+2025-07-29 18:43:38,779 - evaluation_logger - INFO - --- Data Cleaning ---
+2025-07-29 18:43:39,222 - evaluation_logger - INFO - 	Successfully loaded 173849 entries from training/training-data/cleaned/coraza-audit-cleaned_20250724_143510.csv
+2025-07-29 18:43:39,222 - evaluation_logger - INFO - --- Data Preprocessing ---
+2025-07-29 18:43:39,222 - evaluation_logger - INFO - NUMERICAL_FEATURES=['RequestLength', 'PathLength', 'QueryLength']
+2025-07-29 18:43:39,222 - evaluation_logger - INFO - TEXT_FEATURES=['RequestURIPath', 'RequestURIQuery', 'RequestBody', 'UserAgent']
+2025-07-29 18:43:39,222 - evaluation_logger - INFO - CATEGORICAL_FEATURES=['RequestMethod']
+2025-07-29 18:43:39,222 - evaluation_logger - INFO - LABEL='AIVerdictLabel'
+2025-07-29 18:43:39,280 - evaluation_logger - INFO - > Dense Feature extraction
+2025-07-29 18:43:39,280 - evaluation_logger - INFO - 	Using :
+    	TOKENIZER_CONFIGS: {'RequestURIPath': 'char', 'RequestURIQuery': 'char', 'RequestBody': 'char', 'UserAgent': 'char'}
+    	MAX_SEQ_LENGTHS: {'RequestURIPath': 50, 'RequestURIQuery': 50, 'RequestBody': 50, 'UserAgent': 100}
+2025-07-29 18:43:47,350 - evaluation_logger - INFO - Dense feature extraction and preprocessing complete.
+2025-07-29 18:43:47,526 - evaluation_logger - INFO - --- Model Training ---
+2025-07-29 18:43:47,526 - evaluation_logger - INFO - 	Architecture Used: FCNN
+	Random State: 42
+	Model Training Parameters: {'learning_rate': 0.001, 'epochs': 50, 'batch_size': 32, 'optimizer_type': 'adam', 'optimizer_params': {'weight_decay': 0.0001}, 'loss_type': 'CrossEntropyLoss', 'loss_params': {}, 'dropout_rate': 0.5, 'hidden_size': 64, 'num_classes': 2, 'numerical_hidden_size': 32, 'text_embed_dims': {'RequestURIPath': 32, 'RequestURIQuery': 32, 'RequestBody': 32, 'UserAgent': 32}, 'categorical_embed_dims': {'RequestMethod': 3}}
+	Hyperparameter tuning: False
+	Hyperparameter tuning method: random
+	Cross-Validation Splits: 3
+	Num of hyperparameter combinations in Random Search: 10
+	Tuning Parameters: {'hidden_size': [32], 'learning_rate': [0.01]}
+2025-07-29 18:43:47,663 - evaluation_logger - INFO - Device: cuda
+2025-07-29 18:44:26,003 - evaluation_logger - INFO - ####################################################################
+2025-07-29 18:44:26,003 - evaluation_logger - INFO - Model Training Started: 2025-07-29 18:44:26
+2025-07-29 18:44:26,004 - evaluation_logger - INFO - --- Data Cleaning ---
+2025-07-29 18:44:26,448 - evaluation_logger - INFO - 	Successfully loaded 173849 entries from training/training-data/cleaned/coraza-audit-cleaned_20250724_143510.csv
+2025-07-29 18:44:26,448 - evaluation_logger - INFO - --- Data Preprocessing ---
+2025-07-29 18:44:26,448 - evaluation_logger - INFO - NUMERICAL_FEATURES=['RequestLength', 'PathLength', 'QueryLength']
+2025-07-29 18:44:26,448 - evaluation_logger - INFO - TEXT_FEATURES=['RequestURIPath', 'RequestURIQuery', 'RequestBody', 'UserAgent']
+2025-07-29 18:44:26,448 - evaluation_logger - INFO - CATEGORICAL_FEATURES=['RequestMethod']
+2025-07-29 18:44:26,448 - evaluation_logger - INFO - LABEL='AIVerdictLabel'
+2025-07-29 18:44:26,506 - evaluation_logger - INFO - > Dense Feature extraction
+2025-07-29 18:44:26,506 - evaluation_logger - INFO - 	Using :
+    	TOKENIZER_CONFIGS: {'RequestURIPath': 'char', 'RequestURIQuery': 'char', 'RequestBody': 'char', 'UserAgent': 'char'}
+    	MAX_SEQ_LENGTHS: {'RequestURIPath': 50, 'RequestURIQuery': 50, 'RequestBody': 50, 'UserAgent': 100}
+2025-07-29 18:44:34,643 - evaluation_logger - INFO - Dense feature extraction and preprocessing complete.
+2025-07-29 18:44:34,813 - evaluation_logger - INFO - --- Model Training ---
+2025-07-29 18:44:34,813 - evaluation_logger - INFO - 	Architecture Used: FCNN
+	Random State: 42
+	Model Parameters: {'learning_rate': 0.001, 'epochs': 50, 'batch_size': 32, 'optimizer_type': 'adam', 'optimizer_params': {'weight_decay': 0.0001}, 'loss_type': 'CrossEntropyLoss', 'loss_params': {}, 'dropout_rate': 0.5, 'hidden_size': 64, 'num_classes': 2, 'numerical_hidden_size': 32, 'text_embed_dims': {'RequestURIPath': 32, 'RequestURIQuery': 32, 'RequestBody': 32, 'UserAgent': 32}, 'categorical_embed_dims': {'RequestMethod': 3}}
+	Hyperparameter tuning: False
+2025-07-29 18:44:34,952 - evaluation_logger - INFO - Device: cuda
+2025-07-29 19:16:06,044 - evaluation_logger - INFO - ####################################################################
+2025-07-29 19:16:06,044 - evaluation_logger - INFO - Model Training Started: 2025-07-29 19:16:06
+2025-07-29 19:16:06,044 - evaluation_logger - INFO - --- Data Cleaning ---
+2025-07-29 19:16:06,488 - evaluation_logger - INFO - 	Successfully loaded 173849 entries from training/training-data/cleaned/coraza-audit-cleaned_20250724_143510.csv
+2025-07-29 19:16:06,488 - evaluation_logger - INFO - --- Data Preprocessing ---
+2025-07-29 19:16:06,488 - evaluation_logger - INFO - NUMERICAL_FEATURES=['RequestLength', 'PathLength', 'QueryLength']
+2025-07-29 19:16:06,488 - evaluation_logger - INFO - TEXT_FEATURES=['RequestURIPath', 'RequestURIQuery', 'RequestBody', 'UserAgent']
+2025-07-29 19:16:06,488 - evaluation_logger - INFO - CATEGORICAL_FEATURES=['RequestMethod']
+2025-07-29 19:16:06,488 - evaluation_logger - INFO - LABEL='AIVerdictLabel'
+2025-07-29 19:16:06,546 - evaluation_logger - INFO - > Dense Feature extraction
+2025-07-29 19:16:06,546 - evaluation_logger - INFO - 	Using :
+    	TOKENIZER_CONFIGS: {'RequestURIPath': 'char', 'RequestURIQuery': 'char', 'RequestBody': 'char', 'UserAgent': 'char'}
+    	MAX_SEQ_LENGTHS: {'RequestURIPath': 50, 'RequestURIQuery': 50, 'RequestBody': 50, 'UserAgent': 100}
+2025-07-29 19:16:14,750 - evaluation_logger - INFO - Dense feature extraction and preprocessing complete.
+2025-07-29 19:16:14,921 - evaluation_logger - INFO - --- Model Training ---
+2025-07-29 19:16:14,921 - evaluation_logger - INFO - 	Architecture Used: FCNN
+	Random State: 42
+	Model Parameters: {'learning_rate': 0.001, 'epochs': 50, 'batch_size': 32, 'optimizer_type': 'adam', 'optimizer_params': {'weight_decay': 0.0001}, 'loss_type': 'CrossEntropyLoss', 'loss_params': {}, 'dropout_rate': 0.5, 'hidden_size': 64, 'num_classes': 2, 'numerical_hidden_size': 32, 'text_embed_dims': {'RequestURIPath': 32, 'RequestURIQuery': 32, 'RequestBody': 32, 'UserAgent': 32}, 'categorical_embed_dims': {'RequestMethod': 3}}
+	Hyperparameter tuning: False
+2025-07-29 19:16:15,053 - evaluation_logger - INFO - Device: cuda
+2025-07-29 19:17:39,766 - evaluation_logger - INFO - ####################################################################
+2025-07-29 19:17:39,766 - evaluation_logger - INFO - Model Training Started: 2025-07-29 19:17:39
+2025-07-29 19:17:39,767 - evaluation_logger - INFO - --- Data Cleaning ---
+2025-07-29 19:17:40,209 - evaluation_logger - INFO - 	Successfully loaded 173849 entries from training/training-data/cleaned/coraza-audit-cleaned_20250724_143510.csv
+2025-07-29 19:17:40,209 - evaluation_logger - INFO - --- Data Preprocessing ---
+2025-07-29 19:17:40,209 - evaluation_logger - INFO - NUMERICAL_FEATURES=['RequestLength', 'PathLength', 'QueryLength']
+2025-07-29 19:17:40,209 - evaluation_logger - INFO - TEXT_FEATURES=['RequestURIPath', 'RequestURIQuery', 'RequestBody', 'UserAgent']
+2025-07-29 19:17:40,209 - evaluation_logger - INFO - CATEGORICAL_FEATURES=['RequestMethod']
+2025-07-29 19:17:40,209 - evaluation_logger - INFO - LABEL='AIVerdictLabel'
+2025-07-29 19:17:40,268 - evaluation_logger - INFO - > Dense Feature extraction
+2025-07-29 19:17:40,268 - evaluation_logger - INFO - 	Using :
+    	TOKENIZER_CONFIGS: {'RequestURIPath': 'char', 'RequestURIQuery': 'char', 'RequestBody': 'char', 'UserAgent': 'char'}
+    	MAX_SEQ_LENGTHS: {'RequestURIPath': 50, 'RequestURIQuery': 50, 'RequestBody': 50, 'UserAgent': 100}
+2025-07-29 19:17:48,499 - evaluation_logger - INFO - Dense feature extraction and preprocessing complete.
+2025-07-29 19:17:48,670 - evaluation_logger - INFO - --- Model Training ---
+2025-07-29 19:17:48,670 - evaluation_logger - INFO - 	Architecture Used: FCNN
+	Random State: 42
+	Model Parameters: {'learning_rate': 0.001, 'epochs': 50, 'batch_size': 32, 'optimizer_type': 'adam', 'optimizer_params': {'weight_decay': 0.0001}, 'loss_type': 'CrossEntropyLoss', 'loss_params': {}, 'dropout_rate': 0.5, 'hidden_size': 64, 'num_classes': 2, 'numerical_hidden_size': 32, 'text_embed_dims': {'RequestURIPath': 32, 'RequestURIQuery': 32, 'RequestBody': 32, 'UserAgent': 32}, 'categorical_embed_dims': {'RequestMethod': 3}}
+	Hyperparameter tuning: False
+2025-07-29 19:17:48,810 - evaluation_logger - INFO - Device: cuda
+2025-07-29 19:30:49,699 - evaluation_logger - INFO - ####################################################################
+2025-07-29 19:30:49,699 - evaluation_logger - INFO - Model Training Started: 2025-07-29 19:30:49
+2025-07-29 19:30:49,700 - evaluation_logger - INFO - --- Data Cleaning ---
+2025-07-29 19:30:50,141 - evaluation_logger - INFO - 	Successfully loaded 173849 entries from training/training-data/cleaned/coraza-audit-cleaned_20250724_143510.csv
+2025-07-29 19:30:50,141 - evaluation_logger - INFO - --- Data Preprocessing ---
+2025-07-29 19:30:50,141 - evaluation_logger - INFO - NUMERICAL_FEATURES=['RequestLength', 'PathLength', 'QueryLength']
+2025-07-29 19:30:50,141 - evaluation_logger - INFO - TEXT_FEATURES=['RequestURIPath', 'RequestURIQuery', 'RequestBody', 'UserAgent']
+2025-07-29 19:30:50,141 - evaluation_logger - INFO - CATEGORICAL_FEATURES=['RequestMethod']
+2025-07-29 19:30:50,141 - evaluation_logger - INFO - LABEL='AIVerdictLabel'
+2025-07-29 19:30:50,199 - evaluation_logger - INFO - > Dense Feature extraction
+2025-07-29 19:30:50,199 - evaluation_logger - INFO - 	Using :
+    	TOKENIZER_CONFIGS: {'RequestURIPath': 'char', 'RequestURIQuery': 'char', 'RequestBody': 'char', 'UserAgent': 'char'}
+    	MAX_SEQ_LENGTHS: {'RequestURIPath': 50, 'RequestURIQuery': 50, 'RequestBody': 50, 'UserAgent': 100}
+2025-07-29 19:30:58,321 - evaluation_logger - INFO - Dense feature extraction and preprocessing complete.
+2025-07-29 19:30:58,493 - evaluation_logger - INFO - --- Model Training ---
+2025-07-29 19:30:58,493 - evaluation_logger - INFO - 	Architecture Used: FCNN
+	Random State: 42
+	Model Parameters: {'learning_rate': 0.001, 'epochs': 50, 'batch_size': 32, 'optimizer_type': 'adam', 'optimizer_params': {'weight_decay': 0.0001}, 'loss_type': 'CrossEntropyLoss', 'loss_params': {}, 'dropout_rate': 0.5, 'hidden_size': 64, 'num_classes': 2, 'numerical_hidden_size': 32, 'text_embed_dims': {'RequestURIPath': 32, 'RequestURIQuery': 32, 'RequestBody': 32, 'UserAgent': 32}, 'categorical_embed_dims': {'RequestMethod': 3}}
+	Hyperparameter tuning: False
+2025-07-29 19:30:58,625 - evaluation_logger - INFO - Device: cuda
+2025-07-29 19:36:05,198 - evaluation_logger - INFO - ####################################################################
+2025-07-29 19:36:05,198 - evaluation_logger - INFO - Model Training Started: 2025-07-29 19:36:05
+2025-07-29 19:36:05,199 - evaluation_logger - INFO - --- Data Cleaning ---
+2025-07-29 19:36:05,638 - evaluation_logger - INFO - 	Successfully loaded 173849 entries from training/training-data/cleaned/coraza-audit-cleaned_20250724_143510.csv
+2025-07-29 19:36:05,639 - evaluation_logger - INFO - --- Data Preprocessing ---
+2025-07-29 19:36:05,639 - evaluation_logger - INFO - NUMERICAL_FEATURES=['RequestLength', 'PathLength', 'QueryLength']
+2025-07-29 19:36:05,639 - evaluation_logger - INFO - TEXT_FEATURES=['RequestURIPath', 'RequestURIQuery', 'RequestBody', 'UserAgent']
+2025-07-29 19:36:05,639 - evaluation_logger - INFO - CATEGORICAL_FEATURES=['RequestMethod']
+2025-07-29 19:36:05,639 - evaluation_logger - INFO - LABEL='AIVerdictLabel'
+2025-07-29 19:36:05,697 - evaluation_logger - INFO - > Dense Feature extraction
+2025-07-29 19:36:05,697 - evaluation_logger - INFO - 	Using :
+    	TOKENIZER_CONFIGS: {'RequestURIPath': 'char', 'RequestURIQuery': 'char', 'RequestBody': 'char', 'UserAgent': 'char'}
+    	MAX_SEQ_LENGTHS: {'RequestURIPath': 50, 'RequestURIQuery': 50, 'RequestBody': 50, 'UserAgent': 100}
+2025-07-29 19:36:13,873 - evaluation_logger - INFO - Dense feature extraction and preprocessing complete.
+2025-07-29 19:36:14,043 - evaluation_logger - INFO - --- Model Training ---
+2025-07-29 19:36:14,043 - evaluation_logger - INFO - 	Architecture Used: FCNN
+	Random State: 42
+	Model Parameters: {'learning_rate': 0.001, 'epochs': 50, 'batch_size': 32, 'optimizer_type': 'adam', 'optimizer_params': {'weight_decay': 0.0001}, 'loss_type': 'CrossEntropyLoss', 'loss_params': {}, 'dropout_rate': 0.5, 'hidden_size': 64, 'num_classes': 2, 'numerical_hidden_size': 32, 'text_embed_dims': {'RequestURIPath': 32, 'RequestURIQuery': 32, 'RequestBody': 32, 'UserAgent': 32}, 'categorical_embed_dims': {'RequestMethod': 3}}
+	Hyperparameter tuning: False
+2025-07-29 19:36:14,173 - evaluation_logger - INFO - Device: cuda
+2025-07-29 19:37:00,337 - evaluation_logger - INFO - ####################################################################
+2025-07-29 19:37:00,337 - evaluation_logger - INFO - Model Training Started: 2025-07-29 19:37:00
+2025-07-29 19:37:00,338 - evaluation_logger - INFO - --- Data Cleaning ---
+2025-07-29 19:37:00,781 - evaluation_logger - INFO - 	Successfully loaded 173849 entries from training/training-data/cleaned/coraza-audit-cleaned_20250724_143510.csv
+2025-07-29 19:37:00,782 - evaluation_logger - INFO - --- Data Preprocessing ---
+2025-07-29 19:37:00,782 - evaluation_logger - INFO - NUMERICAL_FEATURES=['RequestLength', 'PathLength', 'QueryLength']
+2025-07-29 19:37:00,782 - evaluation_logger - INFO - TEXT_FEATURES=['RequestURIPath', 'RequestURIQuery', 'RequestBody', 'UserAgent']
+2025-07-29 19:37:00,782 - evaluation_logger - INFO - CATEGORICAL_FEATURES=['RequestMethod']
+2025-07-29 19:37:00,782 - evaluation_logger - INFO - LABEL='AIVerdictLabel'
+2025-07-29 19:37:00,839 - evaluation_logger - INFO - > Dense Feature extraction
+2025-07-29 19:37:00,839 - evaluation_logger - INFO - 	Using :
+    	TOKENIZER_CONFIGS: {'RequestURIPath': 'char', 'RequestURIQuery': 'char', 'RequestBody': 'char', 'UserAgent': 'char'}
+    	MAX_SEQ_LENGTHS: {'RequestURIPath': 50, 'RequestURIQuery': 50, 'RequestBody': 50, 'UserAgent': 100}
+2025-07-29 19:37:08,920 - evaluation_logger - INFO - Dense feature extraction and preprocessing complete.
+2025-07-29 19:37:09,093 - evaluation_logger - INFO - --- Model Training ---
+2025-07-29 19:37:09,093 - evaluation_logger - INFO - 	Architecture Used: FCNN
+	Random State: 42
+	Model Parameters: {'learning_rate': 0.001, 'epochs': 50, 'batch_size': 32, 'optimizer_type': 'adam', 'optimizer_params': {'weight_decay': 0.0001}, 'loss_type': 'CrossEntropyLoss', 'loss_params': {}, 'dropout_rate': 0.5, 'hidden_size': 64, 'num_classes': 2, 'numerical_hidden_size': 32, 'text_embed_dims': {'RequestURIPath': 32, 'RequestURIQuery': 32, 'RequestBody': 32, 'UserAgent': 32}, 'categorical_embed_dims': {'RequestMethod': 3}}
+	Hyperparameter tuning: False
+2025-07-29 19:37:09,228 - evaluation_logger - INFO - Device: cuda
+2025-07-29 19:58:10,807 - evaluation_logger - INFO - ####################################################################
+2025-07-29 19:58:10,807 - evaluation_logger - INFO - Model Training Started: 2025-07-29 19:58:10
+2025-07-29 19:58:10,808 - evaluation_logger - INFO - --- Data Cleaning ---
+2025-07-29 19:58:11,263 - evaluation_logger - INFO - 	Successfully loaded 173849 entries from training/training-data/cleaned/coraza-audit-cleaned_20250724_143510.csv
+2025-07-29 19:58:11,264 - evaluation_logger - INFO - --- Data Preprocessing ---
+2025-07-29 19:58:11,264 - evaluation_logger - INFO - NUMERICAL_FEATURES=['RequestLength', 'PathLength', 'QueryLength']
+2025-07-29 19:58:11,264 - evaluation_logger - INFO - TEXT_FEATURES=['RequestURIPath', 'RequestURIQuery', 'RequestBody', 'UserAgent']
+2025-07-29 19:58:11,264 - evaluation_logger - INFO - CATEGORICAL_FEATURES=['RequestMethod']
+2025-07-29 19:58:11,264 - evaluation_logger - INFO - LABEL='AIVerdictLabel'
+2025-07-29 19:58:11,334 - evaluation_logger - INFO - > Dense Feature extraction
+2025-07-29 19:58:11,334 - evaluation_logger - INFO - 	Using :
+    	TOKENIZER_CONFIGS: {'RequestURIPath': 'char', 'RequestURIQuery': 'char', 'RequestBody': 'char', 'UserAgent': 'char'}
+    	MAX_SEQ_LENGTHS: {'RequestURIPath': 50, 'RequestURIQuery': 50, 'RequestBody': 50, 'UserAgent': 100}
+2025-07-29 20:00:04,397 - evaluation_logger - INFO - ####################################################################
+2025-07-29 20:00:04,397 - evaluation_logger - INFO - Model Training Started: 2025-07-29 20:00:04
+2025-07-29 20:00:04,398 - evaluation_logger - INFO - --- Data Cleaning ---
+2025-07-29 20:00:04,840 - evaluation_logger - INFO - 	Successfully loaded 173849 entries from training/training-data/cleaned/coraza-audit-cleaned_20250724_143510.csv
+2025-07-29 20:00:04,840 - evaluation_logger - INFO - --- Data Preprocessing ---
+2025-07-29 20:00:04,840 - evaluation_logger - INFO - NUMERICAL_FEATURES=['RequestLength', 'PathLength', 'QueryLength']
+2025-07-29 20:00:04,840 - evaluation_logger - INFO - TEXT_FEATURES=['RequestURIPath', 'RequestURIQuery', 'RequestBody', 'UserAgent']
+2025-07-29 20:00:04,840 - evaluation_logger - INFO - CATEGORICAL_FEATURES=['RequestMethod']
+2025-07-29 20:00:04,840 - evaluation_logger - INFO - LABEL='AIVerdictLabel'
+2025-07-29 20:00:04,898 - evaluation_logger - INFO - > Dense Feature extraction
+2025-07-29 20:00:04,898 - evaluation_logger - INFO - 	Using :
+    	TOKENIZER_CONFIGS: {'RequestURIPath': 'char', 'RequestURIQuery': 'char', 'RequestBody': 'char', 'UserAgent': 'char'}
+    	MAX_SEQ_LENGTHS: {'RequestURIPath': 50, 'RequestURIQuery': 50, 'RequestBody': 50, 'UserAgent': 100}
+2025-07-29 20:00:12,929 - evaluation_logger - INFO - Dense feature extraction and preprocessing complete.
+2025-07-29 20:00:13,102 - evaluation_logger - INFO - --- Model Training ---
+2025-07-29 20:00:13,102 - evaluation_logger - INFO - 	Architecture Used: FCNN
+	Random State: 42
+	Model Parameters: {'learning_rate': 0.001, 'epochs': 50, 'batch_size': 32, 'optimizer_type': 'adam', 'optimizer_params': {'weight_decay': 0.0001}, 'loss_type': 'CrossEntropyLoss', 'loss_params': {}, 'dropout_rate': 0.5, 'hidden_size': 64, 'num_classes': 2, 'numerical_hidden_size': 32, 'text_embed_dims': {'RequestURIPath': 32, 'RequestURIQuery': 32, 'RequestBody': 32, 'UserAgent': 32}, 'categorical_embed_dims': {'RequestMethod': 3}}
+	Hyperparameter tuning: False
+2025-07-29 20:00:13,230 - evaluation_logger - INFO - Device: cuda
+2025-07-29 20:03:33,014 - evaluation_logger - INFO - ####################################################################
+2025-07-29 20:03:33,015 - evaluation_logger - INFO - Model Training Started: 2025-07-29 20:03:33
+2025-07-29 20:03:33,015 - evaluation_logger - INFO - --- Data Cleaning ---
+2025-07-29 20:03:33,457 - evaluation_logger - INFO - 	Successfully loaded 173849 entries from training/training-data/cleaned/coraza-audit-cleaned_20250724_143510.csv
+2025-07-29 20:03:33,457 - evaluation_logger - INFO - --- Data Preprocessing ---
+2025-07-29 20:03:33,457 - evaluation_logger - INFO - NUMERICAL_FEATURES=['RequestLength', 'PathLength', 'QueryLength']
+2025-07-29 20:03:33,457 - evaluation_logger - INFO - TEXT_FEATURES=['RequestURIPath', 'RequestURIQuery', 'RequestBody', 'UserAgent']
+2025-07-29 20:03:33,457 - evaluation_logger - INFO - CATEGORICAL_FEATURES=['RequestMethod']
+2025-07-29 20:03:33,457 - evaluation_logger - INFO - LABEL='AIVerdictLabel'
+2025-07-29 20:03:33,515 - evaluation_logger - INFO - > Dense Feature extraction
+2025-07-29 20:03:33,515 - evaluation_logger - INFO - 	Using :
+    	TOKENIZER_CONFIGS: {'RequestURIPath': 'char', 'RequestURIQuery': 'char', 'RequestBody': 'char', 'UserAgent': 'char'}
+    	MAX_SEQ_LENGTHS: {'RequestURIPath': 50, 'RequestURIQuery': 50, 'RequestBody': 50, 'UserAgent': 100}
+2025-07-29 20:03:41,591 - evaluation_logger - INFO - Dense feature extraction and preprocessing complete.
+2025-07-29 20:03:41,761 - evaluation_logger - INFO - --- Model Training ---
+2025-07-29 20:03:41,761 - evaluation_logger - INFO - 	Architecture Used: FCNN
+	Random State: 42
+	Model Parameters: {'learning_rate': 0.001, 'epochs': 50, 'batch_size': 32, 'optimizer_type': 'adam', 'optimizer_params': {'weight_decay': 0.0001}, 'loss_type': 'CrossEntropyLoss', 'loss_params': {}, 'dropout_rate': 0.5, 'hidden_size': 64, 'num_classes': 2, 'numerical_hidden_size': 32, 'text_embed_dims': {'RequestURIPath': 32, 'RequestURIQuery': 32, 'RequestBody': 32, 'UserAgent': 32}, 'categorical_embed_dims': {'RequestMethod': 3}}
+	Hyperparameter tuning: False
+2025-07-29 20:03:41,908 - evaluation_logger - INFO - Device: cuda
+2025-07-29 20:03:42,701 - evaluation_logger - INFO -   Model type: PyTorchMLPClassifier
+2025-07-29 20:03:42,701 - evaluation_logger - INFO -   Optimizer: adam ({'weight_decay': 0.0001, 'lr': 0.001})
+2025-07-29 20:03:42,701 - evaluation_logger - INFO -   Loss: CrossEntropyLoss ({})
+2025-07-29 20:03:42,701 - evaluation_logger - INFO -   Epochs: 50, Batch Size: 32
+2025-07-29 20:03:42,701 - evaluation_logger - INFO -   Early Stopping: True, Patience: 10
+2025-07-29 20:03:42,701 - evaluation_logger - INFO -   Device: cuda
+2025-07-29 20:14:00,401 - evaluation_logger - INFO - ####################################################################
+2025-07-29 20:14:00,401 - evaluation_logger - INFO - Model Training Started: 2025-07-29 20:14:00
+2025-07-29 20:14:00,402 - evaluation_logger - INFO - --- Data Cleaning ---
+2025-07-29 20:14:00,845 - evaluation_logger - INFO - 	Successfully loaded 173849 entries from training/training-data/cleaned/coraza-audit-cleaned_20250724_143510.csv
+2025-07-29 20:14:00,845 - evaluation_logger - INFO - --- Data Preprocessing ---
+2025-07-29 20:14:00,845 - evaluation_logger - INFO - NUMERICAL_FEATURES=['RequestLength', 'PathLength', 'QueryLength']
+2025-07-29 20:14:00,845 - evaluation_logger - INFO - TEXT_FEATURES=['RequestURIPath', 'RequestURIQuery', 'RequestBody', 'UserAgent']
+2025-07-29 20:14:00,846 - evaluation_logger - INFO - CATEGORICAL_FEATURES=['RequestMethod']
+2025-07-29 20:14:00,846 - evaluation_logger - INFO - LABEL='AIVerdictLabel'
+2025-07-29 20:14:00,904 - evaluation_logger - INFO - > Dense Feature extraction
+2025-07-29 20:14:00,904 - evaluation_logger - INFO - 	Using :
+    	TOKENIZER_CONFIGS: {'RequestURIPath': 'char', 'RequestURIQuery': 'char', 'RequestBody': 'char', 'UserAgent': 'char'}
+    	MAX_SEQ_LENGTHS: {'RequestURIPath': 50, 'RequestURIQuery': 50, 'RequestBody': 50, 'UserAgent': 100}
+2025-07-29 20:14:09,086 - evaluation_logger - INFO - Dense feature extraction and preprocessing complete.
+2025-07-29 20:14:09,252 - evaluation_logger - INFO - --- Model Training ---
+2025-07-29 20:14:09,252 - evaluation_logger - INFO - 	Architecture Used: FCNN
+	Random State: 42
+	Model Parameters: {'learning_rate': 0.001, 'epochs': 50, 'batch_size': 32, 'optimizer_type': 'adam', 'optimizer_params': {'weight_decay': 0.0001}, 'loss_type': 'CrossEntropyLoss', 'loss_params': {}, 'dropout_rate': 0.5, 'hidden_size': 64, 'num_classes': 2, 'numerical_hidden_size': 32, 'text_embed_dims': {'RequestURIPath': 32, 'RequestURIQuery': 32, 'RequestBody': 32, 'UserAgent': 32}, 'categorical_embed_dims': {'RequestMethod': 3}}
+	Hyperparameter tuning: False
+2025-07-29 20:14:09,402 - evaluation_logger - INFO - Device: cuda
+2025-07-29 20:14:10,185 - evaluation_logger - INFO -   Model type: PyTorchMLPClassifier
+2025-07-29 20:14:10,185 - evaluation_logger - INFO -   Optimizer: adam ({'weight_decay': 0.0001, 'lr': 0.001})
+2025-07-29 20:14:10,185 - evaluation_logger - INFO -   Loss: CrossEntropyLoss ({})
+2025-07-29 20:14:10,185 - evaluation_logger - INFO -   Epochs: 50, Batch Size: 32
+2025-07-29 20:14:10,185 - evaluation_logger - INFO -   Early Stopping: True, Patience: 10
+2025-07-29 20:14:10,185 - evaluation_logger - INFO -   Device: cuda
+2025-07-29 20:37:40,937 - evaluation_logger - INFO - ####################################################################
+2025-07-29 20:37:40,937 - evaluation_logger - INFO - Model Training Started: 2025-07-29 20:37:40
+2025-07-29 20:37:40,938 - evaluation_logger - INFO - --- Data Cleaning ---
+2025-07-29 20:37:41,379 - evaluation_logger - INFO - 	Successfully loaded 173849 entries from training/training-data/cleaned/coraza-audit-cleaned_20250724_143510.csv
+2025-07-29 20:37:41,380 - evaluation_logger - INFO - --- Data Preprocessing ---
+2025-07-29 20:37:41,380 - evaluation_logger - INFO - NUMERICAL_FEATURES=['RequestLength', 'PathLength', 'QueryLength']
+2025-07-29 20:37:41,380 - evaluation_logger - INFO - TEXT_FEATURES=['RequestURIPath', 'RequestURIQuery', 'RequestBody', 'UserAgent']
+2025-07-29 20:37:41,380 - evaluation_logger - INFO - CATEGORICAL_FEATURES=['RequestMethod']
+2025-07-29 20:37:41,380 - evaluation_logger - INFO - LABEL='AIVerdictLabel'
+2025-07-29 20:37:41,438 - evaluation_logger - INFO - > Dense Feature extraction
+2025-07-29 20:37:41,438 - evaluation_logger - INFO - 	Using :
+    	TOKENIZER_CONFIGS: {'RequestURIPath': 'char', 'RequestURIQuery': 'char', 'RequestBody': 'char', 'UserAgent': 'char'}
+    	MAX_SEQ_LENGTHS: {'RequestURIPath': 50, 'RequestURIQuery': 50, 'RequestBody': 50, 'UserAgent': 100}
+2025-07-29 20:37:49,429 - evaluation_logger - INFO - Dense feature extraction and preprocessing complete.
+2025-07-29 20:37:49,598 - evaluation_logger - INFO - --- Model Training ---
+2025-07-29 20:37:49,598 - evaluation_logger - INFO - 	Architecture Used: FCNN
+	Random State: 42
+	Model Parameters: {'learning_rate': 0.001, 'epochs': 50, 'batch_size': 32, 'optimizer_type': 'adam', 'optimizer_params': {'weight_decay': 0.0001}, 'loss_type': 'CrossEntropyLoss', 'loss_params': {}, 'dropout_rate': 0.5, 'hidden_size': 64, 'num_classes': 2, 'numerical_hidden_size': 32, 'text_embed_dims': {'RequestURIPath': 32, 'RequestURIQuery': 32, 'RequestBody': 32, 'UserAgent': 32}, 'categorical_embed_dims': {'RequestMethod': 3}}
+	Hyperparameter tuning: False
+2025-07-29 20:37:49,744 - evaluation_logger - INFO - Device: cuda
+2025-07-29 20:37:50,560 - evaluation_logger - INFO -   Model type: PyTorchMLPClassifier
+2025-07-29 20:37:50,560 - evaluation_logger - INFO -   Optimizer: adam ({'weight_decay': 0.0001, 'lr': 0.001})
+2025-07-29 20:37:50,560 - evaluation_logger - INFO -   Loss: CrossEntropyLoss ({})
+2025-07-29 20:37:50,561 - evaluation_logger - INFO -   Epochs: 50, Batch Size: 32
+2025-07-29 20:37:50,561 - evaluation_logger - INFO -   Early Stopping: True, Patience: 10
+2025-07-29 20:37:50,561 - evaluation_logger - INFO -   Device: cuda
+2025-07-29 20:39:55,232 - evaluation_logger - INFO - ####################################################################
+2025-07-29 20:39:55,233 - evaluation_logger - INFO - Model Training Started: 2025-07-29 20:39:55
+2025-07-29 20:39:55,233 - evaluation_logger - INFO - --- Data Cleaning ---
+2025-07-29 20:39:55,675 - evaluation_logger - INFO - 	Successfully loaded 173849 entries from training/training-data/cleaned/coraza-audit-cleaned_20250724_143510.csv
+2025-07-29 20:39:55,675 - evaluation_logger - INFO - --- Data Preprocessing ---
+2025-07-29 20:39:55,675 - evaluation_logger - INFO - NUMERICAL_FEATURES=['RequestLength', 'PathLength', 'QueryLength']
+2025-07-29 20:39:55,676 - evaluation_logger - INFO - TEXT_FEATURES=['RequestURIPath', 'RequestURIQuery', 'RequestBody', 'UserAgent']
+2025-07-29 20:39:55,676 - evaluation_logger - INFO - CATEGORICAL_FEATURES=['RequestMethod']
+2025-07-29 20:39:55,676 - evaluation_logger - INFO - LABEL='AIVerdictLabel'
+2025-07-29 20:39:55,733 - evaluation_logger - INFO - > Dense Feature extraction
+2025-07-29 20:39:55,733 - evaluation_logger - INFO - 	Using :
+    	TOKENIZER_CONFIGS: {'RequestURIPath': 'char', 'RequestURIQuery': 'char', 'RequestBody': 'char', 'UserAgent': 'char'}
+    	MAX_SEQ_LENGTHS: {'RequestURIPath': 50, 'RequestURIQuery': 50, 'RequestBody': 50, 'UserAgent': 100}
+2025-07-29 20:40:03,783 - evaluation_logger - INFO - Dense feature extraction and preprocessing complete.
+2025-07-29 20:40:03,953 - evaluation_logger - INFO - --- Model Training ---
+2025-07-29 20:40:03,953 - evaluation_logger - INFO - 	Architecture Used: FCNN
+	Random State: 42
+	Model Parameters: {'learning_rate': 0.001, 'epochs': 50, 'batch_size': 32, 'optimizer_type': 'adam', 'optimizer_params': {'weight_decay': 0.0001}, 'loss_type': 'CrossEntropyLoss', 'loss_params': {}, 'dropout_rate': 0.5, 'hidden_size': 64, 'num_classes': 2, 'numerical_hidden_size': 32, 'text_embed_dims': {'RequestURIPath': 32, 'RequestURIQuery': 32, 'RequestBody': 32, 'UserAgent': 32}, 'categorical_embed_dims': {'RequestMethod': 3}}
+	Hyperparameter tuning: False
+2025-07-29 20:40:04,093 - evaluation_logger - INFO - Device: cuda
+2025-07-29 20:40:04,879 - evaluation_logger - INFO -   Model type: PyTorchMLPClassifier
+2025-07-29 20:40:04,879 - evaluation_logger - INFO -   Optimizer: adam ({'weight_decay': 0.0001, 'lr': 0.001})
+2025-07-29 20:40:04,879 - evaluation_logger - INFO -   Loss: CrossEntropyLoss ({})
+2025-07-29 20:40:04,879 - evaluation_logger - INFO -   Epochs: 50, Batch Size: 32
+2025-07-29 20:40:04,879 - evaluation_logger - INFO -   Early Stopping: True, Patience: 10
+2025-07-29 20:40:04,879 - evaluation_logger - INFO -   Device: cuda

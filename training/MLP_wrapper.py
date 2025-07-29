@@ -57,8 +57,24 @@ class MultiInputMLPClassifier(nn.Module):
         )
 
     def forward(self, text_inputs: Dict[str, torch.Tensor],
-                categorical_inputs: Dict[str, torch.Tensor],
+                categorical_inputs: torch.Tensor, #or Dict[str, torch.Tensor],
                 numerical_inputs: torch.Tensor):
+        """
+        Forward pass for the MultiInputMLPClassifier.
+
+        Args:
+            text_inputs (Dict[str, torch.Tensor]): A dictionary where keys are text feature names
+                                                  and values are their corresponding input tensors
+                                                  (batch_size, sequence_length).
+            categorical_inputs (torch.Tensor): A tensor containing all ONE-HOT ENCODED categorical features
+                                                (batch_size, total_num_ohe_categories).
+            numerical_inputs (torch.Tensor): A tensor containing numerical features (batch_size, num_numerical_features).
+
+        Returns:
+            torch.Tensor: The output logits (batch_size, num_classes).
+        """
+       
+       #or  
         """
         Forward pass for the MultiInputMLPClassifier.
 
@@ -79,20 +95,26 @@ class MultiInputMLPClassifier(nn.Module):
         global_logger.debug(f"--- Text Embeddings ---")
         # Text: embed and mean-pool each feature
         text_outputs = []
-        for i, (name, embedding_layer) in enumerate(self.text_branches.items()):
-            embed = embedding_layer(text_inputs[i])  # (batch_size, seq_len, embed_dim)
-            pooled = embed.mean(dim=1)  # (batch_size, embed_dim)
-            global_logger.debug(f"{name=}, in: {text_inputs[i].shape=} out: {embed.shape=} outout: {pooled.shape=}")
+        for name, input_tensor in text_inputs.items():
+            embedding_layer = self.text_branches[name] # (batch_size, seq_len, embed_dim)
+            input_tensor = input_tensor.long() 
+            embed = embedding_layer(input_tensor)  # (batch_size, seq_len, embed_dim)
+            pooled = embed.mean(dim=1)  # Mean pool along the sequence dimension (dim=1) -> (batch_size, embed_dim)
+            global_logger.debug(f"Text Feature '{name}', in: {input_tensor.shape}, embed: {embed.shape}, pooled: {pooled.shape}")
             text_outputs.append(pooled)
+
         
         # --- Categorical Embeddings ---
         global_logger.debug(f"--- Categorical Embeddings ---")
         cat_outputs = []
-        for i, (name, embedding_layer) in enumerate(self.cat_branches.items()):
-            # categorical_inputs[i]: (batch_size, 1) or (batch_size,)
-            embed = embedding_layer(categorical_inputs[i])  # (batch_size, embed_dim)
-            global_logger.debug(f"{name=}, in: {categorical_inputs[i].shape=} out: {embed.shape=}")
+        for name, input_tensor in categorical_inputs.items():
+            embedding_layer = self.cat_branches[name]
+            input_tensor = input_tensor.long().squeeze(1) if input_tensor.dim() == 2 else input_tensor.long() 
+            
+            embed = embedding_layer(input_tensor)  # (batch_size, embed_dim)
+            global_logger.debug(f"Categorical Feature '{name}', in: {input_tensor.shape}, embed: {embed.shape}")
             cat_outputs.append(embed)
+            
         
         # --- Numerical Inputs ---
         global_logger.debug(f"--- Numerical Features Linear Layer---")
@@ -182,12 +204,16 @@ class PyTorchMLPClassifier(BaseDeepLearningClassifier):
         """
         Builds the specific MLP architecture for this classifier.
         """
+
+        
     
 
 
         return MultiInputMLPClassifier( 
-                text_specs=self.text_specs,
-                categorical_specs=self.categorical_specs,
+                text_specs=self.text_specs,         # e.g., {'query': (10000, 50)}
+                                                                 # where Key -> (Vocab Size, Embedding Dim)
+                categorical_specs=self.categorical_specs,  # e.g., {'mehod': (150, 10)}
+                                                                 # where Key -> (Cardinality, Embedding Dim)
                 num_numerical_features=self.num_numerical_features,
                 numerical_hidden_size=self.numerical_hidden_size,
                 hidden_size=self.hidden_size,

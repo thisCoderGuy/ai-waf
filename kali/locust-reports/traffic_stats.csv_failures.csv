@@ -1,122 +1,377 @@
 Method,Name,Error,Occurrences
-POST,cards/[POST_XSS_CARD_CREATE],HTTPError('403 Client Error: Forbidden for url: cards/[POST_XSS_CARD_CREATE]'),2
-GET,address/[GET_ADDRESS_ENUM_GET],HTTPError('500 Server Error: Internal Server Error for url: address/[GET_ADDRESS_ENUM_GET]'),3
-GET,product_details/[GET_PRODUCT_ENUM_NONEXISTENT_GET],HTTPError('500 Server Error: Internal Server Error for url: product_details/[GET_PRODUCT_ENUM_NONEXISTENT_GET]'),6
-GET,security_question_by_id/[GET_SEC_QUESTION_ENUM_GET],HTTPError('403 Client Error: Forbidden for url: security_question_by_id/[GET_SEC_QUESTION_ENUM_GET]'),2
-PUT,basket_item/[PUT_UPDATE_BASKET_ITEM_NO_TOKEN_PUT],HTTPError('403 Client Error: Forbidden for url: basket_item/[PUT_UPDATE_BASKET_ITEM_NO_TOKEN_PUT]'),5
-POST,password_reset/[POST_USER_ENUM_PASSWORD_RESET_NONEXISTENT_POST],HTTPError('403 Client Error: Forbidden for url: password_reset/[POST_USER_ENUM_PASSWORD_RESET_NONEXISTENT_POST]'),2
-GET,address/[GET_ADDRESS_ENUM_NONEXISTENT_GET],HTTPError('500 Server Error: Internal Server Error for url: address/[GET_ADDRESS_ENUM_NONEXISTENT_GET]'),3
-GET,/.git/config/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /.git/config/[GET_FILE_ENUM]'),1
-GET,feedback_by_id/[GET_FEEDBACK_ENUM_GET],HTTPError('401 Client Error: Unauthorized for url: feedback_by_id/[GET_FEEDBACK_ENUM_GET]'),6
-POST,addresses/[POST_XSS_ADDRESS_CREATE],HTTPError('500 Server Error: Internal Server Error for url: addresses/[POST_XSS_ADDRESS_CREATE]'),6
-GET,product_details/[GET_PRODUCT_ENUM_GET],HTTPError('403 Client Error: Forbidden for url: product_details/[GET_PRODUCT_ENUM_GET]'),3
-POST,cards/[POST_ADD_CARD_NO_TOKEN_POST],HTTPError('401 Client Error: Unauthorized for url: cards/[POST_ADD_CARD_NO_TOKEN_POST]'),6
-PUT,/upload/[PUT_PATH_TRAVERSAL_FILENAME_DOUBLE],HTTPError('403 Client Error: Forbidden for url: /upload/[PUT_PATH_TRAVERSAL_FILENAME_DOUBLE]'),2
-POST,change_security_answer/[POST_CHANGE_SECURITY_ANSWER_NO_TOKEN_POST],HTTPError('500 Server Error: Internal Server Error for url: change_security_answer/[POST_CHANGE_SECURITY_ANSWER_NO_TOKEN_POST]'),2
-POST,profile_image_url_upload/[POST_XSS_PROFILE_IMAGE_URL],HTTPError('500 Server Error: Internal Server Error for url: profile_image_url_upload/[POST_XSS_PROFILE_IMAGE_URL]'),3
-POST,user_login/[POST_USER_ENUM_LOGIN_NONEXISTENT_POST],HTTPError('401 Client Error: Unauthorized for url: user_login/[POST_USER_ENUM_LOGIN_NONEXISTENT_POST]'),11
-GET,privacy_request/[GET_PRIVACY_REQ_ENUM_NONEXISTENT_GET],HTTPError('401 Client Error: Unauthorized for url: privacy_request/[GET_PRIVACY_REQ_ENUM_NONEXISTENT_GET]'),1
-POST,password_reset/[POST_USER_ENUM_PASSWORD_RESET_POST],HTTPError('403 Client Error: Forbidden for url: password_reset/[POST_USER_ENUM_PASSWORD_RESET_POST]'),2
-POST,cards/[POST_ADD_CARD_NO_TOKEN_POST],HTTPError('403 Client Error: Forbidden for url: cards/[POST_ADD_CARD_NO_TOKEN_POST]'),2
-PUT,address/[PUT_DT_ADDRESS_UPDATE_PUT],HTTPError('403 Client Error: Forbidden for url: address/[PUT_DT_ADDRESS_UPDATE_PUT]'),5
-GET,product_details/[GET_PRODUCT_ENUM_GET],HTTPError('500 Server Error: Internal Server Error for url: product_details/[GET_PRODUCT_ENUM_GET]'),6
-POST,product_reviews_by_id/[POST_XSS_PRODUCT_REVIEW_POST],HTTPError('500 Server Error: Internal Server Error for url: product_reviews_by_id/[POST_XSS_PRODUCT_REVIEW_POST]'),13
-GET,/rest/admin/file-system/[DT_ADMIN_FILE_SYSTEM_PATH_DOUBLE],HTTPError('403 Client Error: Forbidden for url: /rest/admin/file-system/[DT_ADMIN_FILE_SYSTEM_PATH_DOUBLE]'),2
-DELETE,memory_detail/[DELETE_DT_MEMORY_DELETE_PATH],HTTPError('403 Client Error: Forbidden for url: memory_detail/[DELETE_DT_MEMORY_DELETE_PATH]'),6
-POST,feedbacks/[POST_SUBMIT_FEEDBACK_NO_TOKEN_POST],HTTPError('500 Server Error: Internal Server Error for url: feedbacks/[POST_SUBMIT_FEEDBACK_NO_TOKEN_POST]'),8
-GET,challenge/[GET_CHALLENGE_ENUM_NONEXISTENT_GET],HTTPError('401 Client Error: Unauthorized for url: challenge/[GET_CHALLENGE_ENUM_NONEXISTENT_GET]'),4
-GET,order/[GET_ORDER_ENUM_NONEXISTENT_GET],HTTPError('500 Server Error: Internal Server Error for url: order/[GET_ORDER_ENUM_NONEXISTENT_GET]'),7
-GET,ftp_access/[GET_DT_GET_PATH_INJECT],HTTPError('403 Client Error: Forbidden for url: ftp_access/[GET_DT_GET_PATH_INJECT]'),3
-GET,/package-lock.json/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /package-lock.json/[GET_FILE_ENUM]'),1
-GET,feedback_by_id/[GET_FEEDBACK_ENUM_NONEXISTENT_GET],HTTPError('401 Client Error: Unauthorized for url: feedback_by_id/[GET_FEEDBACK_ENUM_NONEXISTENT_GET]'),6
-GET,product_search/[GET_XSS_FUZZ_GET],HTTPError('431 Client Error: Request Header Fields Too Large for url: product_search/[GET_XSS_FUZZ_GET]'),1
-GET,file_system_access_challenge/[GET_DT_ADMIN_FILE_SYSTEM_QUERY],HTTPError('500 Server Error: Internal Server Error for url: file_system_access_challenge/[GET_DT_ADMIN_FILE_SYSTEM_QUERY]'),1
-GET,feedback_by_id/[GET_FEEDBACK_ENUM_GET],HTTPError('403 Client Error: Forbidden for url: feedback_by_id/[GET_FEEDBACK_ENUM_GET]'),3
-GET,file_download/[GET_FILE_DOWNLOAD_ENUM_QUERY],HTTPError('403 Client Error: Forbidden for url: file_download/[GET_FILE_DOWNLOAD_ENUM_QUERY]'),3
-POST,/api/Products/{product_id}/upload/[XSS_FILE_UPLOAD_HTML_SINGLE],HTTPError('500 Server Error: Internal Server Error for url: /api/Products/{product_id}/upload/[XSS_FILE_UPLOAD_HTML_SINGLE]'),1
-POST,privacy_requests/[POST_SUBMIT_PRIVACY_REQ_NO_TOKEN_POST],HTTPError('401 Client Error: Unauthorized for url: privacy_requests/[POST_SUBMIT_PRIVACY_REQ_NO_TOKEN_POST]'),2
-GET,security_question_by_id/[GET_SEC_QUESTION_ENUM_NONEXISTENT_GET],HTTPError('403 Client Error: Forbidden for url: security_question_by_id/[GET_SEC_QUESTION_ENUM_NONEXISTENT_GET]'),2
-GET,privacy_request/[GET_PRIVACY_REQ_ENUM_GET],HTTPError('401 Client Error: Unauthorized for url: privacy_request/[GET_PRIVACY_REQ_ENUM_GET]'),1
-GET,feedback_by_id/[GET_FEEDBACK_ENUM_NONEXISTENT_GET],HTTPError('403 Client Error: Forbidden for url: feedback_by_id/[GET_FEEDBACK_ENUM_NONEXISTENT_GET]'),3
-GET,challenge/[GET_CHALLENGE_ENUM_NONEXISTENT_GET],HTTPError('403 Client Error: Forbidden for url: challenge/[GET_CHALLENGE_ENUM_NONEXISTENT_GET]'),1
-GET,ftp_access/[GET_DT_FTP_ACCESS_KNOWN_FILE],HTTPError('403 Client Error: Forbidden for url: ftp_access/[GET_DT_FTP_ACCESS_KNOWN_FILE]'),8
-POST,user_login/[POST_USER_ENUM_LOGIN_POST],HTTPError('401 Client Error: Unauthorized for url: user_login/[POST_USER_ENUM_LOGIN_POST]'),11
-GET,challenge/[GET_CHALLENGE_ENUM_GET],HTTPError('401 Client Error: Unauthorized for url: challenge/[GET_CHALLENGE_ENUM_GET]'),4
-POST,password_reset/[POST_USER_ENUM_PASSWORD_RESET_POST],HTTPError('500 Server Error: Internal Server Error for url: password_reset/[POST_USER_ENUM_PASSWORD_RESET_POST]'),5
-GET,memory_detail/[GET_MEMORY_ENUM_NONEXISTENT_GET],HTTPError('500 Server Error: Internal Server Error for url: memory_detail/[GET_MEMORY_ENUM_NONEXISTENT_GET]'),3
-GET,order/[GET_ORDER_ENUM_NONEXISTENT_GET],HTTPError('403 Client Error: Forbidden for url: order/[GET_ORDER_ENUM_NONEXISTENT_GET]'),2
-PUT,update_product/[PUT_CSRF_UPDATE_PRODUCT_NO_TOKEN_PUT],HTTPError('403 Client Error: Forbidden for url: update_product/[PUT_CSRF_UPDATE_PRODUCT_NO_TOKEN_PUT]'),3
-DELETE,delete_product/[DELETE_CSRF_DELETE_PRODUCT_NO_TOKEN_DELETE],HTTPError('403 Client Error: Forbidden for url: delete_product/[DELETE_CSRF_DELETE_PRODUCT_NO_TOKEN_DELETE]'),2
-GET,order/[GET_ORDER_ENUM_GET],HTTPError('403 Client Error: Forbidden for url: order/[GET_ORDER_ENUM_GET]'),2
-GET,card/[GET_CARD_ENUM_GET],HTTPError('401 Client Error: Unauthorized for url: card/[GET_CARD_ENUM_GET]'),5
-GET,assets_access/[GET_DT_ASSETS_ACCESS],HTTPError('403 Client Error: Forbidden for url: assets_access/[GET_DT_ASSETS_ACCESS]'),3
-GET,challenge/[GET_CHALLENGE_ENUM_GET],HTTPError('403 Client Error: Forbidden for url: challenge/[GET_CHALLENGE_ENUM_GET]'),1
-DELETE,user_profile/[DELETE_USER_ENUM_DELETE],HTTPError('403 Client Error: Forbidden for url: user_profile/[DELETE_USER_ENUM_DELETE]'),2
-DELETE,card/[DELETE_DELETE_CARD_NO_TOKEN_DELETE],HTTPError('403 Client Error: Forbidden for url: card/[DELETE_DELETE_CARD_NO_TOKEN_DELETE]'),3
-GET,file_download/[GET_DT_FILE_DOWNLOAD_NAME],HTTPError('403 Client Error: Forbidden for url: file_download/[GET_DT_FILE_DOWNLOAD_NAME]'),2
-GET,memory_detail/[GET_MEMORY_ENUM_GET],HTTPError('500 Server Error: Internal Server Error for url: memory_detail/[GET_MEMORY_ENUM_GET]'),3
-POST,profile_image_url_upload/[POST_DT_PROFILE_IMAGE_URL_POST],HTTPError('500 Server Error: Internal Server Error for url: profile_image_url_upload/[POST_DT_PROFILE_IMAGE_URL_POST]'),4
-GET,encryption_keys_access/[GET_DT_ENCRYPTION_KEYS_ACCESS],HTTPError('414 Client Error: Request URI Too Long for url: encryption_keys_access/[GET_DT_ENCRYPTION_KEYS_ACCESS]'),1
-POST,privacy_requests/[POST_XSS_PRIVACY_REQ_POST],HTTPError('401 Client Error: Unauthorized for url: privacy_requests/[POST_XSS_PRIVACY_REQ_POST]'),6
-POST,/api/Products/{product_id}/upload/[XSS_FILE_UPLOAD_SVG_NONE],HTTPError('500 Server Error: Internal Server Error for url: /api/Products/{product_id}/upload/[XSS_FILE_UPLOAD_SVG_NONE]'),1
-GET,/rest/admin/file-system/[DT_ADMIN_FILE_SYSTEM_PATH_SINGLE],HTTPError('403 Client Error: Forbidden for url: /rest/admin/file-system/[DT_ADMIN_FILE_SYSTEM_PATH_SINGLE]'),5
-POST,complaints/[POST_DT_COMPLAINT_POST_FILENAME],HTTPError('403 Client Error: Forbidden for url: complaints/[POST_DT_COMPLAINT_POST_FILENAME]'),1
-POST,password_reset/[POST_CSRF_PASSWORD_RESET_NO_TOKEN_POST],HTTPError('500 Server Error: Internal Server Error for url: password_reset/[POST_CSRF_PASSWORD_RESET_NO_TOKEN_POST]'),3
-DELETE,user_profile/[DELETE_USER_ENUM_DELETE_NONEXISTENT],HTTPError('403 Client Error: Forbidden for url: user_profile/[DELETE_USER_ENUM_DELETE_NONEXISTENT]'),2
-POST,admin_panel/[POST_CSRF_ADMIN_DELETE_USER_NO_TOKEN_POST],HTTPError('500 Server Error: Internal Server Error for url: admin_panel/[POST_CSRF_ADMIN_DELETE_USER_NO_TOKEN_POST]'),3
-POST,add_to_cart/[POST_CSRF_ADD_TO_CART_NO_TOKEN_POST],HTTPError('401 Client Error: Unauthorized for url: add_to_cart/[POST_CSRF_ADD_TO_CART_NO_TOKEN_POST]'),7
-POST,password_reset/[POST_USER_ENUM_PASSWORD_RESET_NONEXISTENT_POST],HTTPError('500 Server Error: Internal Server Error for url: password_reset/[POST_USER_ENUM_PASSWORD_RESET_NONEXISTENT_POST]'),5
-POST,add_to_cart/[POST_CSRF_ADD_TO_CART_INVALID_TOKEN_POST],HTTPError('401 Client Error: Unauthorized for url: add_to_cart/[POST_CSRF_ADD_TO_CART_INVALID_TOKEN_POST]'),1
-PUT,/upload/[PUT_PATH_TRAVERSAL_FILENAME_SINGLE],HTTPError('403 Client Error: Forbidden for url: /upload/[PUT_PATH_TRAVERSAL_FILENAME_SINGLE]'),1
-GET,card/[GET_CARD_ENUM_NONEXISTENT_GET],HTTPError('401 Client Error: Unauthorized for url: card/[GET_CARD_ENUM_NONEXISTENT_GET]'),5
-POST,user_login/[POST_USER_ENUM_LOGIN_POST],HTTPError('403 Client Error: Forbidden for url: user_login/[POST_USER_ENUM_LOGIN_POST]'),1
-GET,security_question_by_id/[GET_SEC_QUESTION_ENUM_NONEXISTENT_GET],HTTPError('401 Client Error: Unauthorized for url: security_question_by_id/[GET_SEC_QUESTION_ENUM_NONEXISTENT_GET]'),5
-GET,file_download/[GET_DT_FILE_DOWNLOAD_ID],HTTPError('403 Client Error: Forbidden for url: file_download/[GET_DT_FILE_DOWNLOAD_ID]'),1
-POST,user_register/[POST_XSS_EMAIL_POST],HTTPError('403 Client Error: Forbidden for url: user_register/[POST_XSS_EMAIL_POST]'),1
-POST,user_register/[POST_XSS_SECURITY_ANSWER_POST],HTTPError('403 Client Error: Forbidden for url: user_register/[POST_XSS_SECURITY_ANSWER_POST]'),1
-POST,product_reviews_by_id/[POST_SUBMIT_REVIEW_NO_TOKEN_POST],HTTPError('500 Server Error: Internal Server Error for url: product_reviews_by_id/[POST_SUBMIT_REVIEW_NO_TOKEN_POST]'),2
-POST,add_to_cart/[POST_CSRF_ADD_TO_CART_NO_TOKEN_POST],HTTPError('403 Client Error: Forbidden for url: add_to_cart/[POST_CSRF_ADD_TO_CART_NO_TOKEN_POST]'),1
-POST,customer_chatbot/[POST_XSS_CHATBOT_QUERY_POST],HTTPError('403 Client Error: Forbidden for url: customer_chatbot/[POST_XSS_CHATBOT_QUERY_POST]'),2
-PUT,user_profile_update/[PUT_USER_PROFILE_UPDATE_NO_TOKEN_PUT],HTTPError('403 Client Error: Forbidden for url: user_profile_update/[PUT_USER_PROFILE_UPDATE_NO_TOKEN_PUT]'),9
-GET,encryption_keys_access/[GET_DT_ENCRYPTION_KEYS_ACCESS],HTTPError('404 Client Error: Not Found for url: encryption_keys_access/[GET_DT_ENCRYPTION_KEYS_ACCESS]'),1
-POST,user_login/[POST_USER_ENUM_LOGIN_NONEXISTENT_POST],HTTPError('403 Client Error: Forbidden for url: user_login/[POST_USER_ENUM_LOGIN_NONEXISTENT_POST]'),1
-POST,data_export_endpoint/[POST_DT_DATA_EXPORT_POST],HTTPError('500 Server Error: Internal Server Error for url: data_export_endpoint/[POST_DT_DATA_EXPORT_POST]'),4
-GET,/rest/admin/file-system/[DT_ADMIN_FILE_SYSTEM_PATH_NONE],HTTPError('403 Client Error: Forbidden for url: /rest/admin/file-system/[DT_ADMIN_FILE_SYSTEM_PATH_NONE]'),2
-POST,feedbacks/[POST_XSS_POST_COMMENT],HTTPError('500 Server Error: Internal Server Error for url: feedbacks/[POST_XSS_POST_COMMENT]'),8
-DELETE,basket_item/[DELETE_DELETE_BASKET_ITEM_NO_TOKEN_DELETE],HTTPError('403 Client Error: Forbidden for url: basket_item/[DELETE_DELETE_BASKET_ITEM_NO_TOKEN_DELETE]'),2
-GET,image_loader/[GET_DT_GET_QUERY],HTTPError('403 Client Error: Forbidden for url: image_loader/[GET_DT_GET_QUERY]'),3
-GET,data_export_endpoint/[GET_DT_DATA_EXPORT_QUERY],HTTPError('403 Client Error: Forbidden for url: data_export_endpoint/[GET_DT_DATA_EXPORT_QUERY]'),3
-GET,assets_access/[GET_DT_GET_PATH_INJECT],HTTPError('403 Client Error: Forbidden for url: assets_access/[GET_DT_GET_PATH_INJECT]'),2
-GET,/rest/admin/users/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /rest/admin/users/[GET_ADMIN_PAGE_ENUM]'),1
-GET,product_details/[GET_PRODUCT_ENUM_NONEXISTENT_GET],HTTPError('403 Client Error: Forbidden for url: product_details/[GET_PRODUCT_ENUM_NONEXISTENT_GET]'),3
-POST,/api/Products/{product_id}/upload/[XSS_FILE_UPLOAD_HTML_NONE],HTTPError('500 Server Error: Internal Server Error for url: /api/Products/{product_id}/upload/[XSS_FILE_UPLOAD_HTML_NONE]'),1
-POST,feedbacks/[POST_DT_FEEDBACK_POST_ATTACHMENT],HTTPError('403 Client Error: Forbidden for url: feedbacks/[POST_DT_FEEDBACK_POST_ATTACHMENT]'),1
-POST,/api/Products/{product_id}/upload/[XSS_FILE_UPLOAD_SVG_SINGLE],HTTPError('500 Server Error: Internal Server Error for url: /api/Products/{product_id}/upload/[XSS_FILE_UPLOAD_SVG_SINGLE]'),1
-GET,security_question_by_id/[GET_SEC_QUESTION_ENUM_GET],HTTPError('401 Client Error: Unauthorized for url: security_question_by_id/[GET_SEC_QUESTION_ENUM_GET]'),5
-GET,encryption_keys_access/[GET_DT_ENCRYPTION_KEYS_KNOWN_FILE],HTTPError('403 Client Error: Forbidden for url: encryption_keys_access/[GET_DT_ENCRYPTION_KEYS_KNOWN_FILE]'),10
-POST,feedbacks/[POST_XSS_POST_COMMENT],HTTPError('403 Client Error: Forbidden for url: feedbacks/[POST_XSS_POST_COMMENT]'),4
-GET,/rest/admin/file-system/[DT_ADMIN_FILE_SYSTEM_PATH_DOUBLE],HTTPError('500 Server Error: Internal Server Error for url: /rest/admin/file-system/[DT_ADMIN_FILE_SYSTEM_PATH_DOUBLE]'),1
-GET,product_search/[GET_XSS_FUZZ_GET],HTTPError('403 Client Error: Forbidden for url: product_search/[GET_XSS_FUZZ_GET]'),19
-GET,file_system_access_challenge/[GET_DT_ADMIN_FILE_SYSTEM_QUERY],HTTPError('403 Client Error: Forbidden for url: file_system_access_challenge/[GET_DT_ADMIN_FILE_SYSTEM_QUERY]'),10
-POST,memories/[POST_XSS_MEMORY_CREATE_POST],HTTPError('403 Client Error: Forbidden for url: memories/[POST_XSS_MEMORY_CREATE_POST]'),1
-DELETE,address/[DELETE_DELETE_ADDRESS_NO_TOKEN_DELETE],HTTPError('403 Client Error: Forbidden for url: address/[DELETE_DELETE_ADDRESS_NO_TOKEN_DELETE]'),3
-DELETE,complaint/[DELETE_DT_COMPLAINT_DELETE_PATH],HTTPError('403 Client Error: Forbidden for url: complaint/[DELETE_DT_COMPLAINT_DELETE_PATH]'),6
-POST,addresses/[POST_ADD_ADDRESS_NO_TOKEN_POST],HTTPError('500 Server Error: Internal Server Error for url: addresses/[POST_ADD_ADDRESS_NO_TOKEN_POST]'),3
-POST,feedbacks/[POST_DT_FEEDBACK_POST_ATTACHMENT],HTTPError('500 Server Error: Internal Server Error for url: feedbacks/[POST_DT_FEEDBACK_POST_ATTACHMENT]'),4
-POST,memories/[POST_XSS_MEMORY_CREATE_POST],HTTPError('400 Client Error: Bad Request for url: memories/[POST_XSS_MEMORY_CREATE_POST]'),1
-GET,assets_access/[GET_DT_ASSETS_ACCESS_DIRECT],HTTPError('403 Client Error: Forbidden for url: assets_access/[GET_DT_ASSETS_ACCESS_DIRECT]'),3
-POST,complaints/[POST_DT_COMPLAINT_POST_FILENAME],HTTPError('401 Client Error: Unauthorized for url: complaints/[POST_DT_COMPLAINT_POST_FILENAME]'),4
-POST,customer_chatbot/[POST_XSS_CHATBOT_QUERY_POST],HTTPError('500 Server Error: Internal Server Error for url: customer_chatbot/[POST_XSS_CHATBOT_QUERY_POST]'),5
-GET,file_download/[GET_DT_GET_QUERY],HTTPError('403 Client Error: Forbidden for url: file_download/[GET_DT_GET_QUERY]'),1
-POST,profile_image_url_upload/[POST_DT_PROFILE_IMAGE_URL_POST],HTTPError('403 Client Error: Forbidden for url: profile_image_url_upload/[POST_DT_PROFILE_IMAGE_URL_POST]'),1
-GET,product_details/[GET_DT_GET_QUERY],HTTPError('500 Server Error: Internal Server Error for url: product_details/[GET_DT_GET_QUERY]'),1
-GET,ftp_access/[GET_DT_FTP_ACCESS],HTTPError('403 Client Error: Forbidden for url: ftp_access/[GET_DT_FTP_ACCESS]'),13
-GET,/rest/admin/file-system/[DT_ADMIN_FILE_SYSTEM_PATH_SINGLE],HTTPError('500 Server Error: Internal Server Error for url: /rest/admin/file-system/[DT_ADMIN_FILE_SYSTEM_PATH_SINGLE]'),1
-GET,data_export_endpoint/[GET_DT_DATA_EXPORT_QUERY],HTTPError('500 Server Error: Internal Server Error for url: data_export_endpoint/[GET_DT_DATA_EXPORT_QUERY]'),1
-PUT,/upload/[PUT_PATH_TRAVERSAL_FILENAME_NONE],HTTPError('403 Client Error: Forbidden for url: /upload/[PUT_PATH_TRAVERSAL_FILENAME_NONE]'),2
-GET,encryption_keys_access/[GET_DT_GET_PATH_INJECT],HTTPError('403 Client Error: Forbidden for url: encryption_keys_access/[GET_DT_GET_PATH_INJECT]'),3
-GET,order/[GET_ORDER_ENUM_GET],HTTPError('500 Server Error: Internal Server Error for url: order/[GET_ORDER_ENUM_GET]'),7
-POST,place_order/[POST_PLACE_ORDER_NO_TOKEN_POST],HTTPError('500 Server Error: Internal Server Error for url: place_order/[POST_PLACE_ORDER_NO_TOKEN_POST]'),3
-POST,cards/[POST_XSS_CARD_CREATE],HTTPError('401 Client Error: Unauthorized for url: cards/[POST_XSS_CARD_CREATE]'),7
-PUT,user_profile/[PUT_XSS_PROFILE_UPDATE_PUT],HTTPError('403 Client Error: Forbidden for url: user_profile/[PUT_XSS_PROFILE_UPDATE_PUT]'),4
-GET,encryption_keys_access/[GET_DT_ENCRYPTION_KEYS_ACCESS],HTTPError('403 Client Error: Forbidden for url: encryption_keys_access/[GET_DT_ENCRYPTION_KEYS_ACCESS]'),8
+POST,cards/[POST_XSS_CARD_CREATE],HTTPError('403 Client Error: Forbidden for url: cards/[POST_XSS_CARD_CREATE]'),328
+GET,/settings/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /settings/[GET_ADMIN_PAGE_ENUM]'),8
+GET,address/[GET_ADDRESS_ENUM_GET],HTTPError('500 Server Error: Internal Server Error for url: address/[GET_ADDRESS_ENUM_GET]'),1203
+GET,product_details/[GET_PRODUCT_ENUM_NONEXISTENT_GET],HTTPError('500 Server Error: Internal Server Error for url: product_details/[GET_PRODUCT_ENUM_NONEXISTENT_GET]'),2453
+GET,security_question_by_id/[GET_SEC_QUESTION_ENUM_GET],HTTPError('403 Client Error: Forbidden for url: security_question_by_id/[GET_SEC_QUESTION_ENUM_GET]'),188
+PUT,basket_item/[PUT_UPDATE_BASKET_ITEM_NO_TOKEN_PUT],HTTPError('403 Client Error: Forbidden for url: basket_item/[PUT_UPDATE_BASKET_ITEM_NO_TOKEN_PUT]'),1210
+GET,/rest/products/20,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/20'),135
+POST,password_reset/[POST_USER_ENUM_PASSWORD_RESET_NONEXISTENT_POST],HTTPError('403 Client Error: Forbidden for url: password_reset/[POST_USER_ENUM_PASSWORD_RESET_NONEXISTENT_POST]'),577
+DELETE,/rest/cart/item/6,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/6'),18
+GET,address/[GET_ADDRESS_ENUM_NONEXISTENT_GET],HTTPError('500 Server Error: Internal Server Error for url: address/[GET_ADDRESS_ENUM_NONEXISTENT_GET]'),1203
+GET,encryption_keys_access/[GET_DT_GET_PATH_INJECT],HTTPError('414 Client Error: Request URI Too Long for url: encryption_keys_access/[GET_DT_GET_PATH_INJECT]'),96
+POST,basket_items/[POST_SQLi_BASKET_ADD_QTY],HTTPError('403 Client Error: Forbidden for url: basket_items/[POST_SQLi_BASKET_ADD_QTY]'),265
+POST,change_security_answer/[POST_CHANGE_SECURITY_ANSWER_NO_TOKEN_POST],HTTPError('403 Client Error: Forbidden for url: change_security_answer/[POST_CHANGE_SECURITY_ANSWER_NO_TOKEN_POST]'),159
+GET,/api/Challenges/23,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/23'),11
+GET,/.git/config/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /.git/config/[GET_FILE_ENUM]'),101
+GET,feedback_by_id/[GET_FEEDBACK_ENUM_GET],HTTPError('401 Client Error: Unauthorized for url: feedback_by_id/[GET_FEEDBACK_ENUM_GET]'),2397
+GET,/rest/admin/debug/[GET_ADMIN_PAGE_ENUM],HTTPError('500 Server Error: Internal Server Error for url: /rest/admin/debug/[GET_ADMIN_PAGE_ENUM]'),37
+POST,product_reviews_by_id/[POST_SUBMIT_REVIEW_NO_TOKEN_POST],HTTPError('403 Client Error: Forbidden for url: product_reviews_by_id/[POST_SUBMIT_REVIEW_NO_TOKEN_POST]'),173
+POST,addresses/[POST_XSS_ADDRESS_CREATE],HTTPError('500 Server Error: Internal Server Error for url: addresses/[POST_XSS_ADDRESS_CREATE]'),2080
+POST,privacy_requests/[POST_XSS_PRIVACY_REQ_POST],HTTPError('403 Client Error: Forbidden for url: privacy_requests/[POST_XSS_PRIVACY_REQ_POST]'),170
+POST,addresses/[POST_SQLi_ADDRESS_CREATE],HTTPError('403 Client Error: Forbidden for url: addresses/[POST_SQLi_ADDRESS_CREATE]'),314
+GET,/api/Challenges/16,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/16'),10
+GET,ftp_access/[GET_DT_GET_PATH_INJECT],HTTPError('414 Client Error: Request URI Too Long for url: ftp_access/[GET_DT_GET_PATH_INJECT]'),95
+GET,/config/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /config/[GET_ADMIN_PAGE_ENUM]'),8
+PUT,/rest/cart/item/2,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/2'),21
+POST,basket_items/[POST_SQLi_BASKET_ADD_PROD_ID],HTTPError('401 Client Error: Unauthorized for url: basket_items/[POST_SQLi_BASKET_ADD_PROD_ID]'),1879
+GET,/admin/config.php/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /admin/config.php/[GET_FILE_ENUM]'),15
+GET,product_details/[GET_PRODUCT_ENUM_GET],HTTPError('403 Client Error: Forbidden for url: product_details/[GET_PRODUCT_ENUM_GET]'),392
+GET,/rest/product/{product_id}/image/[DT_GET_PATH_INJECT_SINGLE],HTTPError('403 Client Error: Forbidden for url: /rest/product/{product_id}/image/[DT_GET_PATH_INJECT_SINGLE]'),461
+POST,cards/[POST_ADD_CARD_NO_TOKEN_POST],HTTPError('401 Client Error: Unauthorized for url: cards/[POST_ADD_CARD_NO_TOKEN_POST]'),1034
+DELETE,/rest/cart/item/11,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/11'),21
+GET,card/[GET_CARD_ENUM_GET],HTTPError('403 Client Error: Forbidden for url: card/[GET_CARD_ENUM_GET]'),197
+DELETE,/rest/cart/item/9,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/9'),26
+DELETE,/rest/cart/item/16,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/16'),26
+GET,/api/Challenges/36,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/36'),12
+POST,/api/Products/{product_id}/upload/[XSS_FILE_UPLOAD_HTML_NONE],HTTPError('403 Client Error: Forbidden for url: /api/Products/{product_id}/upload/[XSS_FILE_UPLOAD_HTML_NONE]'),61
+GET,/api/Challenges/8,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/8'),10
+POST,user_register/[POST_XSS_EMAIL_POST],HTTPError('400 Client Error: Bad Request for url: user_register/[POST_XSS_EMAIL_POST]'),1039
+POST,place_order/[POST_PLACE_ORDER_NO_TOKEN_POST],HTTPError('403 Client Error: Forbidden for url: place_order/[POST_PLACE_ORDER_NO_TOKEN_POST]'),330
+GET,/rest/products/10,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/10'),149
+POST,addresses/[POST_SQLi_ADDRESS_CREATE],HTTPError('500 Server Error: Internal Server Error for url: addresses/[POST_SQLi_ADDRESS_CREATE]'),1817
+PUT,/upload/[PUT_PATH_TRAVERSAL_FILENAME_DOUBLE],HTTPError('403 Client Error: Forbidden for url: /upload/[PUT_PATH_TRAVERSAL_FILENAME_DOUBLE]'),506
+GET,/wp-admin/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /wp-admin/[GET_ADMIN_PAGE_ENUM]'),5
+POST,change_security_answer/[POST_CHANGE_SECURITY_ANSWER_NO_TOKEN_POST],HTTPError('500 Server Error: Internal Server Error for url: change_security_answer/[POST_CHANGE_SECURITY_ANSWER_NO_TOKEN_POST]'),1048
+POST,profile_image_url_upload/[POST_XSS_PROFILE_IMAGE_URL],HTTPError('500 Server Error: Internal Server Error for url: profile_image_url_upload/[POST_XSS_PROFILE_IMAGE_URL]'),1002
+DELETE,/rest/cart/item/2,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/2'),17
+POST,user_login/[POST_USER_ENUM_LOGIN_NONEXISTENT_POST],HTTPError('401 Client Error: Unauthorized for url: user_login/[POST_USER_ENUM_LOGIN_NONEXISTENT_POST]'),3521
+GET,/test/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /test/[GET_ADMIN_PAGE_ENUM]'),11
+GET,/rest/products/19,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/19'),142
+GET,/swagger.json/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /swagger.json/[GET_ADMIN_PAGE_ENUM]'),10
+GET,/administration/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /administration/[GET_ADMIN_PAGE_ENUM]'),11
+GET,privacy_request/[GET_PRIVACY_REQ_ENUM_NONEXISTENT_GET],HTTPError('401 Client Error: Unauthorized for url: privacy_request/[GET_PRIVACY_REQ_ENUM_NONEXISTENT_GET]'),1128
+PUT,/rest/cart/item/4,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/4'),24
+GET,/api/Challenges/44,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/44'),12
+POST,password_reset/[POST_USER_ENUM_PASSWORD_RESET_POST],HTTPError('403 Client Error: Forbidden for url: password_reset/[POST_USER_ENUM_PASSWORD_RESET_POST]'),577
+GET,/api/Challenges/25,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/25'),11
+GET,/rest/product/{product_id}/image/[DT_GET_PATH_INJECT_NONE],HTTPError('500 Server Error: Internal Server Error for url: /rest/product/{product_id}/image/[DT_GET_PATH_INJECT_NONE]'),176
+GET,card/[GET_CARD_ENUM_NONEXISTENT_GET],HTTPError('403 Client Error: Forbidden for url: card/[GET_CARD_ENUM_NONEXISTENT_GET]'),197
+GET,card/[GET_SQLi_CARD_ID_PATH],HTTPError('401 Client Error: Unauthorized for url: card/[GET_SQLi_CARD_ID_PATH]'),1181
+POST,cards/[POST_ADD_CARD_NO_TOKEN_POST],HTTPError('403 Client Error: Forbidden for url: cards/[POST_ADD_CARD_NO_TOKEN_POST]'),162
+PUT,address/[PUT_DT_ADDRESS_UPDATE_PUT],HTTPError('403 Client Error: Forbidden for url: address/[PUT_DT_ADDRESS_UPDATE_PUT]'),1460
+GET,card/[GET_SQLi_CARD_ID_PATH],HTTPError('500 Server Error: Internal Server Error for url: card/[GET_SQLi_CARD_ID_PATH]'),530
+GET,product_details/[GET_PRODUCT_ENUM_GET],HTTPError('500 Server Error: Internal Server Error for url: product_details/[GET_PRODUCT_ENUM_GET]'),2453
+POST,product_reviews_by_id/[POST_XSS_PRODUCT_REVIEW_POST],HTTPError('500 Server Error: Internal Server Error for url: product_reviews_by_id/[POST_XSS_PRODUCT_REVIEW_POST]'),3187
+GET,/api/Challenges/40,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/40'),6
+PUT,/rest/cart/item/6,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/6'),34
+GET,/api/Challenges/10,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/10'),9
+PUT,/rest/cart/item/13,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/13'),30
+GET,/rest/admin/file-system/[DT_ADMIN_FILE_SYSTEM_PATH_DOUBLE],HTTPError('403 Client Error: Forbidden for url: /rest/admin/file-system/[DT_ADMIN_FILE_SYSTEM_PATH_DOUBLE]'),507
+GET,product_details/[GET_DT_GET_QUERY],HTTPError('403 Client Error: Forbidden for url: product_details/[GET_DT_GET_QUERY]'),1755
+GET,/data/backup.zip/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /data/backup.zip/[GET_FILE_ENUM]'),12
+DELETE,memory_detail/[DELETE_DT_MEMORY_DELETE_PATH],HTTPError('403 Client Error: Forbidden for url: memory_detail/[DELETE_DT_MEMORY_DELETE_PATH]'),1507
+POST,feedbacks/[POST_SUBMIT_FEEDBACK_NO_TOKEN_POST],HTTPError('500 Server Error: Internal Server Error for url: feedbacks/[POST_SUBMIT_FEEDBACK_NO_TOKEN_POST]'),1099
+GET,/api/Challenges/34,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/34'),12
+GET,challenge/[GET_CHALLENGE_ENUM_NONEXISTENT_GET],HTTPError('401 Client Error: Unauthorized for url: challenge/[GET_CHALLENGE_ENUM_NONEXISTENT_GET]'),1203
+GET,order/[GET_ORDER_ENUM_NONEXISTENT_GET],HTTPError('500 Server Error: Internal Server Error for url: order/[GET_ORDER_ENUM_NONEXISTENT_GET]'),2349
+POST,feedbacks/[POST_SQLi_FEEDBACK_POST],HTTPError('500 Server Error: Internal Server Error for url: feedbacks/[POST_SQLi_FEEDBACK_POST]'),2727
+DELETE,/rest/cart/item/19,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/19'),21
+GET,/api/Challenges/49,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/49'),9
+GET,product_details/[GET_SQLi_FUZZ_PATH],HTTPError('500 Server Error: Internal Server Error for url: product_details/[GET_SQLi_FUZZ_PATH]'),2593
+GET,/logs/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /logs/[GET_ADMIN_PAGE_ENUM]'),6
+GET,memory_detail/[GET_MEMORY_ENUM_GET],HTTPError('403 Client Error: Forbidden for url: memory_detail/[GET_MEMORY_ENUM_GET]'),202
+PUT,/rest/cart/item/16,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/16'),23
+GET,product_search/[GET_SQLi_FUZZ_GET],HTTPError('500 Server Error: Internal Server Error for url: product_search/[GET_SQLi_FUZZ_GET]'),4
+GET,/rest/product/{product_id}/image/[DT_GET_PATH_INJECT_SINGLE],HTTPError('500 Server Error: Internal Server Error for url: /rest/product/{product_id}/image/[DT_GET_PATH_INJECT_SINGLE]'),167
+DELETE,/rest/cart/item/20,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/20'),15
+GET,ftp_access/[GET_DT_GET_PATH_INJECT],HTTPError('403 Client Error: Forbidden for url: ftp_access/[GET_DT_GET_PATH_INJECT]'),1793
+POST,feedbacks/[POST_SUBMIT_FEEDBACK_NO_TOKEN_POST],HTTPError('403 Client Error: Forbidden for url: feedbacks/[POST_SUBMIT_FEEDBACK_NO_TOKEN_POST]'),150
+GET,/api/SecurityQuestions/4,HTTPError('401 Client Error: Unauthorized for url: /api/SecurityQuestions/4'),56
+GET,/package-lock.json/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /package-lock.json/[GET_FILE_ENUM]'),112
+GET,/package.json/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /package.json/[GET_FILE_ENUM]'),104
+GET,/api/Challenges/4,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/4'),12
+GET,feedback_by_id/[GET_FEEDBACK_ENUM_NONEXISTENT_GET],HTTPError('401 Client Error: Unauthorized for url: feedback_by_id/[GET_FEEDBACK_ENUM_NONEXISTENT_GET]'),2397
+GET,privacy_request/[GET_PRIVACY_REQ_ENUM_GET],HTTPError('403 Client Error: Forbidden for url: privacy_request/[GET_PRIVACY_REQ_ENUM_GET]'),193
+GET,product_search/[GET_XSS_FUZZ_GET],HTTPError('431 Client Error: Request Header Fields Too Large for url: product_search/[GET_XSS_FUZZ_GET]'),12
+GET,/api/Challenges/38,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/38'),16
+GET,/api/Challenges/42,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/42'),10
+GET,/rest/products/3,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/3'),154
+GET,/api/Challenges/20,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/20'),11
+GET,/sitemap.xml/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /sitemap.xml/[GET_ADMIN_PAGE_ENUM]'),4
+GET,/api/Challenges/35,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/35'),9
+GET,file_system_access_challenge/[GET_DT_ADMIN_FILE_SYSTEM_QUERY],HTTPError('500 Server Error: Internal Server Error for url: file_system_access_challenge/[GET_DT_ADMIN_FILE_SYSTEM_QUERY]'),1037
+GET,feedback_by_id/[GET_FEEDBACK_ENUM_GET],HTTPError('403 Client Error: Forbidden for url: feedback_by_id/[GET_FEEDBACK_ENUM_GET]'),378
+GET,privacy_request/[GET_SQLi_PRIVACY_REQ_ID_PATH],HTTPError('401 Client Error: Unauthorized for url: privacy_request/[GET_SQLi_PRIVACY_REQ_ID_PATH]'),828
+GET,/api/Challenges/15,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/15'),8
+GET,product_details/[GET_SQLi_FUZZ_QUERY_ID],HTTPError('500 Server Error: Internal Server Error for url: product_details/[GET_SQLi_FUZZ_QUERY_ID]'),1210
+GET,/rest/products/5,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/5'),179
+GET,file_download/[GET_FILE_DOWNLOAD_ENUM_QUERY],HTTPError('403 Client Error: Forbidden for url: file_download/[GET_FILE_DOWNLOAD_ENUM_QUERY]'),629
+GET,/rest/products/7,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/7'),151
+POST,/api/Products/{product_id}/upload/[XSS_FILE_UPLOAD_HTML_SINGLE],HTTPError('500 Server Error: Internal Server Error for url: /api/Products/{product_id}/upload/[XSS_FILE_UPLOAD_HTML_SINGLE]'),364
+POST,/api/BasketItems/,HTTPError('401 Client Error: Unauthorized for url: /api/BasketItems/'),6057
+POST,privacy_requests/[POST_SUBMIT_PRIVACY_REQ_NO_TOKEN_POST],HTTPError('401 Client Error: Unauthorized for url: privacy_requests/[POST_SUBMIT_PRIVACY_REQ_NO_TOKEN_POST]'),1054
+GET,/rest/products/17,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/17'),164
+POST,/api/Products/{product_id}/upload/[XSS_FILE_UPLOAD_HTML_SINGLE],HTTPError('403 Client Error: Forbidden for url: /api/Products/{product_id}/upload/[XSS_FILE_UPLOAD_HTML_SINGLE]'),51
+GET,security_question_by_id/[GET_SEC_QUESTION_ENUM_NONEXISTENT_GET],HTTPError('403 Client Error: Forbidden for url: security_question_by_id/[GET_SEC_QUESTION_ENUM_NONEXISTENT_GET]'),188
+PUT,/rest/cart/item/15,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/15'),28
+POST,/api/Products/{product_id}/upload/[XSS_FILE_UPLOAD_SVG_SINGLE],HTTPError('403 Client Error: Forbidden for url: /api/Products/{product_id}/upload/[XSS_FILE_UPLOAD_SVG_SINGLE]'),51
+PUT,/rest/cart/item/18,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/18'),27
+GET,/api/Challenges/47,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/47'),3
+GET,privacy_request/[GET_PRIVACY_REQ_ENUM_GET],HTTPError('401 Client Error: Unauthorized for url: privacy_request/[GET_PRIVACY_REQ_ENUM_GET]'),1128
+GET,/api/Challenges/13,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/13'),14
+GET,/robots.txt/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /robots.txt/[GET_ADMIN_PAGE_ENUM]'),6
+GET,feedback_by_id/[GET_FEEDBACK_ENUM_NONEXISTENT_GET],HTTPError('403 Client Error: Forbidden for url: feedback_by_id/[GET_FEEDBACK_ENUM_NONEXISTENT_GET]'),378
+GET,/phpmyadmin/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /phpmyadmin/[GET_ADMIN_PAGE_ENUM]'),12
+DELETE,/rest/cart/item/4,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/4'),24
+DELETE,/rest/cart/item/18,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/18'),24
+POST,privacy_requests/[POST_SUBMIT_PRIVACY_REQ_NO_TOKEN_POST],HTTPError('403 Client Error: Forbidden for url: privacy_requests/[POST_SUBMIT_PRIVACY_REQ_NO_TOKEN_POST]'),168
+GET,privacy_request/[GET_PRIVACY_REQ_ENUM_NONEXISTENT_GET],HTTPError('403 Client Error: Forbidden for url: privacy_request/[GET_PRIVACY_REQ_ENUM_NONEXISTENT_GET]'),193
+GET,challenge/[GET_CHALLENGE_ENUM_NONEXISTENT_GET],HTTPError('403 Client Error: Forbidden for url: challenge/[GET_CHALLENGE_ENUM_NONEXISTENT_GET]'),183
+GET,/admin/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /admin/[GET_ADMIN_PAGE_ENUM]'),12
+POST,/api/Products/{product_id}/upload/[XSS_FILE_UPLOAD_SVG_DOUBLE],HTTPError('403 Client Error: Forbidden for url: /api/Products/{product_id}/upload/[XSS_FILE_UPLOAD_SVG_DOUBLE]'),49
+POST,cards/[POST_SQLi_CARD_CREATE],HTTPError('403 Client Error: Forbidden for url: cards/[POST_SQLi_CARD_CREATE]'),279
+PUT,/rest/cart/item/17,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/17'),33
+PUT,/rest/cart/item/7,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/7'),18
+GET,product_search/[GET_SQLi_FUZZ_GET],HTTPError('403 Client Error: Forbidden for url: product_search/[GET_SQLi_FUZZ_GET]'),3325
+POST,user_login/[POST_SQLi_EMAIL_POST],HTTPError('401 Client Error: Unauthorized for url: user_login/[POST_SQLi_EMAIL_POST]'),1328
+GET,/controlpanel/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /controlpanel/[GET_ADMIN_PAGE_ENUM]'),10
+GET,/README.md/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /README.md/[GET_FILE_ENUM]'),16
+GET,/api/Challenges/32,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/32'),21
+GET,/rest/products/11,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/11'),150
+GET,/rest/wallet/balance,HTTPError('401 Client Error: Unauthorized for url: /rest/wallet/balance'),318
+POST,user_login/[POST_SQLi_EMAIL_POST],HTTPError('403 Client Error: Forbidden for url: user_login/[POST_SQLi_EMAIL_POST]'),307
+DELETE,/rest/cart/item/15,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/15'),16
+GET,ftp_access/[GET_DT_FTP_ACCESS_KNOWN_FILE],HTTPError('403 Client Error: Forbidden for url: ftp_access/[GET_DT_FTP_ACCESS_KNOWN_FILE]'),3059
+GET,/api/SecurityQuestions/5,HTTPError('401 Client Error: Unauthorized for url: /api/SecurityQuestions/5'),51
+GET,/rest/products/9,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/9'),160
+GET,/api/Challenges/48,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/48'),10
+GET,/rest/admin/application-configuration/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /rest/admin/application-configuration/[GET_ADMIN_PAGE_ENUM]'),12
+GET,/rest/admin/users/[GET_ADMIN_PAGE_ENUM],HTTPError('500 Server Error: Internal Server Error for url: /rest/admin/users/[GET_ADMIN_PAGE_ENUM]'),43
+PUT,/api/Users/5,HTTPError('403 Client Error: Forbidden for url: /api/Users/5'),260
+POST,user_login/[POST_USER_ENUM_LOGIN_POST],HTTPError('401 Client Error: Unauthorized for url: user_login/[POST_USER_ENUM_LOGIN_POST]'),3521
+GET,challenge/[GET_CHALLENGE_ENUM_GET],HTTPError('401 Client Error: Unauthorized for url: challenge/[GET_CHALLENGE_ENUM_GET]'),1203
+PUT,/rest/cart/item/14,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/14'),32
+GET,track_order/[GET_SQLi_TRACK_ORDER_PATH],HTTPError('500 Server Error: Internal Server Error for url: track_order/[GET_SQLi_TRACK_ORDER_PATH]'),867
+POST,password_reset/[POST_USER_ENUM_PASSWORD_RESET_POST],HTTPError('500 Server Error: Internal Server Error for url: password_reset/[POST_USER_ENUM_PASSWORD_RESET_POST]'),3665
+GET,memory_detail/[GET_MEMORY_ENUM_NONEXISTENT_GET],HTTPError('500 Server Error: Internal Server Error for url: memory_detail/[GET_MEMORY_ENUM_NONEXISTENT_GET]'),1175
+GET,order/[GET_ORDER_ENUM_NONEXISTENT_GET],HTTPError('403 Client Error: Forbidden for url: order/[GET_ORDER_ENUM_NONEXISTENT_GET]'),365
+PUT,/rest/cart/item/19,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/19'),25
+PUT,update_product/[PUT_CSRF_UPDATE_PRODUCT_NO_TOKEN_PUT],HTTPError('403 Client Error: Forbidden for url: update_product/[PUT_CSRF_UPDATE_PRODUCT_NO_TOKEN_PUT]'),1275
+GET,/api/Challenges/9,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/9'),5
+DELETE,delete_product/[DELETE_CSRF_DELETE_PRODUCT_NO_TOKEN_DELETE],HTTPError('403 Client Error: Forbidden for url: delete_product/[DELETE_CSRF_DELETE_PRODUCT_NO_TOKEN_DELETE]'),1206
+PUT,/api/Users/3,HTTPError('403 Client Error: Forbidden for url: /api/Users/3'),305
+DELETE,/rest/cart/item/1,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/1'),23
+POST,/rest/user/login,HTTPError('401 Client Error: Unauthorized for url: /rest/user/login'),3075
+GET,order/[GET_ORDER_ENUM_GET],HTTPError('403 Client Error: Forbidden for url: order/[GET_ORDER_ENUM_GET]'),365
+POST,track_order_result/[POST_SQLi_TRACK_ORDER_POST_ID],HTTPError('500 Server Error: Internal Server Error for url: track_order_result/[POST_SQLi_TRACK_ORDER_POST_ID]'),2783
+GET,track_order/[GET_SQLi_TRACK_ORDER_PATH],HTTPError('403 Client Error: Forbidden for url: track_order/[GET_SQLi_TRACK_ORDER_PATH]'),678
+GET,card/[GET_CARD_ENUM_GET],HTTPError('401 Client Error: Unauthorized for url: card/[GET_CARD_ENUM_GET]'),1189
+PUT,manage_product/[PUT_SQLi_PRODUCT_UPDATE_PUT],HTTPError('403 Client Error: Forbidden for url: manage_product/[PUT_SQLi_PRODUCT_UPDATE_PUT]'),1083
+GET,/rest/product/{product_id}/image/[DT_GET_PATH_INJECT_NONE],HTTPError('403 Client Error: Forbidden for url: /rest/product/{product_id}/image/[DT_GET_PATH_INJECT_NONE]'),459
+POST,memories/[POST_SQLi_MEMORY_CREATE],HTTPError('400 Client Error: Bad Request for url: memories/[POST_SQLi_MEMORY_CREATE]'),876
+GET,assets_access/[GET_DT_ASSETS_ACCESS],HTTPError('403 Client Error: Forbidden for url: assets_access/[GET_DT_ASSETS_ACCESS]'),1106
+GET,/api/Challenges/27,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/27'),21
+GET,product_details/[GET_SQLi_FUZZ_QUERY_ID],HTTPError('403 Client Error: Forbidden for url: product_details/[GET_SQLi_FUZZ_QUERY_ID]'),2035
+GET,challenge/[GET_CHALLENGE_ENUM_GET],HTTPError('403 Client Error: Forbidden for url: challenge/[GET_CHALLENGE_ENUM_GET]'),183
+DELETE,user_profile/[DELETE_USER_ENUM_DELETE],HTTPError('403 Client Error: Forbidden for url: user_profile/[DELETE_USER_ENUM_DELETE]'),1402
+GET,/api/Challenges/28,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/28'),13
+DELETE,/rest/cart/item/13,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/13'),22
+DELETE,card/[DELETE_DELETE_CARD_NO_TOKEN_DELETE],HTTPError('403 Client Error: Forbidden for url: card/[DELETE_DELETE_CARD_NO_TOKEN_DELETE]'),1157
+POST,admin_panel/[POST_CSRF_ADMIN_DELETE_USER_NO_TOKEN_POST],HTTPError('403 Client Error: Forbidden for url: admin_panel/[POST_CSRF_ADMIN_DELETE_USER_NO_TOKEN_POST]'),139
+GET,file_download/[GET_DT_FILE_DOWNLOAD_NAME],HTTPError('403 Client Error: Forbidden for url: file_download/[GET_DT_FILE_DOWNLOAD_NAME]'),1019
+GET,memory_detail/[GET_MEMORY_ENUM_GET],HTTPError('500 Server Error: Internal Server Error for url: memory_detail/[GET_MEMORY_ENUM_GET]'),1175
+POST,profile_image_url_upload/[POST_DT_PROFILE_IMAGE_URL_POST],HTTPError('500 Server Error: Internal Server Error for url: profile_image_url_upload/[POST_DT_PROFILE_IMAGE_URL_POST]'),2582
+POST,add_to_cart/[POST_CSRF_ADD_TO_CART_INVALID_TOKEN_POST],HTTPError('403 Client Error: Forbidden for url: add_to_cart/[POST_CSRF_ADD_TO_CART_INVALID_TOKEN_POST]'),145
+GET,encryption_keys_access/[GET_DT_ENCRYPTION_KEYS_ACCESS],HTTPError('414 Client Error: Request URI Too Long for url: encryption_keys_access/[GET_DT_ENCRYPTION_KEYS_ACCESS]'),170
+DELETE,/rest/cart/item/3,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/3'),30
+POST,/api/Cards,HTTPError('401 Client Error: Unauthorized for url: /api/Cards'),1528
+GET,/rest/products/12,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/12'),156
+POST,/api/Products/{product_id}/upload/[XSS_FILE_UPLOAD_HTML_DOUBLE],HTTPError('403 Client Error: Forbidden for url: /api/Products/{product_id}/upload/[XSS_FILE_UPLOAD_HTML_DOUBLE]'),49
+POST,privacy_requests/[POST_XSS_PRIVACY_REQ_POST],HTTPError('401 Client Error: Unauthorized for url: privacy_requests/[POST_XSS_PRIVACY_REQ_POST]'),1057
+POST,/api/Products/{product_id}/upload/[XSS_FILE_UPLOAD_SVG_NONE],HTTPError('500 Server Error: Internal Server Error for url: /api/Products/{product_id}/upload/[XSS_FILE_UPLOAD_SVG_NONE]'),332
+GET,/rest/admin/file-system/[DT_ADMIN_FILE_SYSTEM_PATH_SINGLE],HTTPError('403 Client Error: Forbidden for url: /rest/admin/file-system/[DT_ADMIN_FILE_SYSTEM_PATH_SINGLE]'),784
+GET,card/[GET_SQLi_CARD_ID_PATH],HTTPError('403 Client Error: Forbidden for url: card/[GET_SQLi_CARD_ID_PATH]'),435
+DELETE,/rest/cart/item/5,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/5'),24
+POST,complaints/[POST_DT_COMPLAINT_POST_FILENAME],HTTPError('403 Client Error: Forbidden for url: complaints/[POST_DT_COMPLAINT_POST_FILENAME]'),405
+GET,/rest/products/18,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/18'),168
+POST,password_reset/[POST_CSRF_PASSWORD_RESET_NO_TOKEN_POST],HTTPError('500 Server Error: Internal Server Error for url: password_reset/[POST_CSRF_PASSWORD_RESET_NO_TOKEN_POST]'),2095
+GET,/rest/products/6,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/6'),160
+DELETE,user_profile/[DELETE_USER_ENUM_DELETE_NONEXISTENT],HTTPError('403 Client Error: Forbidden for url: user_profile/[DELETE_USER_ENUM_DELETE_NONEXISTENT]'),1402
+POST,admin_panel/[POST_CSRF_ADMIN_DELETE_USER_NO_TOKEN_POST],HTTPError('500 Server Error: Internal Server Error for url: admin_panel/[POST_CSRF_ADMIN_DELETE_USER_NO_TOKEN_POST]'),1049
+GET,/metrics/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /metrics/[GET_ADMIN_PAGE_ENUM]'),8
+GET,/data/users.json/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /data/users.json/[GET_FILE_ENUM]'),16
+POST,add_to_cart/[POST_CSRF_ADD_TO_CART_NO_TOKEN_POST],HTTPError('401 Client Error: Unauthorized for url: add_to_cart/[POST_CSRF_ADD_TO_CART_NO_TOKEN_POST]'),3049
+PUT,/rest/cart/item/5,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/5'),23
+PUT,/api/Users/4,HTTPError('403 Client Error: Forbidden for url: /api/Users/4'),296
+GET,/api/Challenges/22,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/22'),12
+GET,/api/Challenges/21,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/21'),9
+POST,password_reset/[POST_USER_ENUM_PASSWORD_RESET_NONEXISTENT_POST],HTTPError('500 Server Error: Internal Server Error for url: password_reset/[POST_USER_ENUM_PASSWORD_RESET_NONEXISTENT_POST]'),3665
+POST,profile_image_url_upload/[POST_XSS_PROFILE_IMAGE_URL],HTTPError('403 Client Error: Forbidden for url: profile_image_url_upload/[POST_XSS_PROFILE_IMAGE_URL]'),158
+POST,privacy_requests/[POST_SQLi_PRIVACY_REQ_CREATE],HTTPError('401 Client Error: Unauthorized for url: privacy_requests/[POST_SQLi_PRIVACY_REQ_CREATE]'),909
+POST,/api/Products/{product_id}/upload/[XSS_FILE_UPLOAD_SVG_NONE],HTTPError('403 Client Error: Forbidden for url: /api/Products/{product_id}/upload/[XSS_FILE_UPLOAD_SVG_NONE]'),61
+GET,/api/Challenges/46,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/46'),10
+GET,/api/Challenges/5,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/5'),13
+POST,add_to_cart/[POST_CSRF_ADD_TO_CART_INVALID_TOKEN_POST],HTTPError('401 Client Error: Unauthorized for url: add_to_cart/[POST_CSRF_ADD_TO_CART_INVALID_TOKEN_POST]'),1073
+PUT,basket_item/[PUT_SQLi_BASKET_UPDATE_QTY],HTTPError('403 Client Error: Forbidden for url: basket_item/[PUT_SQLi_BASKET_UPDATE_QTY]'),2177
+POST,password_reset/[POST_CSRF_PASSWORD_RESET_NO_TOKEN_POST],HTTPError('403 Client Error: Forbidden for url: password_reset/[POST_CSRF_PASSWORD_RESET_NO_TOKEN_POST]'),331
+POST,user_register/[POST_XSS_SECURITY_ANSWER_POST],HTTPError('400 Client Error: Bad Request for url: user_register/[POST_XSS_SECURITY_ANSWER_POST]'),209
+PUT,/upload/[PUT_PATH_TRAVERSAL_FILENAME_SINGLE],HTTPError('403 Client Error: Forbidden for url: /upload/[PUT_PATH_TRAVERSAL_FILENAME_SINGLE]'),492
+PUT,/rest/cart/item/9,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/9'),37
+POST,track_order_result/[POST_SQLi_TRACK_ORDER_POST_ID],HTTPError('403 Client Error: Forbidden for url: track_order_result/[POST_SQLi_TRACK_ORDER_POST_ID]'),475
+GET,card/[GET_CARD_ENUM_NONEXISTENT_GET],HTTPError('401 Client Error: Unauthorized for url: card/[GET_CARD_ENUM_NONEXISTENT_GET]'),1189
+POST,user_login/[POST_USER_ENUM_LOGIN_POST],HTTPError('403 Client Error: Forbidden for url: user_login/[POST_USER_ENUM_LOGIN_POST]'),525
+POST,/api/Products/{product_id}/upload/[XSS_FILE_UPLOAD_SVG_DOUBLE],HTTPError('500 Server Error: Internal Server Error for url: /api/Products/{product_id}/upload/[XSS_FILE_UPLOAD_SVG_DOUBLE]'),352
+GET,/api/Challenges/50,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/50'),14
+GET,/debug/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /debug/[GET_ADMIN_PAGE_ENUM]'),9
+GET,/api/Challenges/31,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/31'),16
+GET,/rest/admin/application-version/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /rest/admin/application-version/[GET_ADMIN_PAGE_ENUM]'),9
+GET,security_question_by_id/[GET_SEC_QUESTION_ENUM_NONEXISTENT_GET],HTTPError('401 Client Error: Unauthorized for url: security_question_by_id/[GET_SEC_QUESTION_ENUM_NONEXISTENT_GET]'),1169
+GET,file_download/[GET_DT_FILE_DOWNLOAD_ID],HTTPError('403 Client Error: Forbidden for url: file_download/[GET_DT_FILE_DOWNLOAD_ID]'),1017
+GET,/data/access.log/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /data/access.log/[GET_FILE_ENUM]'),105
+GET,/api/Challenges/43,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/43'),11
+GET,/api/Challenges/39,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/39'),10
+POST,user_register/[POST_XSS_EMAIL_POST],HTTPError('403 Client Error: Forbidden for url: user_register/[POST_XSS_EMAIL_POST]'),326
+GET,product_details/[GET_SQLi_FUZZ_PATH],HTTPError('403 Client Error: Forbidden for url: product_details/[GET_SQLi_FUZZ_PATH]'),652
+GET,/api/Challenges/37,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/37'),20
+POST,user_register/[POST_XSS_SECURITY_ANSWER_POST],HTTPError('403 Client Error: Forbidden for url: user_register/[POST_XSS_SECURITY_ANSWER_POST]'),326
+GET,/sitemap.xml/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /sitemap.xml/[GET_FILE_ENUM]'),12
+POST,product_reviews_by_id/[POST_SUBMIT_REVIEW_NO_TOKEN_POST],HTTPError('500 Server Error: Internal Server Error for url: product_reviews_by_id/[POST_SUBMIT_REVIEW_NO_TOKEN_POST]'),1087
+PUT,/rest/cart/item/8,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/8'),27
+GET,/rest/error/500,HTTPError('500 Server Error: Internal Server Error for url: /rest/error/500'),624
+POST,add_to_cart/[POST_CSRF_ADD_TO_CART_NO_TOKEN_POST],HTTPError('403 Client Error: Forbidden for url: add_to_cart/[POST_CSRF_ADD_TO_CART_NO_TOKEN_POST]'),475
+GET,/api/SecurityQuestions/1,HTTPError('401 Client Error: Unauthorized for url: /api/SecurityQuestions/1'),55
+GET,address/[GET_ADDRESS_ENUM_GET],HTTPError('403 Client Error: Forbidden for url: address/[GET_ADDRESS_ENUM_GET]'),192
+POST,user_login/[POST_SQLi_PASSWORD_POST],HTTPError('401 Client Error: Unauthorized for url: user_login/[POST_SQLi_PASSWORD_POST]'),1869
+PUT,/rest/cart/item/11,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/11'),23
+DELETE,/rest/cart/item/14,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/14'),27
+POST,feedbacks/[POST_SQLi_FEEDBACK_POST],HTTPError('403 Client Error: Forbidden for url: feedbacks/[POST_SQLi_FEEDBACK_POST]'),481
+POST,data_export_endpoint/[POST_DT_DATA_EXPORT_POST],HTTPError('403 Client Error: Forbidden for url: data_export_endpoint/[POST_DT_DATA_EXPORT_POST]'),201
+GET,/rest/product/{product_id}/image/[DT_GET_PATH_INJECT_DOUBLE],HTTPError('500 Server Error: Internal Server Error for url: /rest/product/{product_id}/image/[DT_GET_PATH_INJECT_DOUBLE]'),159
+POST,customer_chatbot/[POST_XSS_CHATBOT_QUERY_POST],HTTPError('403 Client Error: Forbidden for url: customer_chatbot/[POST_XSS_CHATBOT_QUERY_POST]'),312
+GET,/api/Challenges/17,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/17'),12
+GET,product_search/[GET_XSS_FUZZ_GET],HTTPError('502 Server Error: Bad Gateway for url: product_search/[GET_XSS_FUZZ_GET]'),2
+PUT,user_profile_update/[PUT_USER_PROFILE_UPDATE_NO_TOKEN_PUT],HTTPError('403 Client Error: Forbidden for url: user_profile_update/[PUT_USER_PROFILE_UPDATE_NO_TOKEN_PUT]'),2474
+GET,address/[GET_ADDRESS_ENUM_NONEXISTENT_GET],HTTPError('403 Client Error: Forbidden for url: address/[GET_ADDRESS_ENUM_NONEXISTENT_GET]'),192
+GET,/api/Challenges/1,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/1'),11
+POST,/rest/chatbot,HTTPError('500 Server Error: Internal Server Error for url: /rest/chatbot'),624
+GET,address/[GET_SQLi_ADDRESS_ID_PATH],HTTPError('403 Client Error: Forbidden for url: address/[GET_SQLi_ADDRESS_ID_PATH]'),477
+GET,encryption_keys_access/[GET_DT_ENCRYPTION_KEYS_ACCESS],HTTPError('404 Client Error: Not Found for url: encryption_keys_access/[GET_DT_ENCRYPTION_KEYS_ACCESS]'),568
+GET,memory_detail/[GET_SQLi_MEMORY_ID_PATH],HTTPError('403 Client Error: Forbidden for url: memory_detail/[GET_SQLi_MEMORY_ID_PATH]'),224
+POST,user_login/[POST_USER_ENUM_LOGIN_NONEXISTENT_POST],HTTPError('403 Client Error: Forbidden for url: user_login/[POST_USER_ENUM_LOGIN_NONEXISTENT_POST]'),525
+GET,/api/Challenges/11,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/11'),7
+GET,/rest/products/16,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/16'),141
+POST,data_export_endpoint/[POST_DT_DATA_EXPORT_POST],HTTPError('500 Server Error: Internal Server Error for url: data_export_endpoint/[POST_DT_DATA_EXPORT_POST]'),1303
+GET,/api/Challenges/41,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/41'),14
+GET,/rest/admin/file-system/[DT_ADMIN_FILE_SYSTEM_PATH_NONE],HTTPError('403 Client Error: Forbidden for url: /rest/admin/file-system/[DT_ADMIN_FILE_SYSTEM_PATH_NONE]'),908
+POST,feedbacks/[POST_XSS_POST_COMMENT],HTTPError('500 Server Error: Internal Server Error for url: feedbacks/[POST_XSS_POST_COMMENT]'),3170
+GET,/api/Challenges/29,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/29'),13
+PUT,basket_item/[PUT_SQLi_BASKET_UPDATE_PATH],HTTPError('403 Client Error: Forbidden for url: basket_item/[PUT_SQLi_BASKET_UPDATE_PATH]'),2177
+DELETE,basket_item/[DELETE_DELETE_BASKET_ITEM_NO_TOKEN_DELETE],HTTPError('403 Client Error: Forbidden for url: basket_item/[DELETE_DELETE_BASKET_ITEM_NO_TOKEN_DELETE]'),1238
+GET,memory_detail/[GET_SQLi_MEMORY_ID_PATH],HTTPError('500 Server Error: Internal Server Error for url: memory_detail/[GET_SQLi_MEMORY_ID_PATH]'),807
+POST,privacy_requests/[POST_SQLi_PRIVACY_REQ_CREATE],HTTPError('403 Client Error: Forbidden for url: privacy_requests/[POST_SQLi_PRIVACY_REQ_CREATE]'),157
+GET,/rest/product/{product_id}/image/[DT_GET_PATH_INJECT_DOUBLE],HTTPError('403 Client Error: Forbidden for url: /rest/product/{product_id}/image/[DT_GET_PATH_INJECT_DOUBLE]'),486
+GET,/dashboard/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /dashboard/[GET_ADMIN_PAGE_ENUM]'),12
+PUT,/rest/cart/item/20,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/20'),19
+GET,/rest/products/14,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/14'),131
+GET,image_loader/[GET_DT_GET_QUERY],HTTPError('403 Client Error: Forbidden for url: image_loader/[GET_DT_GET_QUERY]'),1763
+GET,/rest/products/8,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/8'),155
+GET,/backup/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /backup/[GET_ADMIN_PAGE_ENUM]'),6
+GET,/api/SecurityQuestions/2,HTTPError('401 Client Error: Unauthorized for url: /api/SecurityQuestions/2'),59
+GET,data_export_endpoint/[GET_DT_DATA_EXPORT_QUERY],HTTPError('403 Client Error: Forbidden for url: data_export_endpoint/[GET_DT_DATA_EXPORT_QUERY]'),987
+GET,/rest/products/15,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/15'),155
+GET,/products/manage/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /products/manage/[GET_ADMIN_PAGE_ENUM]'),6
+GET,/rest/products/13,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/13'),162
+GET,assets_access/[GET_DT_GET_PATH_INJECT],HTTPError('403 Client Error: Forbidden for url: assets_access/[GET_DT_GET_PATH_INJECT]'),1445
+GET,/api/Challenges/30,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/30'),12
+GET,/api/Challenges/18,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/18'),11
+GET,/api/Challenges/12,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/12'),10
+GET,/rest/products/4,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/4'),170
+GET,/api/Challenges/26,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/26'),17
+GET,/rest/admin/users/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /rest/admin/users/[GET_ADMIN_PAGE_ENUM]'),6
+GET,privacy_request/[GET_SQLi_PRIVACY_REQ_ID_PATH],HTTPError('403 Client Error: Forbidden for url: privacy_request/[GET_SQLi_PRIVACY_REQ_ID_PATH]'),238
+GET,/openapi.json/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /openapi.json/[GET_ADMIN_PAGE_ENUM]'),7
+GET,/api/Challenges/33,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/33'),14
+POST,basket_items/[POST_SQLi_BASKET_ADD_PROD_ID],HTTPError('403 Client Error: Forbidden for url: basket_items/[POST_SQLi_BASKET_ADD_PROD_ID]'),265
+GET,/robots.txt/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /robots.txt/[GET_FILE_ENUM]'),21
+POST,addresses/[POST_XSS_ADDRESS_CREATE],HTTPError('403 Client Error: Forbidden for url: addresses/[POST_XSS_ADDRESS_CREATE]'),310
+GET,product_details/[GET_PRODUCT_ENUM_NONEXISTENT_GET],HTTPError('403 Client Error: Forbidden for url: product_details/[GET_PRODUCT_ENUM_NONEXISTENT_GET]'),392
+GET,/api/SecurityQuestions/3,HTTPError('401 Client Error: Unauthorized for url: /api/SecurityQuestions/3'),60
+GET,/api/Challenges/2,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/2'),12
+POST,/api/Products/{product_id}/upload/[XSS_FILE_UPLOAD_HTML_NONE],HTTPError('500 Server Error: Internal Server Error for url: /api/Products/{product_id}/upload/[XSS_FILE_UPLOAD_HTML_NONE]'),332
+GET,/rest/products/1,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/1'),155
+PUT,/api/Users/1,HTTPError('403 Client Error: Forbidden for url: /api/Users/1'),308
+POST,feedbacks/[POST_DT_FEEDBACK_POST_ATTACHMENT],HTTPError('403 Client Error: Forbidden for url: feedbacks/[POST_DT_FEEDBACK_POST_ATTACHMENT]'),405
+POST,/api/Products/{product_id}/upload/[XSS_FILE_UPLOAD_SVG_SINGLE],HTTPError('500 Server Error: Internal Server Error for url: /api/Products/{product_id}/upload/[XSS_FILE_UPLOAD_SVG_SINGLE]'),364
+GET,/api-docs//[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /api-docs//[GET_ADMIN_PAGE_ENUM]'),8
+POST,/api/Feedbacks/,HTTPError('500 Server Error: Internal Server Error for url: /api/Feedbacks/'),1530
+PUT,/rest/cart/item/3,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/3'),27
+DELETE,/rest/cart/item/7,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/7'),24
+GET,security_question_by_id/[GET_SEC_QUESTION_ENUM_GET],HTTPError('401 Client Error: Unauthorized for url: security_question_by_id/[GET_SEC_QUESTION_ENUM_GET]'),1169
+GET,encryption_keys_access/[GET_DT_ENCRYPTION_KEYS_KNOWN_FILE],HTTPError('403 Client Error: Forbidden for url: encryption_keys_access/[GET_DT_ENCRYPTION_KEYS_KNOWN_FILE]'),2666
+GET,/rest/cart,HTTPError('500 Server Error: Internal Server Error for url: /rest/cart'),4610
+GET,/api/Challenges/24,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/24'),13
+GET,address/[GET_SQLi_ADDRESS_ID_PATH],HTTPError('500 Server Error: Internal Server Error for url: address/[GET_SQLi_ADDRESS_ID_PATH]'),1654
+GET,/api/Challenges/45,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/45'),14
+POST,feedbacks/[POST_XSS_POST_COMMENT],HTTPError('403 Client Error: Forbidden for url: feedbacks/[POST_XSS_POST_COMMENT]'),513
+GET,/rest/admin/file-system/[DT_ADMIN_FILE_SYSTEM_PATH_DOUBLE],HTTPError('500 Server Error: Internal Server Error for url: /rest/admin/file-system/[DT_ADMIN_FILE_SYSTEM_PATH_DOUBLE]'),529
+GET,/rest/products/2,HTTPError('500 Server Error: Internal Server Error for url: /rest/products/2'),175
+GET,product_search/[GET_XSS_FUZZ_GET],HTTPError('403 Client Error: Forbidden for url: product_search/[GET_XSS_FUZZ_GET]'),5570
+POST,feedbacks/[POST_SQLi_FEEDBACK_RATING_POST],HTTPError('403 Client Error: Forbidden for url: feedbacks/[POST_SQLi_FEEDBACK_RATING_POST]'),481
+DELETE,/rest/cart/item/10,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/10'),23
+POST,/rest/orders/,HTTPError('500 Server Error: Internal Server Error for url: /rest/orders/'),266
+POST,product_reviews_by_id/[POST_XSS_PRODUCT_REVIEW_POST],HTTPError('403 Client Error: Forbidden for url: product_reviews_by_id/[POST_XSS_PRODUCT_REVIEW_POST]'),489
+DELETE,/rest/cart/item/17,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/17'),26
+GET,file_system_access_challenge/[GET_DT_ADMIN_FILE_SYSTEM_QUERY],HTTPError('403 Client Error: Forbidden for url: file_system_access_challenge/[GET_DT_ADMIN_FILE_SYSTEM_QUERY]'),1960
+POST,memories/[POST_XSS_MEMORY_CREATE_POST],HTTPError('403 Client Error: Forbidden for url: memories/[POST_XSS_MEMORY_CREATE_POST]'),146
+DELETE,address/[DELETE_DELETE_ADDRESS_NO_TOKEN_DELETE],HTTPError('403 Client Error: Forbidden for url: address/[DELETE_DELETE_ADDRESS_NO_TOKEN_DELETE]'),1173
+DELETE,complaint/[DELETE_DT_COMPLAINT_DELETE_PATH],HTTPError('403 Client Error: Forbidden for url: complaint/[DELETE_DT_COMPLAINT_DELETE_PATH]'),1507
+GET,/rest/admin/debug/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /rest/admin/debug/[GET_ADMIN_PAGE_ENUM]'),8
+POST,addresses/[POST_ADD_ADDRESS_NO_TOKEN_POST],HTTPError('500 Server Error: Internal Server Error for url: addresses/[POST_ADD_ADDRESS_NO_TOKEN_POST]'),2129
+POST,feedbacks/[POST_DT_FEEDBACK_POST_ATTACHMENT],HTTPError('500 Server Error: Internal Server Error for url: feedbacks/[POST_DT_FEEDBACK_POST_ATTACHMENT]'),2582
+GET,memory_detail/[GET_MEMORY_ENUM_NONEXISTENT_GET],HTTPError('403 Client Error: Forbidden for url: memory_detail/[GET_MEMORY_ENUM_NONEXISTENT_GET]'),202
+DELETE,/rest/cart/item/8,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/8'),24
+POST,/api/Users/,HTTPError('400 Client Error: Bad Request for url: /api/Users/'),444
+POST,/api/Addresses,HTTPError('500 Server Error: Internal Server Error for url: /api/Addresses'),1558
+GET,/users/[GET_ADMIN_PAGE_ENUM],HTTPError('403 Client Error: Forbidden for url: /users/[GET_ADMIN_PAGE_ENUM]'),4
+POST,memories/[POST_XSS_MEMORY_CREATE_POST],HTTPError('400 Client Error: Bad Request for url: memories/[POST_XSS_MEMORY_CREATE_POST]'),1033
+POST,cards/[POST_SQLi_CARD_CREATE],HTTPError('401 Client Error: Unauthorized for url: cards/[POST_SQLi_CARD_CREATE]'),1867
+PUT,/rest/cart/item/1,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/1'),27
+GET,/api/Challenges/7,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/7'),11
+GET,assets_access/[GET_DT_ASSETS_ACCESS_DIRECT],HTTPError('403 Client Error: Forbidden for url: assets_access/[GET_DT_ASSETS_ACCESS_DIRECT]'),1106
+GET,/api/Challenges/6,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/6'),8
+POST,complaints/[POST_DT_COMPLAINT_POST_FILENAME],HTTPError('401 Client Error: Unauthorized for url: complaints/[POST_DT_COMPLAINT_POST_FILENAME]'),2582
+POST,customer_chatbot/[POST_XSS_CHATBOT_QUERY_POST],HTTPError('500 Server Error: Internal Server Error for url: customer_chatbot/[POST_XSS_CHATBOT_QUERY_POST]'),2035
+GET,file_download/[GET_DT_GET_QUERY],HTTPError('403 Client Error: Forbidden for url: file_download/[GET_DT_GET_QUERY]'),1737
+GET,/rest/admin/file-system/[DT_ADMIN_FILE_SYSTEM_PATH_NONE],HTTPError('500 Server Error: Internal Server Error for url: /rest/admin/file-system/[DT_ADMIN_FILE_SYSTEM_PATH_NONE]'),22
+POST,profile_image_url_upload/[POST_DT_PROFILE_IMAGE_URL_POST],HTTPError('403 Client Error: Forbidden for url: profile_image_url_upload/[POST_DT_PROFILE_IMAGE_URL_POST]'),405
+GET,product_details/[GET_DT_GET_QUERY],HTTPError('500 Server Error: Internal Server Error for url: product_details/[GET_DT_GET_QUERY]'),836
+POST,user_login/[POST_SQLi_PASSWORD_POST],HTTPError('403 Client Error: Forbidden for url: user_login/[POST_SQLi_PASSWORD_POST]'),307
+PUT,/rest/cart/item/10,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/10'),25
+GET,ftp_access/[GET_DT_FTP_ACCESS],HTTPError('403 Client Error: Forbidden for url: ftp_access/[GET_DT_FTP_ACCESS]'),4366
+GET,/rest/admin/file-system/[DT_ADMIN_FILE_SYSTEM_PATH_SINGLE],HTTPError('500 Server Error: Internal Server Error for url: /rest/admin/file-system/[DT_ADMIN_FILE_SYSTEM_PATH_SINGLE]'),241
+PUT,/rest/cart/item/12,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/12'),30
+GET,/api/Challenges/19,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/19'),14
+GET,/web.config/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /web.config/[GET_FILE_ENUM]'),102
+GET,data_export_endpoint/[GET_DT_DATA_EXPORT_QUERY],HTTPError('500 Server Error: Internal Server Error for url: data_export_endpoint/[GET_DT_DATA_EXPORT_QUERY]'),517
+POST,memories/[POST_SQLi_MEMORY_CREATE],HTTPError('403 Client Error: Forbidden for url: memories/[POST_SQLi_MEMORY_CREATE]'),155
+GET,encryption_keys_access/[GET_DT_GET_PATH_INJECT],HTTPError('404 Client Error: Not Found for url: encryption_keys_access/[GET_DT_GET_PATH_INJECT]'),419
+GET,/api/Challenges/14,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/14'),12
+GET,ftp_access/[GET_DT_FTP_ACCESS],HTTPError('414 Client Error: Request URI Too Long for url: ftp_access/[GET_DT_FTP_ACCESS]'),240
+POST,user_login/[POST_SQLi_EMAIL_POST],HTTPError('500 Server Error: Internal Server Error for url: user_login/[POST_SQLi_EMAIL_POST]'),531
+GET,/LICENSE/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /LICENSE/[GET_FILE_ENUM]'),18
+GET,/.env/[GET_FILE_ENUM],HTTPError('403 Client Error: Forbidden for url: /.env/[GET_FILE_ENUM]'),104
+PUT,/upload/[PUT_PATH_TRAVERSAL_FILENAME_NONE],HTTPError('403 Client Error: Forbidden for url: /upload/[PUT_PATH_TRAVERSAL_FILENAME_NONE]'),462
+GET,encryption_keys_access/[GET_DT_GET_PATH_INJECT],HTTPError('403 Client Error: Forbidden for url: encryption_keys_access/[GET_DT_GET_PATH_INJECT]'),1496
+POST,addresses/[POST_ADD_ADDRESS_NO_TOKEN_POST],HTTPError('403 Client Error: Forbidden for url: addresses/[POST_ADD_ADDRESS_NO_TOKEN_POST]'),278
+POST,/api/Products/{product_id}/upload/[XSS_FILE_UPLOAD_HTML_DOUBLE],HTTPError('500 Server Error: Internal Server Error for url: /api/Products/{product_id}/upload/[XSS_FILE_UPLOAD_HTML_DOUBLE]'),352
+PUT,/api/Users/2,HTTPError('403 Client Error: Forbidden for url: /api/Users/2'),367
+GET,/api/Challenges/3,HTTPError('401 Client Error: Unauthorized for url: /api/Challenges/3'),9
+POST,feedbacks/[POST_SQLi_FEEDBACK_RATING_POST],HTTPError('500 Server Error: Internal Server Error for url: feedbacks/[POST_SQLi_FEEDBACK_RATING_POST]'),2727
+GET,order/[GET_ORDER_ENUM_GET],HTTPError('500 Server Error: Internal Server Error for url: order/[GET_ORDER_ENUM_GET]'),2349
+POST,basket_items/[POST_SQLi_BASKET_ADD_QTY],HTTPError('401 Client Error: Unauthorized for url: basket_items/[POST_SQLi_BASKET_ADD_QTY]'),1879
+POST,place_order/[POST_PLACE_ORDER_NO_TOKEN_POST],HTTPError('500 Server Error: Internal Server Error for url: place_order/[POST_PLACE_ORDER_NO_TOKEN_POST]'),2114
+DELETE,/rest/cart/item/12,HTTPError('403 Client Error: Forbidden for url: /rest/cart/item/12'),22
+POST,cards/[POST_XSS_CARD_CREATE],HTTPError('401 Client Error: Unauthorized for url: cards/[POST_XSS_CARD_CREATE]'),2095
+PUT,user_profile/[PUT_XSS_PROFILE_UPDATE_PUT],HTTPError('403 Client Error: Forbidden for url: user_profile/[PUT_XSS_PROFILE_UPDATE_PUT]'),1227
+GET,encryption_keys_access/[GET_DT_ENCRYPTION_KEYS_ACCESS],HTTPError('403 Client Error: Forbidden for url: encryption_keys_access/[GET_DT_ENCRYPTION_KEYS_ACCESS]'),2286

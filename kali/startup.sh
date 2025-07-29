@@ -19,10 +19,10 @@ LOCUST_FILE="${LOCUST_FILE:-/app/locustfile.py}"
 LOCUST_HOST="${LOCUST_HOST:-http://coraza-proxy:8080}"
 
 # Number of virtual users to simulate
-LOCUST_USERS="${LOCUST_USERS:-100}"
+LOCUST_USERS="${LOCUST_USERS:-20}"
 
 # Spawn rate (users per second)
-LOCUST_SPAWN_RATE="${LOCUST_SPAWN_RATE:-100}"
+LOCUST_SPAWN_RATE="${LOCUST_SPAWN_RATE:-20}"
 
 # Run Locust in headless mode (true/false). Default to true.
 # Set to "false" or "0" to enable the web UI.

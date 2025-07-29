@@ -35,6 +35,7 @@ def get_model_and_params():
 
     model_architecture = MODEL_ARCHITECTURE.lower()
     model_class_name = MODEL_CLASSES.get(model_architecture)
+    global_logger.debug(f"\t{model_class_name=}")
     if model_class_name is None:
         raise ValueError(f"Unknown model type: {model_architecture}. Not found in MODEL_CLASSES.")
 
@@ -71,12 +72,14 @@ def train_model(X_train, y_train, preprocessor, X_val=None, y_val=None):
     """
     evaluation_logger.info("--- Model Training ---")
     log_message = f"""\tArchitecture Used: {MODEL_ARCHITECTURE.upper()}
+\tRandom State: {RANDOM_STATE}
 \tModel Parameters: {MODEL_PARAMS[MODEL_ARCHITECTURE]}
-\tHyperparameter tuning: {PERFORM_TUNING}
+\tHyperparameter tuning: {PERFORM_TUNING}"""
+    if PERFORM_TUNING:
+        log_message += f"""
 \tHyperparameter tuning method: {CV_AND_TUNING_METHOD}
 \tCross-Validation Splits: {N_SPLITS_CROSS_VALIDATION}
 \tNum of hyperparameter combinations in Random Search: {RANDOM_SEARCH_N_ITER}
-\tRandom State: {RANDOM_STATE}
 \tTuning Parameters: {TUNING_PARAMS[MODEL_ARCHITECTURE]}"""
     evaluation_logger.info(log_message) 
     

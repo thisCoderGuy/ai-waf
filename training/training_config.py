@@ -13,7 +13,7 @@ PERFORM_DATA_CLEANING = False # True or False
 # Which raw datasets to load?
 # Path to raw dataset files (Coraza audit log files)
 RAW_DATA_FILE_PATHS = [
-    os.path.join('training', 'training-data', 'raw', 'coraza-dataset_20250722_204702.csv'),
+    os.path.join('training', 'training-data', 'raw', 'coraza-dataset_20250729_164049.csv'),
 ]
 
 # Features that must be present for each data point

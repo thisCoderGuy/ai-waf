@@ -184,7 +184,7 @@ class DeepLearningMultiFeaturePreprocessor(BaseEstimator, TransformerMixin):
         if self.numerical_cols:
             global_logger.debug(f"Fitting StandardScaler for numerical features: {self.numerical_cols}...")  
             self.scaler = StandardScaler()
-            self.scaler.fit(X[self.numerical_cols].fillna(X[self.numerical_cols].mean()))
+            self.scaler.fit(X[self.numerical_cols])
             self._num_numerical_features_dim = len(self.numerical_cols)
         else:
             self._num_numerical_features_dim = 0 
@@ -193,7 +193,7 @@ class DeepLearningMultiFeaturePreprocessor(BaseEstimator, TransformerMixin):
         if self.categorical_cols:
             global_logger.info(f"Fitting OneHotEncoder for categorical columns: {self.categorical_cols}")
             self.onehot_encoder = OneHotEncoder(handle_unknown='ignore', sparse_output=False)
-            self.onehot_encoder.fit(X[self.categorical_cols].astype(str).fillna('__missing__'))
+            self.onehot_encoder.fit(X[self.categorical_cols])
             self._num_categorical_features_dim = self.onehot_encoder.get_feature_names_out(self.categorical_cols).shape[0]
         else:
             self._num_categorical_features_dim = 0 # Ensure it's 0 if no categorical columns
@@ -237,8 +237,8 @@ class DeepLearningMultiFeaturePreprocessor(BaseEstimator, TransformerMixin):
             if col not in X_copy.columns: X_copy[col] = ''
             X_copy[col] = X_copy[col].astype(str).fillna('')
 
-        # Initialize an empty Pandas DataFrame that has the same index as X_copy.
-        X_processed = pd.DataFrame(index=X_copy.index)
+        # Initialize a list to hold processed DataFrames, which will then be concatenated
+        processed_dfs_list = []
 
         global_logger.debug("Preprocessor transforming starting.")
         # --- Transform Numerical Columns ---
@@ -247,11 +247,15 @@ class DeepLearningMultiFeaturePreprocessor(BaseEstimator, TransformerMixin):
                 global_logger.debug("Transforming numerical columns.")
                 global_logger.debug(f"Before {X[self.numerical_cols][:3]=}")
                 processed_data = self.scaler.transform(X_copy[self.numerical_cols])
-                processed_df = pd.DataFrame(processed_data, index=X_copy.index, columns=[self.numerical_cols])
-                global_logger.debug(f"After {processed_df[self.numerical_cols][:3]=}")
-                X_processed = pd.concat([X_processed, processed_df], axis=1)
+                num_df = pd.DataFrame(processed_data, index=X_copy.index, columns=self.numerical_cols)
+                num_df.columns = num_df.columns.map(lambda x: x[0] if isinstance(x, tuple) else x)
+                processed_dfs_list.append(num_df)
+                global_logger.debug(f"After {num_df[self.numerical_cols][:3]=}")
             else:
-                X_processed = pd.concat([X_processed, X_copy[self.numerical_cols]], axis=1)
+                num_df = X_copy[self.numerical_cols].copy()
+                num_df.columns = num_df.columns.map(lambda x: x[0] if isinstance(x, tuple) else x)
+                processed_dfs_list.append(num_df)
+
 
 
         # --- Transform Categorical Columns ---
@@ -260,12 +264,11 @@ class DeepLearningMultiFeaturePreprocessor(BaseEstimator, TransformerMixin):
                 global_logger.debug("Transforming categorical columns.")
                 global_logger.debug(f"Before {X[self.categorical_cols][:3]=}")
                 processed_categorical = self.onehot_encoder.transform(X_copy[self.categorical_cols])
-                
                 ohe_column_names = self.onehot_encoder.get_feature_names_out(self.categorical_cols)
-        
-                processed_df = pd.DataFrame(processed_categorical, index=X_copy.index, columns=ohe_column_names)
-                global_logger.debug(f"After {processed_df[ohe_column_names][:3]=}")
-                X_processed = pd.concat([X_processed, processed_df], axis=1)
+                cat_df = pd.DataFrame(processed_categorical, index=X_copy.index, columns=ohe_column_names)
+                processed_dfs_list.append(cat_df)
+                global_logger.debug(f"After {cat_df[ohe_column_names][:3]=}")
+               
             else:
                 pass # Should not happen if categorical_cols is not empty and onehot_encoder is None
         
@@ -290,27 +293,42 @@ class DeepLearningMultiFeaturePreprocessor(BaseEstimator, TransformerMixin):
                 padded_sequences = pad_sequences(sequences, maxlen=max_len, padding='post', truncating='post')
                 
                 global_logger.debug(f"{type(padded_sequences)=} {len(padded_sequences)=} {padded_sequences.shape=}")
+                global_logger.debug(f"After: ")
                 global_logger.debug(f"{padded_sequences[0]=}")
                 global_logger.debug(f"{padded_sequences[1]=}")
                 global_logger.debug(f"{padded_sequences[2]=}")
-                
-                # Store the processed data and the fitted tokenizer
-                # Creates a new DataFrame from the padded_sequences array. 
+
+
                 # Each column in this DataFrame will represent a position in the sequence, 
                 # and the values will be the integer IDs.
-                processed_df = pd.DataFrame(padded_sequences, index=X_copy.index )  # index=df.index: ensures that the newly created df retains the original row index from df.     
-                # make the column names of the new DataFrame more descriptive
-                processed_df = processed_df.add_prefix(f"{self.text_cols}_")   
-                X_processed = pd.concat([X_processed, processed_df], axis=1) # axis=1: column-wise
+                text_df = pd.DataFrame(padded_sequences, index=X_copy.index)
+                    
+                # Make the column names descriptive and flat for this specific text feature
+                # e.g., 'RequestURIPath_0', 'RequestURIPath_1', etc.
+                text_df.columns = [f"{col}_{i}" for i in range(text_df.shape[1])]
+                
+                    
+                processed_dfs_list.append(text_df)
                 
             else:
-                global_logger.warning(f"Tokenizer for text column '{col}' not found. Returning zeros for this feature.")
-                final_output_tuple.append(np.zeros((len(X_copy), self.text_sequence_length), dtype=int))
+                text_df = pd.DataFrame(
+                        np.zeros((len(X_copy), MAX_SEQ_LENGTHS.get(col, 0)), dtype=int),
+                        index=X_copy.index,
+                        columns=[f"{col}_{i}" for i in range(MAX_SEQ_LENGTHS.get(col, 0))]
+                    )
+                processed_dfs_list.append(text_df)
+
+        # Concatenate all processed DataFrames
+        if processed_dfs_list:
+            X_processed_final = pd.concat(processed_dfs_list, axis=1)
+        else:
+            X_processed_final = pd.DataFrame(index=X_copy.index) # Return empty DataFrame if no features
+
 
         global_logger.debug("Preprocessor transform complete.")
-        global_logger.debug(f"{X_processed.columns=}")
+        global_logger.debug(f"{X_processed_final.columns=}")
 
-        return X_processed
+        return X_processed_final
     
     # --- Properties to expose learned dimensions ---
     @property
@@ -327,11 +345,23 @@ class DeepLearningMultiFeaturePreprocessor(BaseEstimator, TransformerMixin):
     def combined_numerical_categorical_dim(self):
         """Returns the total dimension of combined numerical and one-hot encoded categorical features."""
         return self._combined_numerical_categorical_dim
-
+    
     @property
     def text_vocab_sizes(self):
         """Returns a dictionary mapping text column names to their vocabulary sizes."""
         return self._text_vocab_sizes
+
+    @property
+    def cat_cardinalities(self):
+        """Returns a dictionary mapping categorical column names to their cardinalities."""
+        cardinalities = {}
+        if self.categorical_cols and self.onehot_encoder:
+            # self.onehot_encoder.categories_ is a list of arrays, where each array
+            # corresponds to a categorical feature in the order they were provided
+            # and contains the unique categories (levels) for that feature.
+            for i, col_name in enumerate(self.categorical_cols):
+                cardinalities[col_name] = len(self.onehot_encoder.categories_[i])
+        return cardinalities
 
     @property
     def text_sequence_length(self):
